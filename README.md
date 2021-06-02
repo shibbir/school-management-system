@@ -1,1 +1,1 @@
-# grading-system
+# School Management System
