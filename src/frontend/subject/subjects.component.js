@@ -1,36 +1,39 @@
+import { Link } from "react-router-dom";
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown } from "semantic-ui-react";
 
-import UserForm from "./user-form.component";
-import { getUsers } from "../user.actions";
+import SubjectForm from "./subject-form.component";
+import { getSubjects } from "./subject.actions";
 
-export default function ClassList() {
+export default function SubjectList({ class_id } = props) {
     const dispatch = useDispatch();
-    const [userId, setUserId] = useState(undefined);
+    const [subjectId, setSubjectId] = useState(undefined);
 
     useEffect(() => {
-        dispatch(getUsers());
-    }, []);
+        if(class_id) {
+            dispatch(getSubjects(`?class_id=${class_id}`));
+        }
+    }, [class_id]);
 
-    const users = useSelector(state => state.userReducer.users);
+    const subjects = useSelector(state => state.subjectReducer.subjects);
 
-    const rows = users.map(function(row, index) {
+    const rows = subjects.map(function(row, index) {
         return (
             <Table.Row key={row._id}>
                 <Table.Cell>{index+1}</Table.Cell>
-                <Table.Cell>{row.forename}</Table.Cell>
-                <Table.Cell>{row.surname}</Table.Cell>
-                <Table.Cell>{row.username}</Table.Cell>
-                <Table.Cell>{row.role}</Table.Cell>
+                <Table.Cell>{row.class.name}</Table.Cell>
+                <Table.Cell>{row.name}</Table.Cell>
+                <Table.Cell>{row.status}</Table.Cell>
+                <Table.Cell>{row.teacher.name}</Table.Cell>
                 <Table.Cell>{row.updated_by}</Table.Cell>
                 <Table.Cell><FormattedDate value={row.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     <Dropdown>
                         <Dropdown.Menu>
-                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setUserId(row._id)}/>
-                            <Dropdown.Item icon="trash" text="Remove User"/>
+                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setSubjectId(row._id)}/>
+                            <Dropdown.Item icon="users" text="Assign Pupils"/>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Table.Cell>
@@ -40,20 +43,25 @@ export default function ClassList() {
 
     return (
         <>
-            <Button floated="right" primary size="small" onClick={() => setUserId(null)}>
-                Create new user
-            </Button>
+            <Button
+                primary
+                icon="arrow right"
+                labelPosition="right"
+                floated="right"
+                content="Create a new subject"
+                onClick={() => setSubjectId(null)}
+            />
 
-            <TransitionablePortal open={userId !== undefined} transition={{ animation: "scale", duration: 400 }}>
+            <TransitionablePortal open={subjectId !== undefined} transition={{ animation: "scale", duration: 400 }}>
                 <Modal dimmer size="tiny" open={true}>
-                    <Modal.Header>User Form</Modal.Header>
+                    <Modal.Header>Subject Form</Modal.Header>
                     <Modal.Content>
                         <Modal.Description>
-                            <UserForm id={userId}/>
+                            <SubjectForm id={subjectId}/>
                         </Modal.Description>
                     </Modal.Content>
                     <Modal.Actions>
-                        <Button color="black" onClick={() => setUserId(undefined)}>
+                        <Button color="black" onClick={() => setSubjectId(undefined)}>
                             Close
                         </Button>
                     </Modal.Actions>
@@ -61,16 +69,16 @@ export default function ClassList() {
             </TransitionablePortal>
 
             <Divider hidden clearing/>
-            { users.length > 0 &&
+            { subjects.length > 0 &&
                 <>
                     <Table selectable compact>
                         <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell>#</Table.HeaderCell>
-                                <Table.HeaderCell>Forename</Table.HeaderCell>
-                                <Table.HeaderCell>Surname</Table.HeaderCell>
-                                <Table.HeaderCell>Username</Table.HeaderCell>
-                                <Table.HeaderCell>Role</Table.HeaderCell>
+                                <Table.HeaderCell>Class Name</Table.HeaderCell>
+                                <Table.HeaderCell>Subject Name</Table.HeaderCell>
+                                <Table.HeaderCell>Status</Table.HeaderCell>
+                                <Table.HeaderCell>Teacher</Table.HeaderCell>
                                 <Table.HeaderCell>Updated By</Table.HeaderCell>
                                 <Table.HeaderCell>Updated At</Table.HeaderCell>
                                 <Table.HeaderCell>Actions</Table.HeaderCell>
@@ -84,11 +92,11 @@ export default function ClassList() {
                 </>
             }
 
-            { users.length === 0 &&
-                <Segment placeholder raised>
+            { subjects.length === 0 &&
+                <Segment placeholder>
                     <Header icon>
-                        <Icon name="user"/>
-                        No users are available!
+                        <Icon name="book"/>
+                        No subjects are available to assign to the class.
                     </Header>
                 </Segment>
             }

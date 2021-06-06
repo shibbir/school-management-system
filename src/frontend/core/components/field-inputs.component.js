@@ -54,7 +54,7 @@ export const TextareaInput = ({ attributes }) => {
 
 export const DropdownInput = ({ attributes }) => {
     return (
-        <Form.Field required={attributes.required}>
+        <Form.Field required={attributes.required} disabled={attributes.disabled}>
             <Form.Select search {...attributes} options={attributes.options}/>
 
             <div className="field-validation-error">

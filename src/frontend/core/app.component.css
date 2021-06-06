@@ -10,35 +10,12 @@
 
 .field-validation-error {
     color: #d0021b;
-    font-weight: bold;
 }
 
 a[disabled] {
     pointer-events: none;
 }
 
-#item-cards-container .ui.cards > .card > .content > .header:not(.ui),
-#category-cards-container .ui.cards > .card > .content > .header:not(.ui) {
-    font-size: 1em;
-}
-
-#item-cards-container .ui.cards > .card > .content,
-#category-cards-container .ui.cards > .card > .content {
-    border: none;
-}
-
 #loader {
     display: none;
-}
-
-@media only screen and (max-width: 1024px) {
-    .image-wrapper {
-        width: 70%;
-    }
-}
-
-@media only screen and (max-width: 786px) {
-    .image-wrapper {
-        width: 70%;
-    }
 }

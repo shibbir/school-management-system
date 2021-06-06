@@ -6,7 +6,7 @@ const User = require(path.join(process.cwd(), "src/backend/user/user.model"));
 function generateAccessToken(doc) {
     return jwt.sign({
         id: doc._id,
-    }, process.env.TOKEN_SECRET, {
+    }, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "1h",
         issuer: doc._id.toString()
     });
@@ -15,7 +15,7 @@ function generateAccessToken(doc) {
 function generateRefreshToken(doc) {
     return jwt.sign({
         id: doc._id,
-    }, process.env.REFRESH_SECRET, {
+    }, process.env.REFRESH_TOKEN_SECRET, {
         expiresIn: "1d",
         issuer: doc._id.toString()
     });
@@ -37,17 +37,17 @@ async function authenticate (req, res, next) {
 
         if (!user) {
             try {
-                const refresh_token = req.cookies["refresh_token"];
+                const refresh_token = req.signedCookies["refresh_token"];
 
                 if(!refresh_token) return res.status(401).send("Unauthorized").end();
 
-                const payload = jwt.verify(refresh_token, process.env.REFRESH_SECRET);
+                const payload = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
                 const doc = await User.findById(payload.id);
 
                 if(doc.refresh_token !== refresh_token) throw new Error();
 
                 req.user = doc;
-                res.cookie("access_token", generateAccessToken(doc), { httpOnly: true, sameSite: true });
+                res.cookie("access_token", generateAccessToken(doc), { httpOnly: true, sameSite: true, signed: true });
                 return next();
             } catch(e) {
                 res.clearCookie("access_token");

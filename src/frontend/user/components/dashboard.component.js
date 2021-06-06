@@ -1,32 +1,16 @@
 import React from "react";
-import { Card, Icon } from "semantic-ui-react";
+import { Link, useLocation, useHistory } from "react-router-dom";
+import { Card, Icon, Segment } from "semantic-ui-react";
+import Admin from "./admin.component";
+import Teacher from "./teacher.component";
+import Pupil from "./pupil.component";
 
 export default function Dashboard() {
     return (
-        <div id="dashboard">
-            <Card raised fluid>
-                <Card.Content>
-                    <Card.Header>
-                        <Icon name="pie chart"/>
-                        Category percentages
-                    </Card.Header>
-                </Card.Content>
-                <Card.Content>
-                    Hello
-                </Card.Content>
-            </Card>
-
-            <Card raised fluid>
-                <Card.Content>
-                    <Card.Header>
-                        <Icon name="bar chart"/>
-                        Yearly report on purchased items
-                    </Card.Header>
-                </Card.Content>
-                <Card.Content>
-                    Hello
-                </Card.Content>
-            </Card>
-        </div>
+        <>
+            <Admin/>
+            <Teacher/>
+            <Pupil/>
+        </>
     );
 }

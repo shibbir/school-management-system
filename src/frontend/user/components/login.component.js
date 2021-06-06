@@ -13,27 +13,28 @@ import { TextInput } from "../../core/components/field-inputs.component";
 
 export default function Login() {
     const dispatch = useDispatch();
+    const [isForgotPasswordModalActive, setForgotPasswordModalActive] = useState(false);
 
     return (
         <div style={{paddingTop: "85px"}}>
             <div className="ui middle aligned center aligned grid">
-                <div>
-                    <Header as="h2" className="teal center aligned">
+                <div style={{maxWidth: "450px"}}>
+                    <Header as="h2" className="center aligned">
                         <div className="content">
-                            Log-in to your account
+                            <Icon name="graduation cap" size="big"/> Log-in to your account
                         </div>
                     </Header>
 
                     <Segment className="stacked">
                         <Formik
                             initialValues={{
-                                email: "",
+                                username: "",
                                 password: ""
                             }}
                             validationSchema={loginSchema}
                             onSubmit={(values, actions) => {
                                 dispatch(login({
-                                    username: values.email,
+                                    username: values.username,
                                     password: values.password,
                                     grant_type: "password"
                                 })).catch(function(err) {
@@ -49,10 +50,10 @@ export default function Login() {
                         >
                             <Form className="ui form">
                                 <TextInput attributes={{
-                                    name: "email",
+                                    name: "username",
                                     type: "email",
                                     icon: "mail",
-                                    placeholder: "Email address",
+                                    placeholder: "Username",
                                     autoComplete: "username"
                                 }}/>
 
@@ -67,6 +68,7 @@ export default function Login() {
                                 <Button fluid type="submit" className="large teal">Login</Button>
                             </Form>
                         </Formik>
+                        <button className="ui primary tertiary button" onClick={() => setForgotPasswordModalActive(true)}>Forgot password?</button>
                     </Segment>
 
                     <OAuthProviders/>

@@ -6,7 +6,7 @@ const User = require(path.join(process.cwd(), "src/user/user.model"));
 const userSeeder = function(callback) {
     const user = new User();
 
-    user.role = "admin";
+    user.role = "Admin";
     user.forename = "John";
     user.surname = "Doe";
     user.email = "john.doe@sms.com";

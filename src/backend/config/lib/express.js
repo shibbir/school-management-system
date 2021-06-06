@@ -16,7 +16,7 @@ module.exports = function() {
     app.use(compression());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-    app.use(cookieParser());
+    app.use(cookieParser(process.env.COOKIE_SECRET));
     app.use(express.static(path.join(process.cwd(), "wwwroot")));
 
     app.engine("html", hbs.express4({ extname: ".html" }));
@@ -29,7 +29,7 @@ module.exports = function() {
     app.locals.cssFiles = glob.sync(assets.frontend.css).map(filePath => filePath.replace("wwwroot/", ""));
 
     assets.backend.routes.forEach(function(pattern) {
-        require(path.resolve(glob.sync(pattern)[0]))(app);
+        require(path.resolve(pattern))(app);
     });
 
     assets.backend.strategies.forEach(function(pattern) {

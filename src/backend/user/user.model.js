@@ -3,9 +3,11 @@ const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 
 const UserSchema = Schema({
-    email: {
+    username: {
         type: String,
         match: [/.+\@.+\..+/],
+        unique: true,
+        maxlength: 30,
         required: true
     },
     password: {
@@ -14,13 +16,11 @@ const UserSchema = Schema({
     },
     forename: {
         type: String,
-        minlength: 2,
         maxlength: 25,
         required: true
     },
     surname: {
         type: String,
-        minlength: 2,
         maxlength: 25,
         required: true
     },
@@ -29,9 +29,13 @@ const UserSchema = Schema({
     },
     role: {
         type: String,
-        enum: ["admin", "teacher", "pupil"]
+        enum: ["Admin", "Teacher", "Pupil"]
     },
-    date: {
+    created_at: {
+        type: Date,
+        default: Date.now
+    },
+    updated_at: {
         type: Date,
         default: Date.now
     }
