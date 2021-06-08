@@ -6,11 +6,8 @@ const SubjectSchema = Schema({
     name: {
         type: String,
         unique: true,
+        maxlength: 50,
         required: true
-    },
-    class: {
-        ref: "Class",
-        type: Schema.Types.ObjectId
     },
     teacher: {
         ref: "User",
@@ -20,7 +17,8 @@ const SubjectSchema = Schema({
     tests: [TestSchema],
     status: {
         type: String,
-        enum: ["active", "archived"]
+        enum: ["active", "archived"],
+        default: "active"
     },
     created_by: {
         ref: "User",

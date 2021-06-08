@@ -7,7 +7,7 @@ const UserSchema = Schema({
         type: String,
         match: [/.+\@.+\..+/],
         unique: true,
-        maxlength: 30,
+        maxlength: 50,
         required: true
     },
     password: {
@@ -29,7 +29,7 @@ const UserSchema = Schema({
     },
     role: {
         type: String,
-        enum: ["Admin", "Teacher", "Pupil"]
+        enum: ["admin", "teacher", "pupil"]
     },
     created_at: {
         type: Date,

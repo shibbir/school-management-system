@@ -13,16 +13,6 @@ const TestSchema = Schema({
         default: Date.now
     },
     results: [ResultSchema],
-    created_by: {
-        ref: "User",
-        required: true,
-        type: Schema.Types.ObjectId
-    },
-    updated_by: {
-        ref: "User",
-        required: true,
-        type: Schema.Types.ObjectId
-    },
     created_at: {
         type: Date,
         default: Date.now

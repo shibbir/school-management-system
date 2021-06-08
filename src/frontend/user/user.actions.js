@@ -63,3 +63,14 @@ export function updateUser(id, data) {
         })
     };
 }
+
+export function deleteUser(id) {
+    return {
+        type: Types.DELETE_USER,
+        payload: axios({
+            method: "delete",
+            url: `/api/users/${id}`,
+            data
+        })
+    };
+}

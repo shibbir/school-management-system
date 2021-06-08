@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown } from "semantic-ui-react";
 
 import UserForm from "./user-form.component";
-import { getUsers } from "../user.actions";
+import { getUsers, deleteUser } from "../user.actions";
 
 export default function ClassList() {
     const dispatch = useDispatch();
@@ -30,13 +30,24 @@ export default function ClassList() {
                     <Dropdown>
                         <Dropdown.Menu>
                             <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setUserId(row._id)}/>
-                            <Dropdown.Item icon="trash" text="Remove User"/>
+                            <Dropdown.Item icon="trash" text="Remove User" onClick={() => onDeleteUser(row._id)}/>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Table.Cell>
             </Table.Row>
         );
     });
+
+    const onDeleteUser = id => {
+        if(confirm("Are you sure you want to remove the user?")) {
+            dispatch(deleteUser(id)).then(function(result) {
+                const { type } = result.action;
+
+                if(type === Types.DELETE_USER_FULFILLED) {
+                }
+            });
+        }
+    };
 
     return (
         <>

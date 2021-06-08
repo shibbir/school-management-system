@@ -62,7 +62,9 @@ async function getUser(req, res) {
 
 async function getUsers(req, res) {
     try {
-        const query = {};
+        const query = {
+            _id: { $ne: req.user.id }
+        };
 
         if(req.query.role) {
             query.role = req.query.role;
@@ -117,6 +119,15 @@ async function updateUser(req, res) {
     }
 }
 
+async function deleteUser(req, res) {
+    try {
+        const doc = await User.findOneAndRemove({ _id: req.params.id });
+        res.json(doc);
+    } catch(err) {
+        res.sendStatus(500);
+    }
+}
+
 exports.login = login;
 exports.logout = logout;
 exports.getUserProfile = getUserProfile;
@@ -124,3 +135,4 @@ exports.getUser = getUser;
 exports.getUsers = getUsers;
 exports.createUser = createUser;
 exports.updateUser = updateUser;
+exports.deleteUser = deleteUser;
