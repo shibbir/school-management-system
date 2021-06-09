@@ -1,4 +1,5 @@
 import Types from "./user.types";
+import _ from "lodash";
 
 const initialState = {
     loggedInUser: null,
@@ -21,6 +22,10 @@ export default function reducer(state=initialState, action) {
         case Types.GET_USERS_FULFILLED: {
             return { ...state, users: action.payload.data };
         }
+        case Types.DELETE_USER_FULFILLED: {
+            return { ...state, users: _.reject(state.users, { _id: action.payload.data._id }) };
+        }
     }
+
     return state;
 }

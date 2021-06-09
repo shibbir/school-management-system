@@ -1,8 +1,7 @@
-import { Link } from "react-router-dom";
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown } from "semantic-ui-react";
+import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown, Label } from "semantic-ui-react";
 
 import ClassForm from "./class-form.component";
 import { getClasses } from "./class.actions";
@@ -12,7 +11,7 @@ import Subjects from "../subject/subjects.component";
 export default function ClassList() {
     const dispatch = useDispatch();
     const [classId, setClassId] = useState(undefined);
-    const [programId, setProgramId] = useState(undefined);
+    const [program, setProgram] = useState(undefined);
 
     useEffect(() => {
         dispatch(getClasses());
@@ -33,7 +32,7 @@ export default function ClassList() {
                     <Dropdown>
                         <Dropdown.Menu>
                             <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setClassId(row._id)}/>
-                            <Dropdown.Item icon="book" text="Manage Subjects" onClick={() => setProgramId(row._id)}/>
+                            <Dropdown.Item icon="book" text="Manage Subjects" onClick={() => setProgram({_id: row._id, name: row.name})}/>
                             <Dropdown.Item icon="users" text="Assign Pupils"/>
                         </Dropdown.Menu>
                     </Dropdown>
@@ -64,16 +63,16 @@ export default function ClassList() {
                 </Modal>
             </TransitionablePortal>
 
-            <TransitionablePortal open={programId !== undefined} transition={{ animation: "scale", duration: 400 }}>
+            <TransitionablePortal open={program !== undefined} transition={{ animation: "scale", duration: 400 }}>
                 <Modal dimmer size="small" open={true}>
-                    <Modal.Header>Manage Subjects</Modal.Header>
+                    <Modal.Header>Manage subjects of  <Label color="teal" size="medium">{program && program.name}</Label> class</Modal.Header>
                     <Modal.Content>
                         <Modal.Description>
-                            <Subjects class_id={programId}/>
+                            <Subjects class_id={program && program._id}/>
                         </Modal.Description>
                     </Modal.Content>
                     <Modal.Actions>
-                        <Button color="black" onClick={() => setProgramId(undefined)}>
+                        <Button color="black" onClick={() => setProgram(undefined)}>
                             Close
                         </Button>
                     </Modal.Actions>

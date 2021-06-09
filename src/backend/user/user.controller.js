@@ -52,7 +52,7 @@ async function getUserProfile(req, res) {
 
 async function getUser(req, res) {
     try {
-        const doc = await User.findOne({ _id: req.params.id });
+        const doc = await User.findOne({ _id: req.params.id }).select("-password");
 
         res.json(doc);
     } catch(err) {
@@ -70,7 +70,7 @@ async function getUsers(req, res) {
             query.role = req.query.role;
         }
 
-        const docs = await User.find(query).sort("name");
+        const docs = await User.find(query).select("-password").sort("name");
 
         res.json(docs);
     } catch(err) {
@@ -121,7 +121,7 @@ async function updateUser(req, res) {
 
 async function deleteUser(req, res) {
     try {
-        const doc = await User.findOneAndRemove({ _id: req.params.id });
+        const doc = await User.findOneAndRemove({ _id: req.params.id }).select("-password");
         res.json(doc);
     } catch(err) {
         res.sendStatus(500);

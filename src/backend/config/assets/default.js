@@ -7,7 +7,6 @@ module.exports = {
         routes: [
             "src/backend/user/user.routes.js",
             "src/backend/class/class.routes.js",
-            "src/backend/subject/subject.routes.js",
             "src/backend/core/index.routes.js"
         ],
         strategies: ["src/backend/**/*.strategy.js"]

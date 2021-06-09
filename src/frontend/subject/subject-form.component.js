@@ -1,23 +1,22 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
 import { Form, Formik } from "formik";
-import { Divider, Button, Form as SemanticUIForm } from "semantic-ui-react";
+import React, { useEffect } from "react";
 import iziToast from "izitoast/dist/js/iziToast";
+import { Divider, Button } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
-import SubjectFormSchema from "./subject.schema";
-import { createSubject, updateSubject, getSubject } from "./subject.actions";
+import SubjectSchema from "./subject.schema";
 import { getUsers } from "../user/user.actions";
+import { createSubject, updateSubject, getSubject } from "./subject.actions";
 import { TextInput, DropdownInput } from "../core/components/field-inputs.component";
 
-function SubjectForm({ id , class_id } = props) {
+function SubjectForm({ class_id, subject_id } = props) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(id) {
-            dispatch(getSubject(id));
+        if(class_id && subject_id) {
+            dispatch(getSubject(class_id, subject_id));
         }
         dispatch(getUsers("?role=teacher"));
-    }, [id]);
+    }, [class_id, subject_id]);
 
     const subject = useSelector(state => state.subjectReducer.subject);
     const teachers = useSelector(state => state.userReducer.users);
@@ -29,16 +28,15 @@ function SubjectForm({ id , class_id } = props) {
     return (
         <Formik
             initialValues={{
-                name: id && subject ? subject.name : "",
-                class: class_id,
+                name: subject ? subject.name : "",
                 teacher: subject ? subject.teacher : "",
             }}
             displayName="SubjectForm"
             enableReinitialize={true}
-            validationSchema={SubjectFormSchema}
+            validationSchema={SubjectSchema}
             onSubmit={(values, actions) => {
-                if(id) {
-                    dispatch(updateSubject(values, id)).then(function() {
+                if(subject_id) {
+                    dispatch(updateSubject(class_id, subject_id, values)).then(function() {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",
@@ -46,7 +44,7 @@ function SubjectForm({ id , class_id } = props) {
                         });
                     });
                 } else {
-                    dispatch(createSubject(values)).then(function() {
+                    dispatch(createSubject(class_id, values)).then(function() {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",
@@ -69,7 +67,7 @@ function SubjectForm({ id , class_id } = props) {
                     }}/>
 
                     <DropdownInput attributes={{
-                        value: formikProps.values.retailerId,
+                        value: formikProps.values.teacher,
                         name: "teacher",
                         placeholder: "Assign Teacher",
                         label: "Teacher",
@@ -86,9 +84,5 @@ function SubjectForm({ id , class_id } = props) {
         </Formik>
     );
 }
-
-SubjectForm.propTypes = {
-    id: PropTypes.string
-};
 
 export default SubjectForm;

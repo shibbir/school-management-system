@@ -69,8 +69,7 @@ export function deleteUser(id) {
         type: Types.DELETE_USER,
         payload: axios({
             method: "delete",
-            url: `/api/users/${id}`,
-            data
+            url: `/api/users/${id}`
         })
     };
 }

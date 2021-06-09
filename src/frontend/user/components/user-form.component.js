@@ -20,7 +20,7 @@ function UserForm({ id } = props) {
 
     const user = useSelector(state => state.userReducer.user);
 
-    const roleOptions = ["Admin", "Teacher", "Pupil"].map(function(option, index) {
+    const roleOptions = ["admin", "teacher", "pupil"].map(function(option, index) {
         return { key: index, value: option, text: option };
     });
 

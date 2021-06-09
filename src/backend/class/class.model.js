@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const SubjectSchema = require("../subject/subject.model");
 
 const ClassSchema = Schema({
     name: {
@@ -15,12 +16,7 @@ const ClassSchema = Schema({
             type: Schema.Types.ObjectId
         }]
     },
-    subjects: {
-        type: [{
-            ref: "Subject",
-            type: Schema.Types.ObjectId
-        }]
-    },
+    subjects: [SubjectSchema],
     created_by: {
         ref: "User",
         required: true,

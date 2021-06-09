@@ -15,11 +15,6 @@ const SubjectSchema = Schema({
         type: Schema.Types.ObjectId
     },
     tests: [TestSchema],
-    status: {
-        type: String,
-        enum: ["active", "archived"],
-        default: "active"
-    },
     created_by: {
         ref: "User",
         required: true,
@@ -40,4 +35,4 @@ const SubjectSchema = Schema({
     }
 });
 
-module.exports = mongoose.model("Subject", SubjectSchema);
+module.exports = SubjectSchema;
