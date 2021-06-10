@@ -34,9 +34,9 @@ export function getSubject(class_id, subject_id) {
 
 export function updateSubject(class_id, subject_id, subject) {
     return {
-        type: Types.PUT_SUBJECT,
+        type: Types.PATCH_SUBJECT,
         payload: axios({
-            method: "put",
+            method: "patch",
             data: subject,
             url: `/api/classes/${class_id}/subjects/${subject_id}`
         })
@@ -50,5 +50,22 @@ export function deleteSubject(class_id, subject_id) {
             method: "delete",
             url: `/api/classes/${class_id}/subjects/${subject_id}`
         })
+    };
+}
+
+export function archiveSubject(class_id, subject_id, status) {
+    return {
+        type: Types.ARCHIVE_SUBJECT,
+        payload: axios({
+            method: "patch",
+            data: { status },
+            url: `/api/classes/${class_id}/subjects/${subject_id}`
+        })
+    };
+}
+
+export function resetSubject() {
+    return {
+        type: Types.RESET_SUBJECT
     };
 }

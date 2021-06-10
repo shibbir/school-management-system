@@ -8,7 +8,7 @@ module.exports = function(app) {
 
     app.route("/api/classes/:id")
         .get(authenticate, controller.getClass)
-        .put(authenticate, controller.updateClass);
+        .patch(authenticate, controller.updateClass);
 
     app.route("/api/classes/:id/subjects")
         .get(authenticate, controller.getSubjects)
@@ -16,6 +16,6 @@ module.exports = function(app) {
 
     app.route("/api/classes/:class_id/subjects/:subject_id")
         .get(authenticate, controller.getSubject)
-        .put(authenticate, controller.updateSubject)
+        .patch(authenticate, controller.updateSubject)
         .delete(authenticate, controller.deleteSubject);
 };

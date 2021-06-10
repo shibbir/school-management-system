@@ -24,9 +24,9 @@ export function createClass(formData) {
 
 export function updateClass(formData, id) {
     return {
-        type: Types.PUT_CLASS,
+        type: Types.PATCH_CLASS,
         payload: axios({
-            method: "put",
+            method: "patch",
             data: formData,
             url: `/api/classes/${id}`
         })

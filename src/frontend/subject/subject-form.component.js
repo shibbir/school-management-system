@@ -5,8 +5,8 @@ import { Divider, Button } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
 import SubjectSchema from "./subject.schema";
 import { getUsers } from "../user/user.actions";
-import { createSubject, updateSubject, getSubject } from "./subject.actions";
 import { TextInput, DropdownInput } from "../core/components/field-inputs.component";
+import { createSubject, updateSubject, getSubject, resetSubject } from "./subject.actions";
 
 function SubjectForm({ class_id, subject_id } = props) {
     const dispatch = useDispatch();
@@ -14,6 +14,8 @@ function SubjectForm({ class_id, subject_id } = props) {
     useEffect(() => {
         if(class_id && subject_id) {
             dispatch(getSubject(class_id, subject_id));
+        } else {
+            dispatch(resetSubject());
         }
         dispatch(getUsers("?role=teacher"));
     }, [class_id, subject_id]);

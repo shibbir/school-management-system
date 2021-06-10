@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import PropTypes from "prop-types";
 import { Form, Formik } from "formik";
 import { Divider, Button } from "semantic-ui-react";
 import iziToast from "izitoast/dist/js/iziToast";
@@ -17,12 +16,12 @@ function ClassForm({id} = props) {
         }
     }, [id, dispatch]);
 
-    const lecture = useSelector(state => state.classReducer.lecture);
+    const program = useSelector(state => state.classReducer.program);
 
     return (
         <Formik
             initialValues={{
-                name: id && lecture ? lecture.name : ""
+                name: program ? program.name : ""
             }}
             displayName="ClassForm"
             enableReinitialize={true}
@@ -66,9 +65,5 @@ function ClassForm({id} = props) {
         </Formik>
     );
 }
-
-ClassForm.propTypes = {
-    id: PropTypes.string
-};
 
 export default ClassForm;

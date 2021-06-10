@@ -1,3 +1,4 @@
+import { capitalize } from "lodash";
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -23,7 +24,7 @@ export default function ClassList() {
                 <Table.Cell>{row.forename}</Table.Cell>
                 <Table.Cell>{row.surname}</Table.Cell>
                 <Table.Cell>{row.username}</Table.Cell>
-                <Table.Cell>{row.role}</Table.Cell>
+                <Table.Cell>{capitalize(row.role)}</Table.Cell>
                 <Table.Cell>{row.updated_by}</Table.Cell>
                 <Table.Cell><FormattedDate value={row.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
@@ -40,12 +41,7 @@ export default function ClassList() {
 
     const onDeleteUser = id => {
         if(confirm("Are you sure you want to remove the user?")) {
-            dispatch(deleteUser(id)).then(function(result) {
-                const { type } = result.action;
-
-                if(type === Types.DELETE_USER_FULFILLED) {
-                }
-            });
+            dispatch(deleteUser(id));
         }
     };
 

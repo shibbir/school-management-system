@@ -9,6 +9,11 @@ const SubjectSchema = Schema({
         maxlength: 50,
         required: true
     },
+    status: {
+        type: String,
+        default: "active",
+        enum: ["active", "archived"]
+    },
     teacher: {
         ref: "User",
         required: true,

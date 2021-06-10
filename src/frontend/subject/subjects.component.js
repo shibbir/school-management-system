@@ -1,10 +1,11 @@
+import { capitalize } from "lodash"
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown } from "semantic-ui-react";
 
 import SubjectForm from "./subject-form.component";
-import { getSubject, getSubjects, deleteSubject } from "./subject.actions";
+import { getSubjects, deleteSubject, archiveSubject } from "./subject.actions";
 
 export default function SubjectList({ class_id } = props) {
     const dispatch = useDispatch();
@@ -18,25 +19,15 @@ export default function SubjectList({ class_id } = props) {
 
     const subjects = useSelector(state => state.subjectReducer.subjects);
 
-    const onArchiveSubject = suhbject_id => {
+    const onArchiveSubject = function(suhbject_id) {
         if(confirm("Are you sure you want to archive the subject?")) {
-            dispatch(deleteSubject(class_id, suhbject_id)).then(function(result) {
-                const { type } = result.action;
-
-                if(type === Types.DELETE_USER_FULFILLED) {
-                }
-            });
+            dispatch(archiveSubject(class_id, suhbject_id, "archived"));
         }
     };
 
-    const onDeleteSubject = suhbject_id => {
+    const onDeleteSubject = function(suhbject_id) {
         if(confirm("Are you sure you want to remove the subject?")) {
-            dispatch(deleteSubject(class_id, suhbject_id)).then(function(result) {
-                const { type } = result.action;
-
-                if(type === Types.DELETE_USER_FULFILLED) {
-                }
-            });
+            dispatch(deleteSubject(class_id, suhbject_id));
         }
     };
 
@@ -46,13 +37,18 @@ export default function SubjectList({ class_id } = props) {
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{subject.name}</Table.Cell>
                 <Table.Cell>{`${subject.teacher.forename} ${subject.teacher.surname}`}</Table.Cell>
+                <Table.Cell>{capitalize(subject.status)}</Table.Cell>
                 <Table.Cell><FormattedDate value={subject.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     <Dropdown>
                         <Dropdown.Menu>
-                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setSubjectId(subject._id)}/>
-                            { subject.tests.length > 0 && <Dropdown.Item icon="archive" text="Archive Subject" onClick={() => onArchiveSubject(subject._id)}/> }
-                            { subject.tests.length === 0 && <Dropdown.Item icon="trash" text="Remove Subject" onClick={() => onDeleteSubject(subject._id)}/> }
+                            { subject.status !== "archived" &&
+                                <>
+                                    <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setSubjectId(subject._id)}/>
+                                    { subject.tests.length > 0 && <Dropdown.Item icon="archive" text="Archive Subject" onClick={() => onArchiveSubject(subject._id)}/> }
+                                    { subject.tests.length === 0 && <Dropdown.Item icon="trash" text="Remove Subject" onClick={() => onDeleteSubject(subject._id)}/> }
+                                </>
+                            }
                         </Dropdown.Menu>
                     </Dropdown>
                 </Table.Cell>
@@ -96,6 +92,7 @@ export default function SubjectList({ class_id } = props) {
                                 <Table.HeaderCell>#</Table.HeaderCell>
                                 <Table.HeaderCell>Subject Name</Table.HeaderCell>
                                 <Table.HeaderCell>Teacher</Table.HeaderCell>
+                                <Table.HeaderCell>Status</Table.HeaderCell>
                                 <Table.HeaderCell>Updated At</Table.HeaderCell>
                                 <Table.HeaderCell>Actions</Table.HeaderCell>
                             </Table.Row>

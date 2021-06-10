@@ -1,4 +1,4 @@
-import PropTypes from "prop-types";
+import { capitalize } from "lodash";
 import { Form, Formik } from "formik";
 import React, { useEffect } from "react";
 import iziToast from "izitoast/dist/js/iziToast";
@@ -21,7 +21,7 @@ function UserForm({ id } = props) {
     const user = useSelector(state => state.userReducer.user);
 
     const roleOptions = ["admin", "teacher", "pupil"].map(function(option, index) {
-        return { key: index, value: option, text: option };
+        return { key: index, value: option, text: capitalize(option) };
     });
 
     return (
@@ -121,9 +121,5 @@ function UserForm({ id } = props) {
         </Formik>
     );
 }
-
-UserForm.propTypes = {
-    id: PropTypes.string
-};
 
 export default UserForm;

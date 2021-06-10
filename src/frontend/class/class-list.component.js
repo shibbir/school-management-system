@@ -26,7 +26,7 @@ export default function ClassList() {
                 <Table.Cell>{row.name}</Table.Cell>
                 <Table.Cell>{row.subjects.length}</Table.Cell>
                 <Table.Cell>{row.pupils.length}</Table.Cell>
-                <Table.Cell>{row.updated_by}</Table.Cell>
+                <Table.Cell>{`${row.updated_by.forename} ${row.updated_by.surname}`}</Table.Cell>
                 <Table.Cell><FormattedDate value={row.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     <Dropdown>
