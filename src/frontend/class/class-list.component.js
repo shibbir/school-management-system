@@ -1,17 +1,19 @@
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown, Label } from "semantic-ui-react";
+import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Label } from "semantic-ui-react";
 
 import ClassForm from "./class-form.component";
 import { getClasses } from "./class.actions";
 
 import Subjects from "../subject/subjects.component";
+import PupilsEnrolment from "./components/pupils-enrolment.component";
 
 export default function ClassList() {
     const dispatch = useDispatch();
     const [classId, setClassId] = useState(undefined);
     const [program, setProgram] = useState(undefined);
+    const [classToAssignPupils, setClassToAssignPupils] = useState(undefined);
 
     useEffect(() => {
         dispatch(getClasses());
@@ -33,7 +35,7 @@ export default function ClassList() {
                         <Dropdown.Menu>
                             <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setClassId(row._id)}/>
                             <Dropdown.Item icon="book" text="Manage Subjects" onClick={() => setProgram({_id: row._id, name: row.name})}/>
-                            <Dropdown.Item icon="users" text="Assign Pupils"/>
+                            <Dropdown.Item icon="users" text="Assign Pupils" onClick={() => setClassToAssignPupils(row)}/>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Table.Cell>
@@ -47,37 +49,47 @@ export default function ClassList() {
                 Create a new class
             </Button>
 
-            <TransitionablePortal open={classId !== undefined} transition={{ animation: "scale", duration: 400 }}>
-                <Modal dimmer size="tiny" open={true}>
-                    <Modal.Header>Class Form</Modal.Header>
-                    <Modal.Content>
-                        <Modal.Description>
-                            <ClassForm id={classId}/>
-                        </Modal.Description>
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button color="black" onClick={() => setClassId(undefined)}>
-                            Close
-                        </Button>
-                    </Modal.Actions>
-                </Modal>
-            </TransitionablePortal>
+            <Modal dimmer size="tiny" open={classId !== undefined}>
+                <Modal.Header>Class Form</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                        <ClassForm id={classId}/>
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color="black" onClick={() => setClassId(undefined)}>
+                        Close
+                    </Button>
+                </Modal.Actions>
+            </Modal>
 
-            <TransitionablePortal open={program !== undefined} transition={{ animation: "scale", duration: 400 }}>
-                <Modal dimmer size="small" open={true}>
-                    <Modal.Header>Manage subjects of  <Label color="teal" size="medium">{program && program.name}</Label> class</Modal.Header>
-                    <Modal.Content>
-                        <Modal.Description>
-                            <Subjects class_id={program && program._id}/>
-                        </Modal.Description>
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button color="black" onClick={() => setProgram(undefined)}>
-                            Close
-                        </Button>
-                    </Modal.Actions>
-                </Modal>
-            </TransitionablePortal>
+            <Modal dimmer size="small" open={program !== undefined}>
+                <Modal.Header>Manage subjects of  <Label color="teal" size="medium">{program && program.name}</Label> class</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                        <Subjects class_id={program && program._id}/>
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color="black" onClick={() => setProgram(undefined)}>
+                        Close
+                    </Button>
+                </Modal.Actions>
+            </Modal>
+
+            <Modal dimmer size="small" open={classToAssignPupils !== undefined}>
+                <Modal.Header>Manage pupils in <Label color="teal" size="medium">{classToAssignPupils && classToAssignPupils.name}</Label> class</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                        <PupilsEnrolment id={classToAssignPupils && classToAssignPupils._id}/>
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color="black" onClick={() => setClassToAssignPupils(undefined)}>
+                        Close
+                    </Button>
+                </Modal.Actions>
+            </Modal>
 
             <Divider hidden clearing/>
             { classes.length > 0 &&

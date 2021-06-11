@@ -10,12 +10,10 @@ const ClassSchema = Schema({
         maxlength: 50,
         required: true
     },
-    pupils: {
-        type: [{
-            ref: "User",
-            type: Schema.Types.ObjectId
-        }]
-    },
+    pupils: [{
+        ref: "User",
+        type: Schema.Types.ObjectId
+    }],
     subjects: [SubjectSchema],
     created_by: {
         ref: "User",

@@ -23,7 +23,16 @@ export default function reducer(state=initialState, action) {
                 }
                 return x;
             });
-            return { ...state, classes: classes };
+            return { ...state, classes };
+        }
+        case Types.PATCH_PUPILS_ENROLMENT_FULFILLED: {
+            const classes = state.classes.map(function(x) {
+                if(x._id === action.payload.data._id) {
+                    x.pupils = action.payload.data.pupils;
+                }
+                return x;
+            });
+            return { ...state, classes };
         }
     }
     return state;

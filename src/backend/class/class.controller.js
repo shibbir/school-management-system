@@ -1,5 +1,3 @@
-const crypto = require("crypto");
-const mongoose = require("mongoose");
 const ClassModel = require("./class.model");
 const User = require("../user/user.model");
 
@@ -13,7 +11,7 @@ async function getClasess(req, res) {
     }
 }
 
-async function createClass(req, res) {
+async function createClass(req, res, next) {
     try {
         let doc = new ClassModel({
             name: req.body.name,
@@ -22,10 +20,11 @@ async function createClass(req, res) {
         });
 
         doc = await doc.save();
+        doc = await doc.populate("updated_by", "forename surname").execPopulate();
 
         res.json(doc);
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
@@ -39,7 +38,7 @@ async function getClass(req, res) {
     }
 }
 
-async function updateClass(req, res) {
+async function updateClass(req, res, next) {
     try {
         let doc = await ClassModel.findOne({ _id: req.params.id });
 
@@ -50,7 +49,7 @@ async function updateClass(req, res) {
 
         res.json(doc);
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
@@ -68,7 +67,7 @@ async function getSubjects(req, res) {
     }
 }
 
-async function addSubject(req, res) {
+async function addSubject(req, res, next) {
     try {
         const doc = await ClassModel.findOne({ _id: req.params.id });
 
@@ -82,11 +81,11 @@ async function addSubject(req, res) {
         doc.subjects.push(subject);
         await doc.save();
 
-        subject.teacher = await User.findById(req.body.teacher, "forename surname").exec();;
+        subject.teacher = await User.findById(req.body.teacher, "forename surname").exec();
 
         res.json(subject);
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
@@ -102,7 +101,7 @@ async function getSubject(req, res) {
     }
 }
 
-async function updateSubject(req, res) {
+async function updateSubject(req, res, next) {
     try {
         const doc = await ClassModel.findById(req.params.class_id).exec();
         const subject = doc.subjects.id(req.params.subject_id);
@@ -123,12 +122,11 @@ async function updateSubject(req, res) {
 
         res.json(subject);
     } catch(err) {
-        console.log(err);
-        res.sendStatus(500);
+        next(err);
     }
 }
 
-async function deleteSubject(req, res) {
+async function deleteSubject(req, res, next) {
     try {
         const doc = await ClassModel.findOne({ _id: req.params.class_id });
 
@@ -137,7 +135,17 @@ async function deleteSubject(req, res) {
 
         res.json({ _id: req.params.subject_id });
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
+    }
+}
+
+async function batchEnrolment(req, res, next) {
+    try {
+        const doc = await ClassModel.findByIdAndUpdate(req.params.id, { pupils: req.body.pupils }, { new: true });
+
+        res.json(doc);
+    } catch(err) {
+        next(err);
     }
 }
 
@@ -150,3 +158,4 @@ exports.addSubject = addSubject;
 exports.getSubject = getSubject;
 exports.updateSubject = updateSubject;
 exports.deleteSubject = deleteSubject;
+exports.batchEnrolment = batchEnrolment;

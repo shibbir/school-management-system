@@ -28,7 +28,7 @@ function ClassForm({id} = props) {
             validationSchema={ClassSchema}
             onSubmit={(values, actions) => {
                 if(id) {
-                    dispatch(updateClass(values, id)).then(function() {
+                    dispatch(updateClass(id, values)).then(function() {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",

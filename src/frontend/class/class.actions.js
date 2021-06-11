@@ -11,23 +11,23 @@ export function getClasses() {
     };
 }
 
-export function createClass(formData) {
+export function createClass(data) {
     return {
         type: Types.POST_CLASS,
         payload: axios({
             method: "post",
-            data: formData,
+            data,
             url: "/api/classes"
         })
     };
 }
 
-export function updateClass(formData, id) {
+export function updateClass(id, data) {
     return {
         type: Types.PATCH_CLASS,
         payload: axios({
             method: "patch",
-            data: formData,
+            data,
             url: `/api/classes/${id}`
         })
     };
@@ -39,6 +39,17 @@ export function getClass(id) {
         payload: axios({
             method: "get",
             url: `/api/classes/${id}`
+        })
+    };
+}
+
+export function batchEnrolment(id, data) {
+    return {
+        type: Types.PATCH_PUPILS_ENROLMENT,
+        payload: axios({
+            method: "patch",
+            data,
+            url: `/api/classes/${id}/pupils`
         })
     };
 }

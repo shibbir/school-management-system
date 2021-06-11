@@ -2,7 +2,7 @@ import { capitalize } from "lodash"
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown } from "semantic-ui-react";
+import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown } from "semantic-ui-react";
 
 import SubjectForm from "./subject-form.component";
 import { getSubjects, deleteSubject, archiveSubject } from "./subject.actions";
@@ -67,21 +67,19 @@ export default function SubjectList({ class_id } = props) {
                 onClick={() => setSubjectId(null)}
             />
 
-            <TransitionablePortal open={subjectId !== undefined} transition={{ animation: "scale", duration: 400 }}>
-                <Modal dimmer size="tiny" open={true}>
-                    <Modal.Header>Subject Form</Modal.Header>
-                    <Modal.Content>
-                        <Modal.Description>
-                            <SubjectForm class_id={class_id} subject_id={subjectId}/>
-                        </Modal.Description>
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button color="black" onClick={() => setSubjectId(undefined)}>
-                            Close
-                        </Button>
-                    </Modal.Actions>
-                </Modal>
-            </TransitionablePortal>
+            <Modal dimmer size="tiny" open={subjectId !== undefined}>
+                <Modal.Header>Subject Form</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                        <SubjectForm class_id={class_id} subject_id={subjectId}/>
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color="black" onClick={() => setSubjectId(undefined)}>
+                        Close
+                    </Button>
+                </Modal.Actions>
+            </Modal>
 
             <Divider hidden clearing/>
             { subjects.length > 0 &&

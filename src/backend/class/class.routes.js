@@ -18,4 +18,7 @@ module.exports = function(app) {
         .get(authenticate, controller.getSubject)
         .patch(authenticate, controller.updateSubject)
         .delete(authenticate, controller.deleteSubject);
+
+    app.route("/api/classes/:id/pupils")
+        .patch(authenticate, controller.batchEnrolment);
 };

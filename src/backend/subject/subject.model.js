@@ -5,7 +5,6 @@ const TestSchema = require("./test.model");
 const SubjectSchema = Schema({
     name: {
         type: String,
-        unique: true,
         maxlength: 50,
         required: true
     },
