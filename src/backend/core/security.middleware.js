@@ -1,23 +1,23 @@
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
-const User = require(path.join(process.cwd(), "src/backend/user/user.model"));
+const User = require(path.join(process.cwd(), "src/backend/user/user.pg.model"));
 
 function generateAccessToken(doc) {
     return jwt.sign({
-        id: doc._id,
+        id: doc.id,
     }, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "1h",
-        issuer: doc._id.toString()
+        issuer: doc.id.toString()
     });
 }
 
 function generateRefreshToken(doc) {
     return jwt.sign({
-        id: doc._id,
+        id: doc.id,
     }, process.env.REFRESH_TOKEN_SECRET, {
         expiresIn: "1d",
-        issuer: doc._id.toString()
+        issuer: doc.id.toString()
     });
 }
 
@@ -42,7 +42,7 @@ async function authenticate (req, res, next) {
                 if(!refresh_token) return res.status(401).send("Unauthorized").end();
 
                 const payload = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
-                const doc = await User.findById(payload.id);
+                const doc = await User.findByPk(payload.id);
 
                 if(doc.refresh_token !== refresh_token) throw new Error();
 

@@ -1,8 +1,8 @@
 const path = require("path");
 const { DataTypes } = require("sequelize");
 
+const Subject = require("./subject.pg.model");
 const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
-
 
 const Test = sequelize.dbConnector.define("tests", {
     id: {
@@ -17,11 +17,8 @@ const Test = sequelize.dbConnector.define("tests", {
     },
     date: {
         allowNull: false,
-        type: DataTypes.DATE
-    },
-    subject_id: {
-        allowNull: false,
-        type: DataTypes.UUID
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     },
     created_by: {
         type: DataTypes.UUID
@@ -37,6 +34,6 @@ const Test = sequelize.dbConnector.define("tests", {
     updatedAt: "updated_at"
 });
 
-
+Subject.hasMany(Test, { as: "tests", foreignKey: "subject_id" });
 
 module.exports = Test;

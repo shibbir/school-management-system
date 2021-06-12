@@ -42,7 +42,7 @@ export function getUser(id) {
     };
 }
 
-export function createUser(id, data) {
+export function createUser(data) {
     return {
         type: Types.POST_USER,
         payload: axios({
@@ -55,9 +55,9 @@ export function createUser(id, data) {
 
 export function updateUser(id, data) {
     return {
-        type: Types.PUT_USER,
+        type: Types.PATCH_USER,
         payload: axios({
-            method: "put",
+            method: "patch",
             url: `/api/users/${id}`,
             data
         })

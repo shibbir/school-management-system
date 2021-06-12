@@ -39,7 +39,7 @@ function UserForm({ id } = props) {
             validationSchema={createUserSchema}
             onSubmit={(values, actions) => {
                 if(id) {
-                    dispatch(updateUser(values, id)).then(function() {
+                    dispatch(updateUser(id, values)).then(function() {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",

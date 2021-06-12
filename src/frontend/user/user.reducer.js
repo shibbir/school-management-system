@@ -1,5 +1,5 @@
-import Types from "./user.types";
 import _ from "lodash";
+import Types from "./user.types";
 
 const initialState = {
     loggedInUser: null,
@@ -23,7 +23,24 @@ export default function reducer(state=initialState, action) {
             return { ...state, users: action.payload.data };
         }
         case Types.DELETE_USER_FULFILLED: {
-            return { ...state, users: _.reject(state.users, { _id: action.payload.data._id }) };
+            return { ...state, users: _.reject(state.users, { id: action.payload.data.id }) };
+        }
+        case Types.POST_USER_FULFILLED: {
+            return { ...state, users: [action.payload.data].concat(state.users) };
+        }
+        case Types.PATCH_USER_FULFILLED: {
+            const users = state.users.map(function(x) {
+                if(x.id === action.payload.data.id) {
+                    x.forename = action.payload.data.forename;
+                    x.surname = action.payload.data.surname;
+                    x.username = action.payload.data.username;
+                    x.updated_by = action.payload.data.updated_by;
+                    x.updated_at = action.payload.data.updated_at;
+                    x.modifier = action.payload.data.modifier;
+                }
+                return x;
+            });
+            return { ...state, users, user: action.payload.data };
         }
     }
 

@@ -2,6 +2,7 @@ const path = require("path");
 const bcrypt = require("bcryptjs");
 const { DataTypes } = require("sequelize");
 
+const Program = require("../class/class.pg.model");
 const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
 
 const User = sequelize.dbConnector.define("users", {
@@ -23,7 +24,7 @@ const User = sequelize.dbConnector.define("users", {
         unique: true,
         allowNull: false,
         type: DataTypes.STRING(50),
-        set(value){
+        set(value) {
             this.setDataValue("username", value.toLowerCase());
         }
     },
@@ -37,9 +38,6 @@ const User = sequelize.dbConnector.define("users", {
     role: {
         type: DataTypes.ENUM,
         values: ["admin", "teacher", "pupil"]
-    },
-    program_id: {
-        type: DataTypes.UUID,
     },
     refresh_token: {
         type: DataTypes.STRING
@@ -61,5 +59,8 @@ const User = sequelize.dbConnector.define("users", {
 User.prototype.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 };
+
+Program.hasMany(User, { as: "pupils", foreignKey: "class_id" });
+User.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
 
 module.exports = User;

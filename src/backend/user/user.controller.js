@@ -1,43 +1,48 @@
-const mongoose = require("mongoose");
-const User = require("./user.model");
+const { Op } = require("sequelize");
+const User = require("./user.pg.model");
 const { generateAccessToken, generateRefreshToken } = require("../core/security.middleware");
 
 function formatUserProfile(user) {
     const profile = {
-        _id: user._id,
-        email: user.email,
+        id: user.id,
+        username: user.username,
         forename: user.forename,
         surname: user.surname,
-        role: user.role
+        role: user.role,
+        modifier: user.modifier
     };
 
     return profile;
 }
 
-async function login(req, res) {
+async function login(req, res, next) {
     try {
-        let doc;
+        let user;
         const { username, password, grant_type } = req.body;
 
         if(!grant_type) return res.status(401).send("Invalid credentials.");
 
         if(grant_type === "password") {
-            doc = await User.findOne({ username });
+            user = await User.findOne({ where: {
+                username: {
+                    [Op.iLike]: username
+                }
+            }});
 
-            if(!doc || !doc.validPassword(password)) {
+            if(!user || !user.validPassword(password)) {
                 return res.status(401).send("Invalid credentials.");
             }
 
-            doc.refresh_token = generateRefreshToken(doc);
-            await doc.save();
+            user.refresh_token = generateRefreshToken(user);
+            await user.save();
         }
 
-        res.cookie("access_token", generateAccessToken(doc), { httpOnly: true, sameSite: true, signed: true });
-        res.cookie("refresh_token", doc.refresh_token, { httpOnly: true, sameSite: true, signed: true });
+        res.cookie("access_token", generateAccessToken(user), { httpOnly: true, sameSite: true, signed: true });
+        res.cookie("refresh_token", user.refresh_token, { httpOnly: true, sameSite: true, signed: true });
 
-        res.json(formatUserProfile(doc));
+        res.json(formatUserProfile(user));
     } catch (err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
@@ -50,81 +55,111 @@ async function getUserProfile(req, res) {
     res.json(formatUserProfile(req.user));
 }
 
-async function getUser(req, res) {
+async function getUser(req, res, next) {
     try {
-        const doc = await User.findOne({ _id: req.params.id }).select("-password");
+        const user = await User.findByPk(req.params.id, {
+            attributes: { exclude: ["password", "refresh_token"] },
+        });
 
-        res.json(doc);
+        res.json(user);
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
-async function getUsers(req, res) {
+async function getUsers(req, res, next) {
     try {
         const query = {
-            _id: { $ne: req.user.id }
+            id: { [Op.ne]: req.user.id }
         };
 
         if(req.query.role) {
             query.role = req.query.role;
         }
 
-        const docs = await User.find(query).select("-password").sort("name");
+        const users = await User.findAll({
+            where: query,
+            attributes: { exclude: ["password", "refresh_token"] },
+            order: [
+                ["created_at", "DESC"]
+            ],
+            include: {
+                model: User,
+                as: "modifier",
+                attributes: ["forename", "surname"]
+            }
+        });
 
-        res.json(docs);
+        res.json(users);
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
-async function createUser(req, res) {
+async function createUser(req, res, next) {
     try {
-        const { username, password, forename, surname, role } = req.body;
-        const user = new User();
+        const { forename, surname, username, password, role } = req.body;
 
-        user._id = new mongoose.Types.ObjectId();
-        user.username = username;
-        user.role = role;
-        user.forename = forename;
-        user.surname = surname;
-        user.password = user.generateHash(password);
-        user.refresh_token = generateRefreshToken(user);
+        const entity = await User.create({
+            role,
+            forename,
+            surname,
+            username,
+            password,
+            created_by: req.user.id,
+            updated_by: req.user.id
+        });
 
-        await user.save();
+        const user = await User.findByPk(entity.id, {
+            attributes: { exclude: ["password", "refresh_token"] },
+            include: [{
+                model: User,
+                as: "modifier",
+                attributes: ["forename", "surname"]
+            }]
+        });
 
         res.json(formatUserProfile(user));
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
-async function updateUser(req, res) {
+async function updateUser(req, res, next) {
     try {
-        const doc = await User.findOne({ _id: req.params.id });
-
         const { forename, surename, username, password } = req.body;
 
-        doc.forename = forename;
-        doc.surename = surename;
-        doc.username = username;
-        doc.password = doc.generateHash(password);
-        doc.refresh_token = generateRefreshToken(doc);
+        let user = await User.findByPk(req.params.id);
 
-        doc = await doc.save();
+        await user.update({
+            forename,
+            surename,
+            username,
+            password,
+            updated_by: req.user.id
+        });
 
-        res.json(doc);
+        user = await User.findByPk(req.params.id, {
+            attributes: { exclude: ["password", "refresh_token"] },
+            include: [{
+                model: User,
+                as: "modifier",
+                attributes: ["forename", "surname"]
+            }]
+        });
+
+        res.json(user);
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
-async function deleteUser(req, res) {
+async function deleteUser(req, res, next) {
     try {
-        const doc = await User.findOneAndRemove({ _id: req.params.id }).select("-password");
-        res.json(doc);
+        await User.destroy({ where: { id: req.params.id }});
+        res.json({ id: req.params.id });
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 

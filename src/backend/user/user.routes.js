@@ -14,6 +14,6 @@ module.exports = function(app) {
 
     app.route("/api/users/:id")
         .get(authenticate, controller.getUser)
-        .put(authenticate, controller.updateUser)
+        .patch(authenticate, controller.updateUser)
         .delete(authenticate, controller.deleteUser);
 };

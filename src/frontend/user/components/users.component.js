@@ -19,19 +19,19 @@ export default function ClassList() {
 
     const rows = users.map(function(row, index) {
         return (
-            <Table.Row key={row._id}>
+            <Table.Row key={row.id}>
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{row.forename}</Table.Cell>
                 <Table.Cell>{row.surname}</Table.Cell>
                 <Table.Cell>{row.username}</Table.Cell>
                 <Table.Cell>{capitalize(row.role)}</Table.Cell>
-                <Table.Cell>{row.updated_by}</Table.Cell>
+                <Table.Cell>{`${row.modifier.forename} ${row.modifier.surname}`}</Table.Cell>
                 <Table.Cell><FormattedDate value={row.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     <Dropdown>
                         <Dropdown.Menu>
-                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setUserId(row._id)}/>
-                            <Dropdown.Item icon="trash" text="Remove User" onClick={() => onDeleteUser(row._id)}/>
+                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setUserId(row.id)}/>
+                            <Dropdown.Item icon="trash" text="Remove User" onClick={() => onDeleteUser(row.id)}/>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Table.Cell>
