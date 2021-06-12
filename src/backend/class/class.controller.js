@@ -141,6 +141,8 @@ async function deleteSubject(req, res, next) {
 
 async function batchEnrolment(req, res, next) {
     try {
+        const classes = await ClassModel.find({});
+
         const doc = await ClassModel.findByIdAndUpdate(req.params.id, { pupils: req.body.pupils }, { new: true });
 
         res.json(doc);

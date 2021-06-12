@@ -7,6 +7,7 @@
     "webpack:development": "cross-env NODE_ENV=development webpack --progress --watch --stats normal",
     "pm2:development": "cross-env NODE_ENV=development pm2 start src/backend/config/server.js --watch --no-daemon --name school-management-system",
     "seed": "node src/backend/config/seeder.js",
+    "pg-seed": "node src/backend/config/seeder.pg.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Shibbir Ahmed",
@@ -29,6 +30,8 @@
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
     "passport-jwt": "^4.0.0",
+    "pg": "^8.6.0",
+    "pg-hstore": "^2.3.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-intl": "^5.20.1",
@@ -40,6 +43,7 @@
     "redux-promise-middleware": "^6.1.2",
     "redux-thunk": "^2.3.0",
     "semantic-ui-react": "^2.0.3",
+    "sequelize": "^6.6.2",
     "validator": "^13.6.0",
     "yup": "^0.32.9"
   },
