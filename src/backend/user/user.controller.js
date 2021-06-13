@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const User = require("./user.pg.model");
+const User = require("./user.model");
 const { generateAccessToken, generateRefreshToken } = require("../core/security.middleware");
 
 function formatUserProfile(user) {
@@ -129,17 +129,15 @@ async function updateUser(req, res, next) {
     try {
         const { forename, surename, username, password } = req.body;
 
-        let user = await User.findByPk(req.params.id);
-
-        await user.update({
+        await User.update({
             forename,
             surename,
             username,
             password,
             updated_by: req.user.id
-        });
+        }, { where: { id: req.params.id }});
 
-        user = await User.findByPk(req.params.id, {
+        const user = await User.findByPk(req.params.id, {
             attributes: { exclude: ["password", "refresh_token"] },
             include: [{
                 model: User,

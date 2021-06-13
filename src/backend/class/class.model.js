@@ -1,38 +1,32 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const SubjectSchema = require("../subject/subject.model");
+const path = require("path");
+const { DataTypes } = require("sequelize");
 
-const ClassSchema = Schema({
-    name: {
-        type: String,
-        unique: true,
-        minlength: 2,
-        maxlength: 50,
-        required: true
+const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
+
+const Program = sequelize.dbConnector.define("classes", {
+    id: {
+        allowNull: false,
+        primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4
     },
-    pupils: [{
-        ref: "User",
-        type: Schema.Types.ObjectId
-    }],
-    subjects: [SubjectSchema],
+    name: {
+        allowNull: false,
+        type: DataTypes.STRING(50)
+    },
+
     created_by: {
-        ref: "User",
-        required: true,
-        type: Schema.Types.ObjectId
+        type: DataTypes.UUID
     },
     updated_by: {
-        ref: "User",
-        required: true,
-        type: Schema.Types.ObjectId
-    },
-    created_at: {
-        type: Date,
-        default: Date.now
-    },
-    updated_at: {
-        type: Date,
-        default: Date.now
+        type: DataTypes.UUID
     }
+}, {
+    schema: "sms",
+    tableName: "classes",
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at"
 });
 
-module.exports = mongoose.model("Class", ClassSchema);
+module.exports = Program;

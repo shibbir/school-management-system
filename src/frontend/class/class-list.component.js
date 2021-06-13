@@ -23,18 +23,18 @@ export default function ClassList() {
 
     const rows = classes.map(function(row, index) {
         return (
-            <Table.Row key={row._id}>
+            <Table.Row key={row.id}>
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{row.name}</Table.Cell>
                 <Table.Cell>{row.subjects.length}</Table.Cell>
                 <Table.Cell>{row.pupils.length}</Table.Cell>
-                <Table.Cell>{`${row.updated_by.forename} ${row.updated_by.surname}`}</Table.Cell>
+                <Table.Cell>{row.updated_by}</Table.Cell>
                 <Table.Cell><FormattedDate value={row.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     <Dropdown>
                         <Dropdown.Menu>
-                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setClassId(row._id)}/>
-                            <Dropdown.Item icon="book" text="Manage Subjects" onClick={() => setProgram({_id: row._id, name: row.name})}/>
+                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setClassId(row.id)}/>
+                            <Dropdown.Item icon="book" text="Manage Subjects" onClick={() => setProgram({id: row.id, name: row.name})}/>
                             <Dropdown.Item icon="users" text="Assign Pupils" onClick={() => setClassToAssignPupils(row)}/>
                         </Dropdown.Menu>
                     </Dropdown>
@@ -67,7 +67,7 @@ export default function ClassList() {
                 <Modal.Header>Manage subjects of  <Label color="teal" size="medium">{program && program.name}</Label> class</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                        <Subjects class_id={program && program._id}/>
+                        <Subjects class_id={program && program.id}/>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>

@@ -18,17 +18,37 @@ export default function reducer(state=initialState, action) {
         }
         case Types.PATCH_CLASS_FULFILLED: {
             const classes = state.classes.map(function(x) {
-                if(x._id === action.payload.data._id) {
+                if(x.id === action.payload.data.id) {
                     x.name = action.payload.data.name;
+                    x.updated_by = action.payload.data.updated_by;
+                    x.updated_at = action.payload.data.updated_at;
+                }
+                return x;
+            });
+            return { ...state, classes, program: action.payload.data };
+        }
+        case Types.PATCH_PUPILS_ENROLMENT_FULFILLED: {
+            const classes = state.classes.map(function(x) {
+                if(x.id === action.payload.data.id) {
+                    x.pupils = action.payload.data.pupils;
                 }
                 return x;
             });
             return { ...state, classes };
         }
-        case Types.PATCH_PUPILS_ENROLMENT_FULFILLED: {
+        case Types.POST_CLASS_SUBJECT_FULFILLED: {
             const classes = state.classes.map(function(x) {
-                if(x._id === action.payload.data._id) {
-                    x.pupils = action.payload.data.pupils;
+                if(x.id === action.payload.data.class_id) {
+                    x.subjects = [action.payload.data].concat(x.subjects);
+                }
+                return x;
+            });
+            return { ...state, classes };
+        }
+        case Types.DELETE_CLASS_SUBJECT_FULFILLED: {
+            const classes = state.classes.map(function(x) {
+                if(x.id === action.payload.data.class_id) {
+                    x.subjects = _.reject(x.subjects, { id: action.payload.data.subject_id })
                 }
                 return x;
             });

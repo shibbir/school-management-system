@@ -53,3 +53,10 @@ export function batchEnrolment(id, data) {
         })
     };
 }
+
+export function syncClassSubjectsState(action, data) {
+    return {
+        type: action === "post" ? Types.POST_CLASS_SUBJECT_FULFILLED : Types.DELETE_CLASS_SUBJECT_FULFILLED,
+        payload: { data }
+    }
+}

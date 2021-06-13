@@ -1,7 +1,7 @@
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
-const User = require(path.join(process.cwd(), "src/backend/user/user.pg.model"));
+const User = require(path.join(process.cwd(), "src/backend/user/user.model"));
 
 function generateAccessToken(doc) {
     return jwt.sign({

@@ -1,26 +1,39 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const ResultSchema = require("./result.model");
+const path = require("path");
+const { DataTypes } = require("sequelize");
 
-const TestSchema = Schema({
+const Subject = require("./subject.model");
+const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
+
+const Test = sequelize.dbConnector.define("tests", {
+    id: {
+        allowNull: false,
+        primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4
+    },
     name: {
-        type: String,
-        unique: true,
-        required: true
+        allowNull: false,
+        type: DataTypes.STRING(50)
     },
     date: {
-        type: Date,
-        default: Date.now
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     },
-    results: [ResultSchema],
-    created_at: {
-        type: Date,
-        default: Date.now
+    created_by: {
+        type: DataTypes.UUID
     },
-    updated_at: {
-        type: Date,
-        default: Date.now
-    }
+    updated_by: {
+        type: DataTypes.UUID
+    },
+}, {
+    schema: "sms",
+    tableName: "tests",
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at"
 });
 
-module.exports = TestSchema;
+Subject.hasMany(Test, { as: "tests", foreignKey: "subject_id" });
+
+module.exports = Test;

@@ -1,42 +1,43 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const TestSchema = require("./test.model");
+const path = require("path");
+const { DataTypes } = require("sequelize");
 
-const SubjectSchema = Schema({
+const User = require("../user/user.model");
+const Program = require("../class/class.model");
+const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
+
+const Subject = sequelize.dbConnector.define("subjects", {
+    id: {
+        primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4
+    },
     name: {
-        type: String,
-        maxlength: 50,
-        required: true
+        allowNull: false,
+        type: DataTypes.STRING(50)
     },
     status: {
-        type: String,
-        default: "active",
-        enum: ["active", "archived"]
+        allowNull: false,
+        type: DataTypes.ENUM,
+        defaultValue: "active",
+        values: ["active", "archived"]
     },
-    teacher: {
-        ref: "User",
-        required: true,
-        type: Schema.Types.ObjectId
-    },
-    tests: [TestSchema],
     created_by: {
-        ref: "User",
-        required: true,
-        type: Schema.Types.ObjectId
+        type: DataTypes.UUID
     },
     updated_by: {
-        ref: "User",
-        required: true,
-        type: Schema.Types.ObjectId
+        type: DataTypes.UUID
     },
-    created_at: {
-        type: Date,
-        default: Date.now
-    },
-    updated_at: {
-        type: Date,
-        default: Date.now
-    }
+}, {
+    schema: "sms",
+    tableName: "subjects",
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at"
 });
 
-module.exports = SubjectSchema;
+Program.hasMany(Subject, { as: "subjects", foreignKey: "class_id" });
+User.hasMany(Subject, { as: "subjects", foreignKey: "teacher_id" });
+Subject.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
+Subject.belongsTo(User, { as: "teacher", foreignKey: "teacher_id" });
+
+module.exports = Subject;

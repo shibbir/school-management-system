@@ -31,12 +31,7 @@ export default function reducer(state=initialState, action) {
         case Types.PATCH_USER_FULFILLED: {
             const users = state.users.map(function(x) {
                 if(x.id === action.payload.data.id) {
-                    x.forename = action.payload.data.forename;
-                    x.surname = action.payload.data.surname;
-                    x.username = action.payload.data.username;
-                    x.updated_by = action.payload.data.updated_by;
-                    x.updated_at = action.payload.data.updated_at;
-                    x.modifier = action.payload.data.modifier;
+                    x = { ...action.payload.data };
                 }
                 return x;
             });

@@ -1,52 +1,67 @@
+const path = require("path");
 const bcrypt = require("bcryptjs");
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { DataTypes } = require("sequelize");
 
-const UserSchema = Schema({
-    username: {
-        type: String,
-        match: [/.+\@.+\..+/],
-        unique: true,
-        maxlength: 50,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
+const Program = require("../class/class.model");
+const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
+
+const User = sequelize.dbConnector.define("users", {
+    id: {
+        allowNull: false,
+        primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4
     },
     forename: {
-        type: String,
-        maxlength: 25,
-        required: true
+        allowNull: false,
+        type: DataTypes.STRING(50)
     },
     surname: {
-        type: String,
-        maxlength: 25,
-        required: true
+        allowNull: false,
+        type: DataTypes.STRING(50)
+    },
+    username: {
+        unique: true,
+        allowNull: false,
+        type: DataTypes.STRING(50),
+        set(value) {
+            this.setDataValue("username", value.toLowerCase());
+        }
+    },
+    password: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue("password", bcrypt.hashSync(value, 8));
+        }
     },
     role: {
-        type: String,
-        enum: ["admin", "teacher", "pupil"]
+        allowNull: false,
+        type: DataTypes.ENUM,
+        values: ["admin", "teacher", "pupil"]
     },
     refresh_token: {
-        type: String
+        type: DataTypes.STRING
     },
-    created_at: {
-        type: Date,
-        default: Date.now
+    created_by: {
+        type: DataTypes.UUID
     },
-    updated_at: {
-        type: Date,
-        default: Date.now
-    }
+    updated_by: {
+        type: DataTypes.UUID
+    },
+}, {
+    schema: "sms",
+    tableName: "users",
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at"
 });
 
-UserSchema.methods.generateHash = function(password) {
-    return bcrypt.hashSync(password, 8);
-};
-
-UserSchema.methods.validPassword = function(password) {
+User.prototype.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 };
 
-module.exports = mongoose.model("User", UserSchema);
+Program.hasMany(User, { as: "pupils", foreignKey: "class_id" });
+User.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
+
+module.exports = User;

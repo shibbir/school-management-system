@@ -1,24 +1,23 @@
 const path = require("path");
 const { DataTypes } = require("sequelize");
 
-const Subject = require("./subject.pg.model");
+const Test = require("./test.model");
 const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
 
-const Test = sequelize.dbConnector.define("tests", {
+const TestResult = sequelize.dbConnector.define("test_results", {
     id: {
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
     },
-    name: {
+    pupil_id: {
         allowNull: false,
-        type: DataTypes.STRING(50)
+        type: DataTypes.UUID
     },
-    date: {
+    grade: {
         allowNull: false,
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        type: DataTypes.DECIMAL
     },
     created_by: {
         type: DataTypes.UUID
@@ -28,12 +27,12 @@ const Test = sequelize.dbConnector.define("tests", {
     },
 }, {
     schema: "sms",
-    tableName: "tests",
+    tableName: "test_results",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at"
 });
 
-Subject.hasMany(Test, { as: "tests", foreignKey: "subject_id" });
+Test.hasMany(TestResult, { as: "test_results", foreignKey: "test_id" });
 
-module.exports = Test;
+module.exports = TestResult;

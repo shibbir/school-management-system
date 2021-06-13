@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
 import { Form, Formik } from "formik";
-import { Divider, Button } from "semantic-ui-react";
+import React, { useEffect } from "react";
 import iziToast from "izitoast/dist/js/iziToast";
+import { Divider, Button } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
+
 import ClassSchema from "./class.schema";
 import { createClass, updateClass, getClass } from "./class.actions";
 import { TextInput } from "../core/components/field-inputs.component";

@@ -1,13 +1,31 @@
-const ClassModel = require("./class.model");
+const Program = require("./class.model");
 const User = require("../user/user.model");
+const Test = require("../subject/test.model");
+const Subject = require("../subject/subject.model");
 
-async function getClasess(req, res) {
+async function getClasess(req, res, next) {
     try {
-        const docs = await ClassModel.find({}).sort("name").populate("updated_by", "forename surname");
+        const classes = await Program.findAll({
+            include: [
+                {
+                    model: User,
+                    as: "pupils",
+                    attributes: ["forename", "surname"]
+                },
+                {
+                    model: Subject,
+                    as: "subjects",
+                    attributes: ["id", "name"]
+                }
+            ],
+            order: [
+                ["updated_at", "DESC"]
+            ]
+        });
 
-        res.json(docs);
+        res.json(classes);
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
@@ -28,42 +46,57 @@ async function createClass(req, res, next) {
     }
 }
 
-async function getClass(req, res) {
+async function getClass(req, res, next) {
     try {
-        const doc = await ClassModel.findOne({ _id: req.params.id });
+        const program = await Program.findByPk(req.params.id);
 
-        res.json(doc);
-    } catch(err) {
-        res.sendStatus(500);
-    }
-}
-
-async function updateClass(req, res, next) {
-    try {
-        let doc = await ClassModel.findOne({ _id: req.params.id });
-
-        doc.name = req.body.name;
-        doc.updated_by = req.user._id;
-
-        doc = await doc.save();
-
-        res.json(doc);
+        res.json(program);
     } catch(err) {
         next(err);
     }
 }
 
-async function getSubjects(req, res) {
+async function updateClass(req, res, next) {
     try {
-        const doc = await ClassModel.findOne({ _id: req.params.id }).sort({ updated_at: "descending" }).select("-name -pupils").populate({
-            path: "subjects",
-            select: "name status teacher updated_at",
-            populate: { path: "teacher", select: "forename surname" }
+        let program = await Program.findByPk(req.params.id);
+
+        let = await program.update({
+            name: req.body.name,
+            updated_by: req.user.id
+        }, { returning: true });
+
+        res.json(program);
+    } catch(err) {
+        next(err);
+    }
+}
+
+async function getSubjects(req, res, next) {
+    try {
+        const program = await Program.findByPk(req.params.id, {
+            include: [{
+                model: Subject,
+                as: "subjects",
+                order: [
+                    ["updated_at", "DESC"]
+                ],
+                include: [
+                    {
+                        model: User,
+                        as: "teacher",
+                        attributes: ["forename", "surname"]
+                    },
+                    {
+                        model: Test,
+                        as: "tests"
+                    }
+                ]
+            }]
         });
 
-        res.json(doc.subjects);
+        res.json(program.subjects);
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
@@ -89,36 +122,46 @@ async function addSubject(req, res, next) {
     }
 }
 
-async function getSubject(req, res) {
+async function getSubject(req, res, next) {
     try {
-        const doc = await ClassModel.findOne({ _id: req.params.class_id });
+        const program = await Program.findByPk(req.params.class_id, {
+            include: {
+                model: Subject,
+                as: "subjects",
+                where: { id: req.params.subject_id }
+            }
+        });
 
-        const subject = doc.subjects.id(req.params.subject_id);
-
-        res.json(subject);
+        res.json(program.subjects[0]);
     } catch(err) {
-        res.sendStatus(500);
+        next(err);
     }
 }
 
 async function updateSubject(req, res, next) {
     try {
-        const doc = await ClassModel.findById(req.params.class_id).exec();
-        const subject = doc.subjects.id(req.params.subject_id);
+        const { name, teacher_id, status } = req.body;
+
+        const subject = await Subject.findByPk(req.params.subject_id, {
+            include: {
+                model: Test,
+                as: "tests"
+            }
+        });
 
         if(subject.status === "archived") return res.status(400).send("No further changes can be made anymore to archived subject.");
 
-        if(req.body.status && req.body.status === "archived") {
+        if(status && status === "archived") {
             if(!subject.tests.length) return res.status(400).send("Only subjects with dependent tests can be archived.");
-            subject.status = req.body.status;
+            subject.status = status;
         } else {
-            doc.subjects.id(req.params.subject_id).name = req.body.name;
-            doc.subjects.id(req.params.subject_id).teacher = req.body.teacher;
-            doc.subjects.id(req.params.subject_id).updated_by = req.user.id;
+            subject.name = name;
+            subject.teacher_id = teacher_id;
+            updated_by = req.user.id;
         }
 
-        await doc.save();
-        subject.teacher = await User.findById(subject.teacher, "forename surname").exec();
+        await subject.save();
+        subject.teacher = await User.findByPk(subject.teacher_id, { attributes: ["forename", "surname"] });
 
         res.json(subject);
     } catch(err) {

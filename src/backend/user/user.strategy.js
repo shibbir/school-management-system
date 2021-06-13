@@ -1,6 +1,6 @@
 const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
-const User = require("./user.pg.model");
+const User = require("./user.model");
 
 module.exports = function() {
     function cookieExtractor(req) {

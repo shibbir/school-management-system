@@ -10,15 +10,6 @@ module.exports = function(app) {
         .get(authenticate, controller.getClass)
         .patch(authenticate, controller.updateClass);
 
-    app.route("/api/classes/:id/subjects")
-        .get(authenticate, controller.getSubjects)
-        .post(authenticate, controller.addSubject);
-
-    app.route("/api/classes/:class_id/subjects/:subject_id")
-        .get(authenticate, controller.getSubject)
-        .patch(authenticate, controller.updateSubject)
-        .delete(authenticate, controller.deleteSubject);
-
     app.route("/api/classes/:id/pupils")
         .patch(authenticate, controller.batchEnrolment);
 };

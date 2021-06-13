@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown } from "semantic-ui-react";
 
 import SubjectForm from "./subject-form.component";
-import { getSubjects, deleteSubject, archiveSubject } from "./subject.actions";
+import { syncClassSubjectsState } from "../class/class.actions";
+import { getSubjects, deleteSubject, updateSubject } from "./subject.actions";
 
 export default function SubjectList({ class_id } = props) {
     const dispatch = useDispatch();
@@ -19,38 +20,42 @@ export default function SubjectList({ class_id } = props) {
 
     const subjects = useSelector(state => state.subjectReducer.subjects);
 
-    const onArchiveSubject = function(suhbject_id) {
+    const onArchiveSubject = function(id) {
         if(confirm("Are you sure you want to archive the subject?")) {
-            dispatch(archiveSubject(class_id, suhbject_id, "archived"));
+            dispatch(updateSubject(id, { status: "archived" }));
         }
     };
 
-    const onDeleteSubject = function(suhbject_id) {
+    const onDeleteSubject = function(id) {
         if(confirm("Are you sure you want to remove the subject?")) {
-            dispatch(deleteSubject(class_id, suhbject_id));
+            dispatch(deleteSubject(id)).then(function() {
+                dispatch(syncClassSubjectsState("delete", { class_id, subject_id: id }));
+            });
         }
     };
 
     const rows = subjects.map(function(subject, index) {
         return (
-            <Table.Row key={subject._id}>
+            <Table.Row key={subject.id}>
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{subject.name}</Table.Cell>
                 <Table.Cell>{`${subject.teacher.forename} ${subject.teacher.surname}`}</Table.Cell>
                 <Table.Cell>{capitalize(subject.status)}</Table.Cell>
                 <Table.Cell><FormattedDate value={subject.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
-                    <Dropdown>
-                        <Dropdown.Menu>
-                            { subject.status !== "archived" &&
-                                <>
-                                    <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setSubjectId(subject._id)}/>
-                                    { subject.tests.length > 0 && <Dropdown.Item icon="archive" text="Archive Subject" onClick={() => onArchiveSubject(subject._id)}/> }
-                                    { subject.tests.length === 0 && <Dropdown.Item icon="trash" text="Remove Subject" onClick={() => onDeleteSubject(subject._id)}/> }
-                                </>
-                            }
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    { subject.status === "archived" &&
+                        <Icon name="lock"/>
+                    }
+                    { subject.status !== "archived" &&
+                        <Dropdown>
+                            <Dropdown.Menu>
+                                <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setSubjectId(subject.id)}/>
+                                { subject.tests.length > 0 && <Dropdown.Item icon="archive" text="Archive Subject" onClick={() => onArchiveSubject(subject.id)}/> }
+                                { subject.tests.length === 0 && <Dropdown.Item icon="trash" text="Remove Subject" onClick={() => onDeleteSubject(subject.id)}/> }
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    }
+
                 </Table.Cell>
             </Table.Row>
         );
@@ -71,7 +76,7 @@ export default function SubjectList({ class_id } = props) {
                 <Modal.Header>Subject Form</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                        <SubjectForm class_id={class_id} subject_id={subjectId}/>
+                        <SubjectForm class_id={class_id} id={subjectId}/>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>
