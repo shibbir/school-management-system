@@ -1,5 +1,7 @@
 const { Op } = require("sequelize");
+
 const User = require("./user.model");
+const Program = require("../class/class.model");
 const { generateAccessToken, generateRefreshToken } = require("../core/security.middleware");
 
 function formatUserProfile(user) {
@@ -81,13 +83,20 @@ async function getUsers(req, res, next) {
             where: query,
             attributes: { exclude: ["password", "refresh_token"] },
             order: [
-                ["created_at", "DESC"]
+                ["forename"]
             ],
-            include: {
-                model: User,
-                as: "modifier",
-                attributes: ["forename", "surname"]
-            }
+            include: [
+                {
+                    model: Program,
+                    as: "class",
+                    attributes: ["name"]
+                },
+                {
+                    model: User,
+                    as: "modifier",
+                    attributes: ["forename", "surname"]
+                }
+            ]
         });
 
         res.json(users);

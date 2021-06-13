@@ -11,5 +11,5 @@ module.exports = function(app) {
         .patch(authenticate, controller.updateClass);
 
     app.route("/api/classes/:id/pupils")
-        .patch(authenticate, controller.batchEnrolment);
+        .patch(authenticate, controller.bulkEnrolment);
 };

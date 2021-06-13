@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const Program = require("./class.model");
 const User = require("../user/user.model");
 const Test = require("../subject/test.model");
@@ -182,13 +183,39 @@ async function deleteSubject(req, res, next) {
     }
 }
 
-async function batchEnrolment(req, res, next) {
+async function bulkEnrolment(req, res, next) {
     try {
-        const classes = await ClassModel.find({});
+        const program = await Program.findByPk(req.params.id);
 
-        const doc = await ClassModel.findByIdAndUpdate(req.params.id, { pupils: req.body.pupils }, { new: true });
+        if(!program) return res.status(404).send("Class not found.");
 
-        res.json(doc);
+        let pupils = await User.findAll({
+            where: {
+                [Op.or]: {
+                    class_id: req.params.id,
+                    id: {
+                        [Op.in]: req.body.pupils
+                    }
+                }
+            },
+            raw : true
+        });
+
+        pupils = pupils.map(pupil => {
+            if(req.body.pupils.includes(pupil.id)) {
+                pupil.class_id = req.params.id;
+            } else {
+                pupil.class_id = null;
+            }
+
+            pupil.updated_by = req.user.id;
+
+            return pupil;
+        });
+
+        await User.bulkCreate(pupils, { updateOnDuplicate: ["class_id", "updated_by", "updated_at" ] });
+
+        res.sendStatus(200);
     } catch(err) {
         next(err);
     }
@@ -203,4 +230,4 @@ exports.addSubject = addSubject;
 exports.getSubject = getSubject;
 exports.updateSubject = updateSubject;
 exports.deleteSubject = deleteSubject;
-exports.batchEnrolment = batchEnrolment;
+exports.bulkEnrolment = bulkEnrolment;

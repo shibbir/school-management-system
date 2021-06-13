@@ -4,11 +4,11 @@ import iziToast from "izitoast/dist/js/iziToast";
 import { Divider, Button } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
 
-import SubjectSchema from "./subject.schema";
-import { getUsers } from "../user/user.actions";
-import { syncClassSubjectsState } from "../class/class.actions";
-import { TextInput, DropdownInput } from "../core/components/field-inputs.component";
-import { createSubject, updateSubject, getSubject, resetSubject } from "./subject.actions";
+import SubjectSchema from "../subject.schema";
+import { getUsers } from "../../user/user.actions";
+import { getClasses } from "../../class/class.actions";
+import { TextInput, DropdownInput } from "../../core/components/field-inputs.component";
+import { createSubject, updateSubject, getSubject, resetSubject } from "../subject.actions";
 
 function SubjectForm({ id, class_id } = props) {
     const dispatch = useDispatch();
@@ -49,7 +49,7 @@ function SubjectForm({ id, class_id } = props) {
                     });
                 } else {
                     dispatch(createSubject(class_id, values)).then(function() {
-                        dispatch(syncClassSubjectsState("post", { ...values, class_id }));
+                        dispatch(getClasses());
 
                         iziToast["success"]({
                             timeout: 3000,

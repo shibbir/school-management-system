@@ -43,7 +43,7 @@ export function getClass(id) {
     };
 }
 
-export function batchEnrolment(id, data) {
+export function bulkEnrolment(id, data) {
     return {
         type: Types.PATCH_PUPILS_ENROLMENT,
         payload: axios({
@@ -52,11 +52,4 @@ export function batchEnrolment(id, data) {
             url: `/api/classes/${id}/pupils`
         })
     };
-}
-
-export function syncClassSubjectsState(action, data) {
-    return {
-        type: action === "post" ? Types.POST_CLASS_SUBJECT_FULFILLED : Types.DELETE_CLASS_SUBJECT_FULFILLED,
-        payload: { data }
-    }
 }

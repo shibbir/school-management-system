@@ -1,9 +1,8 @@
-const path = require("path");
 const bcrypt = require("bcryptjs");
 const { DataTypes } = require("sequelize");
 
 const Program = require("../class/class.model");
-const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
+const sequelize = require("../config/lib/sequelize");
 
 const User = sequelize.dbConnector.define("users", {
     id: {
@@ -63,5 +62,6 @@ User.prototype.validPassword = function(password) {
 
 Program.hasMany(User, { as: "pupils", foreignKey: "class_id" });
 User.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
+User.belongsTo(Program, { as: "class", foreignKey: "class_id" });
 
 module.exports = User;

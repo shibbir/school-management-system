@@ -4,9 +4,9 @@ import iziToast from "izitoast/dist/js/iziToast";
 import { Divider, Button } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
 
-import ClassSchema from "./class.schema";
-import { createClass, updateClass, getClass } from "./class.actions";
-import { TextInput } from "../core/components/field-inputs.component";
+import ClassSchema from "../class.schema";
+import { createClass, updateClass, getClass } from "../class.actions";
+import { TextInput } from "../../core/components/field-inputs.component";
 
 function ClassForm({id} = props) {
     const dispatch = useDispatch();

@@ -4,10 +4,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Label } from "semantic-ui-react";
 
 import ClassForm from "./class-form.component";
-import { getClasses } from "./class.actions";
+import { getClasses } from "../class.actions";
 
-import Subjects from "../subject/subjects.component";
-import PupilsEnrolment from "./components/pupils-enrolment.component";
+import Subjects from "../../subject/components/subjects.component";
+import PupilsEnrolment from "./pupils-enrolment.component";
 
 export default function ClassList() {
     const dispatch = useDispatch();
@@ -77,11 +77,11 @@ export default function ClassList() {
                 </Modal.Actions>
             </Modal>
 
-            <Modal dimmer size="small" open={classToAssignPupils !== undefined}>
+            <Modal dimmer size="large" open={classToAssignPupils !== undefined}>
                 <Modal.Header>Manage pupils in <Label color="teal" size="medium">{classToAssignPupils && classToAssignPupils.name}</Label> class</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                        <PupilsEnrolment id={classToAssignPupils && classToAssignPupils._id}/>
+                        <PupilsEnrolment id={classToAssignPupils && classToAssignPupils.id}/>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>

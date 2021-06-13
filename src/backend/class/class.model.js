@@ -14,7 +14,6 @@ const Program = sequelize.dbConnector.define("classes", {
         allowNull: false,
         type: DataTypes.STRING(50)
     },
-
     created_by: {
         type: DataTypes.UUID
     },

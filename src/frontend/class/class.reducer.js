@@ -36,24 +36,6 @@ export default function reducer(state=initialState, action) {
             });
             return { ...state, classes };
         }
-        case Types.POST_CLASS_SUBJECT_FULFILLED: {
-            const classes = state.classes.map(function(x) {
-                if(x.id === action.payload.data.class_id) {
-                    x.subjects = [action.payload.data].concat(x.subjects);
-                }
-                return x;
-            });
-            return { ...state, classes };
-        }
-        case Types.DELETE_CLASS_SUBJECT_FULFILLED: {
-            const classes = state.classes.map(function(x) {
-                if(x.id === action.payload.data.class_id) {
-                    x.subjects = _.reject(x.subjects, { id: action.payload.data.subject_id })
-                }
-                return x;
-            });
-            return { ...state, classes };
-        }
     }
     return state;
 }

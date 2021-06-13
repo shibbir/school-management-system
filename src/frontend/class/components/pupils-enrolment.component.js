@@ -1,16 +1,16 @@
+import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Header, Form as SemanticUIForm, Checkbox } from "semantic-ui-react";
 
+import { getClasses, bulkEnrolment } from "../class.actions";
 import { getUsers } from "../../user/user.actions";
-import { getClass, batchEnrolment } from "../class.actions";
 
 export default function PupilsEnrolment({ id } = props) {
     const dispatch = useDispatch();
     const [selectedPupils, setSelectedPupils] = useState([]);
     const [allPupilsSelected, setAllPupilsSelected] = useState(false);
 
-    const program = useSelector(state => state.classReducer.program);
     const pupils = useSelector(state => state.userReducer.users);
 
     useEffect(() => {
@@ -18,20 +18,12 @@ export default function PupilsEnrolment({ id } = props) {
     }, []);
 
     useEffect(() => {
-        if(id) {
-            dispatch(getClass(id));
-        }
-    }, [id]);
-
-    useEffect(() => {
-        const enrolled_pupils = [];
-        pupils.forEach(pupil => {
-            if(program && program.pupils.includes(pupil._id)) {
-                enrolled_pupils.push(pupil._id);
-            }
+        const enrolled_pupils = pupils.filter(function(pupil) {
+            return pupil.class_id === id;
         });
+
         setSelectedPupils(enrolled_pupils);
-    }, [program, pupils]);
+    }, [pupils]);
 
     useEffect(() => {
         setAllPupilsSelected(selectedPupils.length === pupils.length);
@@ -41,45 +33,53 @@ export default function PupilsEnrolment({ id } = props) {
         if(allPupilsSelected) {
             setSelectedPupils([]);
         } else {
-            setSelectedPupils(pupils.map(pupil => pupil._id));
+            setSelectedPupils(pupils);
         }
     };
 
-    const togglePupilSelection = function(pupil_id) {
-        if(selectedPupils.includes(pupil_id)) {
-            setSelectedPupils([..._.pull(selectedPupils, pupil_id)]);
+    const togglePupilSelection = function(pupil) {
+        if(selectedPupils.includes(pupil)) {
+            setSelectedPupils([..._.pull(selectedPupils, pupil)]);
         } else {
-            setSelectedPupils([..._.concat(selectedPupils, pupil_id)]);
+            setSelectedPupils([..._.concat(selectedPupils, pupil)]);
         }
     };
 
-    const onBatchEnrolment = function() {
-        if(confirm("Are you sure you want to assign the selected pupils in this class?")) {
-            dispatch(batchEnrolment(id, { pupils: selectedPupils }));
+    const onBulkEnrolment = function() {
+        if(confirm("Are you sure you want to assign the selected pupils in this class? Assigning them to a new class automatically deassigns them from the previous class.")) {
+            dispatch(bulkEnrolment(id, { pupils: selectedPupils.map((x => x.id )) })).then(function() {
+                dispatch(getUsers("?role=pupil"));
+                dispatch(getClasses());
+
+                iziToast["success"]({
+                    timeout: 3000,
+                    message: "Your changes are saved.",
+                    position: "bottomRight"
+                });
+            });
         }
     };
 
     const rows = pupils.map(function(pupil) {
         return (
-            <Table.Row key={pupil._id}>
+            <Table.Row key={pupil.id}>
                 <Table.Cell>
                     <SemanticUIForm.Field>
-                        <Checkbox onClick={() => togglePupilSelection(pupil._id)} checked={selectedPupils.includes(pupil._id)}/>
+                        <Checkbox onClick={() => togglePupilSelection(pupil)} checked={selectedPupils.includes(pupil)}/>
                     </SemanticUIForm.Field>
                 </Table.Cell>
                 <Table.Cell>{pupil.forename}</Table.Cell>
                 <Table.Cell>{pupil.surname}</Table.Cell>
                 <Table.Cell>{pupil.username}</Table.Cell>
+                <Table.Cell>{pupil.class ? pupil.class.name : '--'}</Table.Cell>
             </Table.Row>
         );
     });
 
     return (
         <>
-            {`${selectedPupils.length} pupil(s) are selected.`}
-
-            <Button floated="right" positive size="small" onClick={() => onBatchEnrolment()} disabled={!selectedPupils.length}>
-                Enrol selected pupils
+            <Button floated="right" positive size="small" onClick={() => onBulkEnrolment()} disabled={!selectedPupils.length}>
+                Save changes
             </Button>
 
             <Divider hidden clearing/>
@@ -92,6 +92,7 @@ export default function PupilsEnrolment({ id } = props) {
                             <Table.HeaderCell>Forename</Table.HeaderCell>
                             <Table.HeaderCell>Surname</Table.HeaderCell>
                             <Table.HeaderCell>Username</Table.HeaderCell>
+                            <Table.HeaderCell>Assigned Class</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
 
