@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 
 const User = require("./user.model");
 const Program = require("../class/class.model");
+const Subject = require("../subject/subject.model");
 const { generateAccessToken, generateRefreshToken } = require("../core/security.middleware");
 
 function formatUserProfile(user) {
@@ -163,8 +164,42 @@ async function updateUser(req, res, next) {
 
 async function deleteUser(req, res, next) {
     try {
-        await User.destroy({ where: { id: req.params.id }});
-        res.json({ id: req.params.id });
+        const user = await User.findByPk(req.params.id, {
+            include: [{
+                model: Subject,
+                as: "subjects"
+            }]
+        });
+
+        if(user.role === "teacher") {
+            if(user.subjects.find(x => x.status === "active")) {
+                res.status(400).send("Teachers cannot be removed while they are assigned to at least one non-archived subject.");
+            }
+        }
+
+        //await User.destroy({ where: { id: req.params.id }});
+        //res.json({ id: req.params.id });
+        res.json(user);
+    } catch(err) {
+        next(err);
+    }
+}
+
+async function getAssignedSubjects(req, res, next) {
+    try {
+        const subjects = await Subject.findAll({
+            where: { teacher_id: req.user.id },
+            order: [
+                ["created_at", "DESC"]
+            ],
+            include: [{
+                model: Program,
+                as: "class",
+                attributes: ["id", "name"]
+            }]
+        });
+
+        res.json(subjects);
     } catch(err) {
         next(err);
     }
@@ -178,3 +213,4 @@ exports.getUsers = getUsers;
 exports.createUser = createUser;
 exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
+exports.getAssignedSubjects = getAssignedSubjects;

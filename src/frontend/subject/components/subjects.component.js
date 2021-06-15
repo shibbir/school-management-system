@@ -87,25 +87,24 @@ export default function SubjectList({ class_id } = props) {
             </Modal>
 
             <Divider hidden clearing/>
-            { subjects.length > 0 &&
-                <>
-                    <Table selectable compact>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell>#</Table.HeaderCell>
-                                <Table.HeaderCell>Subject Name</Table.HeaderCell>
-                                <Table.HeaderCell>Teacher</Table.HeaderCell>
-                                <Table.HeaderCell>Status</Table.HeaderCell>
-                                <Table.HeaderCell>Updated At</Table.HeaderCell>
-                                <Table.HeaderCell>Actions</Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
 
-                        <Table.Body>
-                            {rows}
-                        </Table.Body>
-                    </Table>
-                </>
+            { subjects.length > 0 &&
+                <Table selectable compact>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>#</Table.HeaderCell>
+                            <Table.HeaderCell>Subject Name</Table.HeaderCell>
+                            <Table.HeaderCell>Teacher</Table.HeaderCell>
+                            <Table.HeaderCell>Status</Table.HeaderCell>
+                            <Table.HeaderCell>Updated At</Table.HeaderCell>
+                            <Table.HeaderCell>Actions</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
+                        {rows}
+                    </Table.Body>
+                </Table>
             }
 
             { subjects.length === 0 &&

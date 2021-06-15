@@ -1,7 +1,6 @@
 const { Op } = require("sequelize");
 const Program = require("./class.model");
 const User = require("../user/user.model");
-const Test = require("../subject/test.model");
 const Subject = require("../subject/subject.model");
 
 async function getClasess(req, res, next) {
@@ -72,117 +71,6 @@ async function updateClass(req, res, next) {
     }
 }
 
-async function getSubjects(req, res, next) {
-    try {
-        const program = await Program.findByPk(req.params.id, {
-            include: [{
-                model: Subject,
-                as: "subjects",
-                order: [
-                    ["updated_at", "DESC"]
-                ],
-                include: [
-                    {
-                        model: User,
-                        as: "teacher",
-                        attributes: ["forename", "surname"]
-                    },
-                    {
-                        model: Test,
-                        as: "tests"
-                    }
-                ]
-            }]
-        });
-
-        res.json(program.subjects);
-    } catch(err) {
-        next(err);
-    }
-}
-
-async function addSubject(req, res, next) {
-    try {
-        const doc = await ClassModel.findOne({ _id: req.params.id });
-
-        const subject = doc.subjects.create({
-            name: req.body.name,
-            teacher: req.body.teacher,
-            created_by: req.user._id,
-            updated_by: req.user._id
-        });
-
-        doc.subjects.push(subject);
-        await doc.save();
-
-        subject.teacher = await User.findById(req.body.teacher, "forename surname").exec();
-
-        res.json(subject);
-    } catch(err) {
-        next(err);
-    }
-}
-
-async function getSubject(req, res, next) {
-    try {
-        const program = await Program.findByPk(req.params.class_id, {
-            include: {
-                model: Subject,
-                as: "subjects",
-                where: { id: req.params.subject_id }
-            }
-        });
-
-        res.json(program.subjects[0]);
-    } catch(err) {
-        next(err);
-    }
-}
-
-async function updateSubject(req, res, next) {
-    try {
-        const { name, teacher_id, status } = req.body;
-
-        const subject = await Subject.findByPk(req.params.subject_id, {
-            include: {
-                model: Test,
-                as: "tests"
-            }
-        });
-
-        if(subject.status === "archived") return res.status(400).send("No further changes can be made anymore to archived subject.");
-
-        if(status && status === "archived") {
-            if(!subject.tests.length) return res.status(400).send("Only subjects with dependent tests can be archived.");
-            subject.status = status;
-        } else {
-            subject.name = name;
-            subject.teacher_id = teacher_id;
-            updated_by = req.user.id;
-        }
-
-        await subject.save();
-        subject.teacher = await User.findByPk(subject.teacher_id, { attributes: ["forename", "surname"] });
-
-        res.json(subject);
-    } catch(err) {
-        next(err);
-    }
-}
-
-async function deleteSubject(req, res, next) {
-    try {
-        const doc = await ClassModel.findOne({ _id: req.params.class_id });
-
-        doc.subjects.id(req.params.subject_id).remove();
-        await doc.save();
-
-        res.json({ _id: req.params.subject_id });
-    } catch(err) {
-        next(err);
-    }
-}
-
 async function bulkEnrolment(req, res, next) {
     try {
         const program = await Program.findByPk(req.params.id);
@@ -213,7 +101,7 @@ async function bulkEnrolment(req, res, next) {
             return pupil;
         });
 
-        await User.bulkCreate(pupils, { updateOnDuplicate: ["class_id", "updated_by", "updated_at" ] });
+        await User.bulkCreate(pupils, { updateOnDuplicate: ["class_id", "updated_by", "updated_at"] });
 
         res.sendStatus(200);
     } catch(err) {
@@ -225,9 +113,4 @@ exports.getClasess = getClasess;
 exports.createClass = createClass;
 exports.getClass = getClass;
 exports.updateClass = updateClass;
-exports.getSubjects = getSubjects;
-exports.addSubject = addSubject;
-exports.getSubject = getSubject;
-exports.updateSubject = updateSubject;
-exports.deleteSubject = deleteSubject;
 exports.bulkEnrolment = bulkEnrolment;

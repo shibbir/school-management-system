@@ -4,7 +4,8 @@ import Types from "./user.types";
 const initialState = {
     loggedInUser: null,
     user: null,
-    users: []
+    users: [],
+    assigned_subjects: []
 };
 
 export default function reducer(state=initialState, action) {
@@ -36,6 +37,9 @@ export default function reducer(state=initialState, action) {
                 return x;
             });
             return { ...state, users, user: action.payload.data };
+        }
+        case Types.GET_ASSIGNED_SUBJECTS_FULFILLED: {
+            return { ...state, assigned_subjects: action.payload.data };
         }
     }
 

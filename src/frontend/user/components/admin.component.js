@@ -31,19 +31,6 @@ export default function Admin() {
                         22 Classes
                     </Card.Content>
                 </Link>
-
-                <Link className="ui raised card" to={`/items/2`}>
-                    <Card.Content className="ui center aligned">
-                        <Card.Header>Manage Subjects</Card.Header>
-                        <Card.Description>
-                            Matthew is a musician living in Nashville.
-                        </Card.Description>
-                    </Card.Content>
-                    <Card.Content extra>
-                        <Icon name="book"/>
-                        22 Friends
-                    </Card.Content>
-                </Link>
             </Card.Group>
         </div>
     );

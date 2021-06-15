@@ -7,6 +7,7 @@ import "fomantic-ui-css/semantic.css";
 import "izitoast/dist/css/iziToast.css";
 import "./app.component.css";
 
+import Forbidden from "./components/forbidden.component";
 import NoMatch from "./components/nomatch-route.component";
 import PublicRoute from "./components/public-route.component";
 import PrivateRoute from "./components/private-route.component";
@@ -15,6 +16,7 @@ import Profile from "../user/components/profile.component";
 import Dashboard from "../user/components/dashboard.component";
 import UserRoutes from "../user/user.routes";
 import ClassRoutes from "../class/class.routes";
+import AssignedSubjectsRoutes from "../manage-tests/test.routes";
 import { getSignedInUserProfile } from "../user/user.actions";
 
 let refCount = 0;
@@ -62,6 +64,10 @@ export default function App() {
             <Route path="/manage-users" component={UserRoutes}/>
 
             <Route path="/manage-classes" component={ClassRoutes}/>
+
+            <Route path="/assigned-subjects" component={AssignedSubjectsRoutes}/>
+
+            <Route path="/forbidden" component={Forbidden}/>
 
             <Route component={NoMatch}/>
         </Switch>

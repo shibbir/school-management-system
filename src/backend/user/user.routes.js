@@ -1,5 +1,5 @@
 const controller = require("./user.controller");
-const { authenticate } = require("../core/security.middleware");
+const { authenticate, authorizeFor } = require("../core/security.middleware");
 
 module.exports = function(app) {
     app.post("/api/login", controller.login);
@@ -9,11 +9,14 @@ module.exports = function(app) {
     app.get("/api/profile", authenticate, controller.getUserProfile);
 
     app.route("/api/users")
-        .get(authenticate, controller.getUsers)
-        .post(authenticate, controller.createUser);
+        .get(authenticate, authorizeFor(["admin"]), controller.getUsers)
+        .post(authenticate, authorizeFor(["admin"]), controller.createUser);
 
     app.route("/api/users/:id")
-        .get(authenticate, controller.getUser)
-        .patch(authenticate, controller.updateUser)
-        .delete(authenticate, controller.deleteUser);
+        .get(authenticate, authorizeFor(["admin"]), controller.getUser)
+        .patch(authenticate, authorizeFor(["admin"]), controller.updateUser)
+        .delete(authenticate, authorizeFor(["admin"]), controller.deleteUser);
+
+    app.route("/api/users/:id/subjects")
+        .get(authenticate, authorizeFor(["teacher"]), controller.getAssignedSubjects)
 };

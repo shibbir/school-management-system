@@ -19,9 +19,7 @@ export default function reducer(state=initialState, action) {
         case Types.PATCH_CLASS_FULFILLED: {
             const classes = state.classes.map(function(x) {
                 if(x.id === action.payload.data.id) {
-                    x.name = action.payload.data.name;
-                    x.updated_by = action.payload.data.updated_by;
-                    x.updated_at = action.payload.data.updated_at;
+                    x = { ...action.payload.data };
                 }
                 return x;
             });

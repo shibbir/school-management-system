@@ -15,6 +15,13 @@ const Subject = sequelize.dbConnector.define("subjects", {
         allowNull: false,
         type: DataTypes.STRING(50)
     },
+    credit_point: {
+        allowNull: false,
+        type: DataTypes.DECIMAL
+    },
+    content: {
+        type: DataTypes.STRING
+    },
     status: {
         allowNull: false,
         type: DataTypes.ENUM,
@@ -39,5 +46,6 @@ Program.hasMany(Subject, { as: "subjects", foreignKey: "class_id" });
 User.hasMany(Subject, { as: "subjects", foreignKey: "teacher_id" });
 Subject.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
 Subject.belongsTo(User, { as: "teacher", foreignKey: "teacher_id" });
+Subject.belongsTo(Program, { as: "class", foreignKey: "class_id" });
 
 module.exports = Subject;

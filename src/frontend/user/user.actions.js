@@ -73,3 +73,13 @@ export function deleteUser(id) {
         })
     };
 }
+
+export function getAssignedSubjects(user_id) {
+    return {
+        type: Types.GET_ASSIGNED_SUBJECTS,
+        payload: axios({
+            method: "get",
+            url: `/api/users/${user_id}/subjects`
+        })
+    };
+}

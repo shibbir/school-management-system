@@ -9,7 +9,7 @@ export default function ClassRoutes() {
 
     return (
         <Switch>
-            <PrivateRoute exact path={path} component={ClassList}/>
+            <PrivateRoute exact path={path} component={ClassList} roles={["admin"]}/>
         </Switch>
     );
 }

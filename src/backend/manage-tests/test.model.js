@@ -1,7 +1,8 @@
 const path = require("path");
 const { DataTypes } = require("sequelize");
 
-const Subject = require("./subject.model");
+const User = require("../user/user.model");
+const Subject = require("../subject/subject.model");
 const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
 
 const Test = sequelize.dbConnector.define("tests", {
@@ -35,5 +36,7 @@ const Test = sequelize.dbConnector.define("tests", {
 });
 
 Subject.hasMany(Test, { as: "tests", foreignKey: "subject_id" });
+Test.belongsTo(Subject, { as: "subject", foreignKey: "subject_id" });
+Test.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
 
 module.exports = Test;

@@ -2,8 +2,8 @@ import { capitalize } from "lodash";
 import { Form, Formik } from "formik";
 import React, { useEffect } from "react";
 import iziToast from "izitoast/dist/js/iziToast";
-import { Divider, Button, Form as SemanticUIForm } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
+import { Divider, Button, Form as SemanticUIForm } from "semantic-ui-react";
 
 import { createUserSchema } from "../user.schema";
 import { createUser, updateUser, getUser } from "../user.actions";

@@ -12,8 +12,8 @@ async function init() {
     const User = require(path.join(process.cwd(), "src/backend/user/user.model"));
     const Program = require(path.join(process.cwd(), "src/backend/class/class.model"));
     const Subject = require(path.join(process.cwd(), "src/backend/subject/subject.model"));
-    const Test = require(path.join(process.cwd(), "src/backend/subject/test.model"));
-    const TestResult = require(path.join(process.cwd(), "src/backend/subject/test-result.model"));
+    const Test = require(path.join(process.cwd(), "src/backend/manage-tests/test.model"));
+    const TestResult = require(path.join(process.cwd(), "src/backend/manage-tests/test-result.model"));
 
     await sequelize.dbConnector.sync();
 
@@ -194,6 +194,8 @@ async function init() {
             {
                 id: "91d1b6ec-3a83-4123-a2bc-6eb134e59ec5",
                 name: "Automotive Sensor Systems",
+                credit_point: 5,
+                content: "General aspects of sensor application in vehicles Sensors for engine management, Driving assistance systems, Sensors for air quality control, Exhaust gas sensor, Sensors for acceleration, force, pressure, rotational speed",
                 class_id: "cd0220f5-7822-463b-8587-bdcd77c9ea37",
                 teacher_id: "7217656c-9446-4038-aed3-c2a4a2d3bcc6",
                 created_by: "405cedd7-e03a-40fb-849c-025a41f97ea4",
@@ -201,7 +203,9 @@ async function init() {
             },
             {
                 id: "40cb9c2c-2df3-49b2-9592-7b7245c5ff1c",
-                name: "Design of Software for Embedded Systems",
+                name: "Software Platforms for Automotive Systems",
+                credit_point: 5,
+                content: "Introduction to the topic of 'Development of Automotive Controllers'. According to the V-model, relevant processes methods and technologies are considered.",
                 class_id: "cd0220f5-7822-463b-8587-bdcd77c9ea37",
                 teacher_id: "7217656c-9446-4038-aed3-c2a4a2d3bcc6",
                 created_by: "405cedd7-e03a-40fb-849c-025a41f97ea4",
@@ -210,6 +214,8 @@ async function init() {
             {
                 id: "36fb4e61-50a9-4b55-8d03-bbb505facc42",
                 name: "Formal Specification and Verification",
+                credit_point: 5,
+                content: "Theoretical basics of system modeling and simulation. System life cycle and system development processes. Formal specification technology for embedded systems.",
                 class_id: "cd0220f5-7822-463b-8587-bdcd77c9ea37",
                 teacher_id: "5b4f3c03-8d54-4160-9d85-07dad3e8edd1",
                 created_by: "405cedd7-e03a-40fb-849c-025a41f97ea4",
@@ -217,7 +223,9 @@ async function init() {
             },
             {
                 id: "1a6bf219-7669-43de-8373-db6f12e3bab2",
-                name: "Databases and Web Techniques",
+                name: "Compiler Construction",
+                credit_point: 5,
+                content: "Concepts and techniques of compiler construction that are required for the development of a compiler.",
                 class_id: "cabe7408-f114-493a-bf5b-ee93b829d026",
                 teacher_id: "7217656c-9446-4038-aed3-c2a4a2d3bcc6",
                 created_by: "405cedd7-e03a-40fb-849c-025a41f97ea4",
@@ -225,7 +233,9 @@ async function init() {
             },
             {
                 id: "0ce93236-045a-4933-8832-4f064603d1ee",
-                name: "Data Security and Cryptography",
+                name: "Databases and Web Techniques",
+                credit_point: 5,
+                content: "Basic techniques of web-programming to access databases, ODBC, JDBC, DCE, CORBA, COM/DCOM, portal-techniques, XML, web-services.",
                 class_id: "cabe7408-f114-493a-bf5b-ee93b829d026",
                 teacher_id: "5b4f3c03-8d54-4160-9d85-07dad3e8edd1",
                 created_by: "405cedd7-e03a-40fb-849c-025a41f97ea4",
@@ -233,7 +243,9 @@ async function init() {
             },
             {
                 id: "e1a8a90c-7630-4308-b801-4e3b0e21f163",
-                name: "Distributed Software Security",
+                name: "Data Security and Cryptography",
+                credit_point: 5,
+                content: "Turing machine, computability, NP-completeness, classic and modern cryptographic methods, digital signatures, hashes, etc.",
                 class_id: "cabe7408-f114-493a-bf5b-ee93b829d026",
                 teacher_id: "5b4f3c03-8d54-4160-9d85-07dad3e8edd1",
                 created_by: "405cedd7-e03a-40fb-849c-025a41f97ea4",

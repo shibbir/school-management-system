@@ -1,16 +1,42 @@
-const Test = require("./test.model");
+const Test = require("../manage-tests/test.model");
 const Subject = require("./subject.model");
 const User = require("../user/user.model");
 const Program = require("../class/class.model");
 
 async function getSubjects(req, res, next) {
     try {
+        const query = {};
+
+        if(req.params.teacher_id) {
+            query.teacher_id = req.params.teacher_id;
+        }
+
+        const subjects = await Subject.findAll({
+            where: query,
+            order: [
+                ["created_at", "DESC"]
+            ],
+            include: [{
+                model: Program,
+                as: "class",
+                attributes: ["id", "name"]
+            }]
+        });
+
+        res.json(subjects);
+    } catch(err) {
+        next(err);
+    }
+}
+
+async function getSubjectsByClass(req, res, next) {
+    try {
         const program = await Program.findByPk(req.params.id, {
             include: {
                 model: Subject,
                 as: "subjects",
                 order: [
-                    ["updated_at", "DESC"]
+                    ["created_at", "DESC"]
                 ],
                 include: [
                     {
@@ -143,6 +169,7 @@ async function deleteSubject(req, res, next) {
 }
 
 exports.getSubjects = getSubjects;
+exports.getSubjectsByClass = getSubjectsByClass;
 exports.addSubject = addSubject;
 exports.getSubject = getSubject;
 exports.updateSubject = updateSubject;

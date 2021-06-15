@@ -1,5 +1,6 @@
 import { capitalize } from "lodash";
 import { FormattedDate } from "react-intl";
+import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown } from "semantic-ui-react";
@@ -41,7 +42,19 @@ export default function ClassList() {
 
     const onDeleteUser = id => {
         if(confirm("Are you sure you want to remove the user?")) {
-            dispatch(deleteUser(id));
+            dispatch(deleteUser(id)).then(function() {
+                iziToast["success"]({
+                    timeout: 3000,
+                    message: "Your changes are saved.",
+                    position: "bottomRight"
+                });
+            }).catch(function(err) {
+                iziToast["error"]({
+                    timeout: 3000,
+                    message: err ? err.response.data : "An error occurred. Please try again.",
+                    position: "bottomRight"
+                });
+            });
         }
     };
 
