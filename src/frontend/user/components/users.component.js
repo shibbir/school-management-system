@@ -46,13 +46,13 @@ export default function ClassList() {
                 iziToast["success"]({
                     timeout: 3000,
                     message: "Your changes are saved.",
-                    position: "bottomRight"
+                    position: "topRight"
                 });
             }).catch(function(err) {
                 iziToast["error"]({
                     timeout: 3000,
                     message: err ? err.response.data : "An error occurred. Please try again.",
-                    position: "bottomRight"
+                    position: "topRight"
                 });
             });
         }

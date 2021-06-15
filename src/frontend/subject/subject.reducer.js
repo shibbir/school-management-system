@@ -3,7 +3,8 @@ import Types from "./subject.types";
 
 const initialState = {
     subject: null,
-    subjects: []
+    subjects: [],
+    pupil_grades: []
 };
 
 export default function reducer(state=initialState, action) {
@@ -31,6 +32,9 @@ export default function reducer(state=initialState, action) {
         }
         case Types.RESET_SUBJECT: {
             return { ...state, subject: null };
+        }
+        case Types.GET_PUPIL_GRADES_BY_SUBJECT_FULFILLED: {
+            return { ...state, pupil_grades: action.payload.data };
         }
     }
     return state;

@@ -80,6 +80,10 @@ async function getUsers(req, res, next) {
             query.role = req.query.role;
         }
 
+        if(req.query.class_id) {
+            query.class_id = req.query.class_id;
+        }
+
         const users = await User.findAll({
             where: query,
             attributes: { exclude: ["password", "refresh_token"] },

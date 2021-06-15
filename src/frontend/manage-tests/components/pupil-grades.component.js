@@ -1,82 +1,74 @@
 import { capitalize } from "lodash";
+import queryString from "query-string";
+import { Link, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Segment, Header, Button, Table, Dropdown, Modal } from "semantic-ui-react";
+import { Icon, Divider, Segment, Header, Breadcrumb, Table } from "semantic-ui-react";
 
-import { getAssignedSubjects } from "../../user/user.actions";
+import { getSubject, getPupilGrades } from "../../subject/subject.actions";
 
-export default function PupilGrades({ subject_id }) {
+export default function PupilGrades() {
+    const location = useLocation();
     const dispatch = useDispatch();
-    const [subjectIdForGrades, setSubjectIdForGrades] = useState(undefined);
+
     const [subjectIdForTests, setSubjectIdForTests] = useState(undefined);
 
     useEffect(() => {
-        dispatch(getAssignedSubjects());
-    }, [subject_id]);
+        const params = queryString.parse(location.search);
 
-    const assigned_subjects = useSelector(state => state.userReducer.assigned_subjects);
+        dispatch(getSubject(params.subject_id));
+        dispatch(getPupilGrades(params.subject_id));
+    }, [location.search]);
 
-    const rows = assigned_subjects.map(function(subject, index) {
+    const subject = useSelector(state => state.subjectReducer.subject);
+    const pupil_grades = useSelector(state => state.subjectReducer.pupil_grades);
+
+    const rows = pupil_grades.map(function(row, index) {
         return (
-            <Table.Row key={subject.id}>
+            <Table.Row key={row.id}>
                 <Table.Cell>{index+1}</Table.Cell>
-                <Table.Cell>{subject.class.name}</Table.Cell>
-                <Table.Cell>{subject.name}</Table.Cell>
-                <Table.Cell>{subject.credit_point}</Table.Cell>
-                <Table.Cell>{capitalize(subject.status)}</Table.Cell>
-                <Table.Cell>
-                    <Dropdown>
-                        <Dropdown.Menu>
-                            <Dropdown.Item icon="edit" text="View Grades" onClick={() => setSubjectIdForGrades(subject.id)}/>
-                            <Dropdown.Item icon="archive" text="Manage Tests" onClick={() => setSubjectIdForTests(subject.id)}/>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </Table.Cell>
+                <Table.Cell>{`${row.forename} ${row.surname}`}</Table.Cell>
+                <Table.Cell>{row.grade}</Table.Cell>
             </Table.Row>
         );
     });
 
     return (
         <>
-            <Modal dimmer size="tiny" open={subjectIdForGrades !== undefined}>
-                <Modal.Header>Pupil Grades</Modal.Header>
-                <Modal.Content>
-                    <Modal.Description>
-                        { assigned_subjects.length > 0 &&
-                            <Table selectable>
-                                <Table.Header>
-                                    <Table.Row>
-                                        <Table.HeaderCell>#</Table.HeaderCell>
-                                        <Table.HeaderCell>Class Name</Table.HeaderCell>
-                                        <Table.HeaderCell>Subject Name</Table.HeaderCell>
-                                        <Table.HeaderCell>Credit Point</Table.HeaderCell>
-                                        <Table.HeaderCell>Status</Table.HeaderCell>
-                                        <Table.HeaderCell>Actions</Table.HeaderCell>
-                                    </Table.Row>
-                                </Table.Header>
+            <Breadcrumb>
+                <Breadcrumb.Section><Link to="/">Dashboard</Link></Breadcrumb.Section>
+                <Breadcrumb.Divider>/</Breadcrumb.Divider>
+                <Breadcrumb.Section><Link to="/assigned-subjects">Assigned Subjects</Link></Breadcrumb.Section>
+                <Breadcrumb.Divider>/</Breadcrumb.Divider>
+                <Breadcrumb.Section active>Average Grades { subject && `for ${subject.name}`}</Breadcrumb.Section>
+            </Breadcrumb>
 
-                                <Table.Body>
-                                    {rows}
-                                </Table.Body>
-                            </Table>
-                        }
+            <Divider hidden clearing/>
 
-                        { assigned_subjects.length === 0 &&
-                            <Segment placeholder raised>
-                                <Header icon>
-                                    <Icon name="book"/>
-                                    No data found.
-                                </Header>
-                            </Segment>
-                        }
-                    </Modal.Description>
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button color="black" onClick={() => subjectIdForGrades(undefined)}>
-                        Close
-                    </Button>
-                </Modal.Actions>
-            </Modal>
+            { pupil_grades.length > 0 &&
+                <Table selectable>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>#</Table.HeaderCell>
+                            <Table.HeaderCell>Pupil Name</Table.HeaderCell>
+                            <Table.HeaderCell>Average Grade</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
+                        {rows}
+                    </Table.Body>
+                </Table>
+            }
+
+            { pupil_grades.length === 0 &&
+                <Segment placeholder raised>
+                    <Header icon>
+                        <Icon name="book"/>
+                        No data found.
+                    </Header>
+                </Segment>
+            }
         </>
     );
 }

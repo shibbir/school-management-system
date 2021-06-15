@@ -43,7 +43,7 @@ function UserForm({ id } = props) {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",
-                            position: "bottomRight"
+                            position: "topRight"
                         });
                     });
                 } else {
@@ -51,7 +51,7 @@ function UserForm({ id } = props) {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",
-                            position: "bottomRight"
+                            position: "topRight"
                         });
                         actions.resetForm();
                     });

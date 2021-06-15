@@ -54,7 +54,7 @@ export default function PupilsEnrolment({ id } = props) {
                 iziToast["success"]({
                     timeout: 3000,
                     message: "Your changes are saved.",
-                    position: "bottomRight"
+                    position: "topRight"
                 });
             });
         }

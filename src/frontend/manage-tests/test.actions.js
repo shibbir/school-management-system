@@ -43,23 +43,18 @@ export function updateTest(id, data) {
     };
 }
 
-export function getTestResultsByTest(test_id) {
+export function deleteTest(id) {
     return {
-        type: Types.GET_TEST_RESULTS,
+        type: Types.DELETE_TEST,
         payload: axios({
-            method: "get",
-            url: `/api/tests/${test_id}/results`
+            method: "delete",
+            url: `/api/tests/${id}`
         })
     };
 }
 
-export function uploadTestResults(test_id, form_data) {
+export function resetTest() {
     return {
-        type: Types.POST_TEST_RESULTS,
-        payload: axios({
-            method: "post",
-            url: `/api/tests/${test_id}/results`,
-            data: form_data
-        })
+        type: Types.RESET_TEST
     };
 }

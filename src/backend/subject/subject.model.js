@@ -29,9 +29,11 @@ const Subject = sequelize.dbConnector.define("subjects", {
         values: ["active", "archived"]
     },
     created_by: {
+        allowNull: false,
         type: DataTypes.UUID
     },
     updated_by: {
+        allowNull: false,
         type: DataTypes.UUID
     },
 }, {
@@ -42,8 +44,8 @@ const Subject = sequelize.dbConnector.define("subjects", {
     updatedAt: "updated_at"
 });
 
-Program.hasMany(Subject, { as: "subjects", foreignKey: "class_id" });
-User.hasMany(Subject, { as: "subjects", foreignKey: "teacher_id" });
+Program.hasMany(Subject, { as: "subjects", foreignKey: { name: "class_id", allowNull: false }});
+User.hasMany(Subject, { as: "subjects", foreignKey: { name: "teacher_id", allowNull: false }});
 Subject.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
 Subject.belongsTo(User, { as: "teacher", foreignKey: "teacher_id" });
 Subject.belongsTo(Program, { as: "class", foreignKey: "class_id" });

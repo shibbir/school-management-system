@@ -5,8 +5,8 @@ import iziToast from "izitoast/dist/js/iziToast";
 import { Divider, Button } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { testSchema } from "../test.schema";
-import { getTest, createTest, updateTest } from "../test.actions";
+import TestSchema from "../test.schema";
+import { getTest, createTest, updateTest, resetTest } from "../test.actions";
 import { TextInput } from "../../core/components/field-inputs.component";
 
 function TestForm({ id, subject_id } = props) {
@@ -15,6 +15,8 @@ function TestForm({ id, subject_id } = props) {
     useEffect(() => {
         if(id) {
             dispatch(getTest(id));
+        } else {
+            dispatch(resetTest());
         }
     }, [id]);
 
@@ -28,14 +30,14 @@ function TestForm({ id, subject_id } = props) {
             }}
             displayName="TestForm"
             enableReinitialize={true}
-            validationSchema={testSchema}
+            validationSchema={TestSchema}
             onSubmit={(values, actions) => {
                 if(id) {
                     dispatch(updateTest(id, values)).then(function() {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",
-                            position: "bottomRight"
+                            position: "topRight"
                         });
                     });
                 } else {
@@ -43,7 +45,7 @@ function TestForm({ id, subject_id } = props) {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",
-                            position: "bottomRight"
+                            position: "topRight"
                         });
                         actions.resetForm();
                     });

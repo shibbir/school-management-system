@@ -1,15 +1,15 @@
-import { FormattedDate } from "react-intl";
-import { Link, useLocation } from "react-router-dom";
 import queryString from "query-string";
+import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Breadcrumb, Label, Grid } from "semantic-ui-react";
 
 import TestForm from "./test-form.component";
-import TestResults from "./test-results.component";
-import ImportTestResults from "./import-test-results.component";
-import { getTestsBySubject } from "../test.actions";
+import { getTestsBySubject, deleteTest } from "../test.actions";
 import { getSubject } from "../../subject/subject.actions";
+import TestResults from "../../manage-test-results/components/test-results.component";
+import ImportTestResultsForm from "../../manage-test-results/components/test-results-import-form.component";
 
 export default function ManageTests() {
     const dispatch = useDispatch();
@@ -28,6 +28,12 @@ export default function ManageTests() {
     const tests = useSelector(state => state.testReducer.tests);
     const subject = useSelector(state => state.subjectReducer.subject);
 
+    const onDeleteTest = function(id) {
+        if(confirm("Are you sure you want to remove this test?")) {
+            dispatch(deleteTest(id));
+        }
+    };
+
     const rows = tests.map(function(row, index) {
         return (
             <Table.Row key={row.id}>
@@ -40,8 +46,8 @@ export default function ManageTests() {
                     <Dropdown>
                         <Dropdown.Menu>
                             <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setTestId(row.id)}/>
-                            <Dropdown.Item icon="edit" text="View Test Results" onClick={() => setTestIdForResults(row.id)}/>
-                            <Dropdown.Item icon="edit" text="Import Test Results" onClick={() => setTestIdForImportResults(row.id)}/>
+                            <Dropdown.Item icon="list" text="Manage Test Results" onClick={() => setTestIdForResults(row.id)}/>
+                            <Dropdown.Item icon="upload" text="Import Test Results" onClick={() => setTestIdForImportResults(row.id)}/>
                             <Dropdown.Item icon="trash" text="Remove Test" onClick={() => onDeleteTest(row.id)}/>
                         </Dropdown.Menu>
                     </Dropdown>
@@ -57,7 +63,7 @@ export default function ManageTests() {
                 <Breadcrumb.Divider>/</Breadcrumb.Divider>
                 <Breadcrumb.Section><Link to="/assigned-subjects">Assigned Subjects</Link></Breadcrumb.Section>
                 <Breadcrumb.Divider>/</Breadcrumb.Divider>
-                <Breadcrumb.Section active>Manage Tests</Breadcrumb.Section>
+                <Breadcrumb.Section active>Manage Tests { subject && `for ${subject.name}`}</Breadcrumb.Section>
             </Breadcrumb>
 
             <Divider hidden clearing/>
@@ -120,11 +126,11 @@ export default function ManageTests() {
             </Modal>
 
             {/* Test Results Modal */}
-            <Modal dimmer size="tiny" open={testIdForResults !== undefined}>
+            <Modal dimmer size="small" open={testIdForResults !== undefined}>
                 <Modal.Header>Test Results</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                        <TestResults id={testIdForResults}/>
+                        <TestResults test_id={testIdForResults}/>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>
@@ -139,7 +145,7 @@ export default function ManageTests() {
                 <Modal.Header>Batch Grading</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                        <ImportTestResults id={testIdForImportResults}/>
+                        <ImportTestResultsForm test_id={testIdForImportResults}/>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>

@@ -1,9 +1,6 @@
-const fs = require("fs");
-const parse = require("csv-parse");
 const User = require("../user/user.model");
 const Test = require("./test.model");
 const Subject = require("../subject/subject.model");
-const TestResult = require("./test-result.model");
 
 async function getTests(req, res, next) {
     try {
@@ -99,50 +96,11 @@ async function updateTest(req, res, next) {
     }
 }
 
-async function getTestResults(req, res, next) {
+async function deleteTest(req, res, next) {
     try {
-        const test_results = await TestResult.findAll({
-            where: { test_id: req.params.id },
-            include: [
-                {
-                    model: User,
-                    as: "pupil",
-                    attributes: ["forename", "surname"]
-                },
-                {
-                    model: User,
-                    as: "modifier",
-                    attributes: ["forename", "surname"]
-                }
-            ]
-        });
+        await Test.destroy({ where: { id: req.params.id }});
 
-        res.json(test_results);
-    } catch(err) {
-        next(err);
-    }
-}
-
-async function uploadTestResults(req, res, next) {
-    try {
-        const test_results = [];
-
-        fs.createReadStream(req.file.path).pipe(parse({
-            columns: true,
-            skip_empty_lines: true
-        })).on("data", function(row) {
-            test_results.push({
-                test_id: req.params.id,
-                pupil_id: row["Pupil ID"],
-                grade: row["Grade"],
-                updated_by: req.user.id
-            });
-        }).on("end", async function() {
-            test_results = await TestResult.bulkCreate(test_results, {
-                updateOnDuplicate: ["grade", "updated_by", "updated_at"]
-            });
-            res.json(test_results);
-        });
+        res.json({ id: req.params.id });
     } catch(err) {
         next(err);
     }
@@ -152,5 +110,4 @@ exports.getTests = getTests;
 exports.createTest = createTest;
 exports.getTest = getTest;
 exports.updateTest = updateTest;
-exports.getTestResults = getTestResults;
-exports.uploadTestResults = uploadTestResults;
+exports.deleteTest = deleteTest;

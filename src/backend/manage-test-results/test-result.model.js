@@ -1,7 +1,7 @@
 const path = require("path");
 const { DataTypes } = require("sequelize");
 
-const Test = require("./test.model");
+const Test = require("../manage-tests/test.model");
 const User = require("../user/user.model");
 const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
 
@@ -13,7 +13,6 @@ const TestResult = sequelize.dbConnector.define("test_results", {
         defaultValue: DataTypes.UUIDV4
     },
     pupil_id: {
-        unique: true,
         allowNull: false,
         type: DataTypes.UUID
     },
@@ -22,9 +21,11 @@ const TestResult = sequelize.dbConnector.define("test_results", {
         type: DataTypes.DECIMAL
     },
     created_by: {
+        allowNull: false,
         type: DataTypes.UUID
     },
     updated_by: {
+        allowNull: false,
         type: DataTypes.UUID
     },
 }, {
@@ -35,7 +36,7 @@ const TestResult = sequelize.dbConnector.define("test_results", {
     updatedAt: "updated_at"
 });
 
-Test.hasMany(TestResult, { as: "test_results", foreignKey: "test_id" });
+Test.hasMany(TestResult, { as: "test_results", foreignKey: { name: "test_id", allowNull: false }});
 TestResult.belongsTo(User, { as: "pupil", foreignKey: "pupil_id" });
 TestResult.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
 

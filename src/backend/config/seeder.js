@@ -13,7 +13,7 @@ async function init() {
     const Program = require(path.join(process.cwd(), "src/backend/class/class.model"));
     const Subject = require(path.join(process.cwd(), "src/backend/subject/subject.model"));
     const Test = require(path.join(process.cwd(), "src/backend/manage-tests/test.model"));
-    const TestResult = require(path.join(process.cwd(), "src/backend/manage-tests/test-result.model"));
+    require(path.join(process.cwd(), "src/backend/manage-test-results/test-result.model"));
 
     await sequelize.dbConnector.sync();
 

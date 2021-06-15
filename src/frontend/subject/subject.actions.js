@@ -58,3 +58,13 @@ export function resetSubject() {
         type: Types.RESET_SUBJECT
     };
 }
+
+export function getPupilGrades(id) {
+    return {
+        type: Types.GET_PUPIL_GRADES_BY_SUBJECT,
+        payload: axios({
+            method: "get",
+            url: `/api/subjects/${id}/pupil-grades`
+        })
+    };
+}

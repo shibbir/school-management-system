@@ -25,7 +25,7 @@ function SubjectForm({ id, class_id } = props) {
     const subject = useSelector(state => state.subjectReducer.subject);
     const teachers = useSelector(state => state.userReducer.users);
 
-    const teacherOptions = teachers.map(function(option) {
+    const teacher_options = teachers.map(function(option) {
         return { key: option.id, value: option.id, text: `${option.forename} ${option.surname}` };
     });
 
@@ -44,7 +44,7 @@ function SubjectForm({ id, class_id } = props) {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",
-                            position: "bottomRight"
+                            position: "topRight"
                         });
                     });
                 } else {
@@ -54,7 +54,7 @@ function SubjectForm({ id, class_id } = props) {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",
-                            position: "bottomRight"
+                            position: "topRight"
                         });
                         actions.resetForm();
                     });
@@ -77,7 +77,7 @@ function SubjectForm({ id, class_id } = props) {
                         name: "teacher_id",
                         placeholder: "Assign Teacher",
                         label: "Teacher",
-                        options: teacherOptions,
+                        options: teacher_options,
                         required: true,
                         onChange: (event, data) => {formikProps.setFieldValue(data.name, data.value)}
                     }}/>

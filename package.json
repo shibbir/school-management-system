@@ -46,7 +46,6 @@
     "redux-thunk": "^2.3.0",
     "semantic-ui-react": "^2.0.3",
     "sequelize": "^6.6.2",
-    "validator": "^13.6.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {

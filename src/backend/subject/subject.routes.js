@@ -10,6 +10,9 @@ module.exports = function(app) {
         .patch(authenticate, controller.updateSubject)
         .delete(authenticate, controller.deleteSubject);
 
+    app.route("/api/subjects/:id/pupil-grades")
+        .get(authenticate, controller.getPupilGrades);
+
     app.route("/api/classes/:id/subjects")
         .get(authenticate, controller.getSubjectsByClass)
         .post(authenticate, controller.addSubject);

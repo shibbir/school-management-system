@@ -1,7 +1,8 @@
-const Test = require("../manage-tests/test.model");
 const Subject = require("./subject.model");
 const User = require("../user/user.model");
 const Program = require("../class/class.model");
+const Test = require("../manage-tests/test.model");
+const TestResult = require("../manage-test-results/test-result.model");
 
 async function getSubjects(req, res, next) {
     try {
@@ -168,9 +169,52 @@ async function deleteSubject(req, res, next) {
     }
 }
 
+async function getPupilGrades(req, res, next) {
+    try {
+        const tests = await Test.findAll({
+            where: { subject_id: req.params.id },
+            attributes: ["id", "subject_id", "name", "date"],
+            include: {
+                model: TestResult,
+                as: "test_results",
+                attributes: ["id", "test_id", "pupil_id", "grade"],
+                include: {
+                    model: User,
+                    as: "pupil",
+                    attributes: ["id", "forename", "surname"]
+                }
+            }
+        });
+
+        const result = [];
+
+        tests.forEach(test => {
+            test.test_results.forEach(test_result => {
+                let pupil = result.find(x => x.pupil_id === test_result.pupil_id);
+                if(pupil) {
+                    pupil.grade = pupil.grade + +test_result.grade;
+                } else {
+                    result.push({
+                        pupil_id: test_result.pupil_id,
+                        forename: test_result.pupil.forename,
+                        surname: test_result.pupil.surname,
+                        grade: +test_result.grade
+                    });
+                }
+            });
+        });
+
+        res.json(result);
+
+    } catch(err) {
+        next(err);
+    }
+}
+
 exports.getSubjects = getSubjects;
 exports.getSubjectsByClass = getSubjectsByClass;
 exports.addSubject = addSubject;
 exports.getSubject = getSubject;
 exports.updateSubject = updateSubject;
 exports.deleteSubject = deleteSubject;
+exports.getPupilGrades = getPupilGrades;

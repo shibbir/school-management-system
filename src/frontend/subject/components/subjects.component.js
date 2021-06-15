@@ -72,20 +72,6 @@ export default function SubjectList({ class_id } = props) {
                 onClick={() => setSubjectId(null)}
             />
 
-            <Modal dimmer size="tiny" open={subjectId !== undefined}>
-                <Modal.Header>Subject Form</Modal.Header>
-                <Modal.Content>
-                    <Modal.Description>
-                        <SubjectForm class_id={class_id} id={subjectId}/>
-                    </Modal.Description>
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button color="black" onClick={() => setSubjectId(undefined)}>
-                        Close
-                    </Button>
-                </Modal.Actions>
-            </Modal>
-
             <Divider hidden clearing/>
 
             { subjects.length > 0 &&
@@ -115,6 +101,20 @@ export default function SubjectList({ class_id } = props) {
                     </Header>
                 </Segment>
             }
+
+            <Modal dimmer size="tiny" open={subjectId !== undefined}>
+                <Modal.Header>Subject Form</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                        <SubjectForm class_id={class_id} id={subjectId}/>
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color="black" onClick={() => setSubjectId(undefined)}>
+                        Close
+                    </Button>
+                </Modal.Actions>
+            </Modal>
         </>
     );
 }

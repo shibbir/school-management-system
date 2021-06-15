@@ -9,6 +9,7 @@ module.exports = {
             "src/backend/class/class.routes.js",
             "src/backend/subject/subject.routes.js",
             "src/backend/manage-tests/test.routes.js",
+            "src/backend/manage-test-results/test-result.routes.js",
             "src/backend/core/index.routes.js"
         ],
         strategies: ["src/backend/**/*.strategy.js"]

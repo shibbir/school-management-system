@@ -2,8 +2,7 @@ import Types from "./test.types";
 
 const initialState = {
     test: null,
-    tests: [],
-    test_results: []
+    tests: []
 };
 
 export default function reducer(state=initialState, action) {
@@ -26,8 +25,11 @@ export default function reducer(state=initialState, action) {
             });
             return { ...state, tests, test: action.payload.data };
         }
-        case Types.GET_TEST_RESULTS_FULFILLED: {
-            return { ...state, test_results: action.payload.data };
+        case Types.DELETE_TEST_FULFILLED: {
+            return { ...state, tests: _.reject(state.tests, { id: action.payload.data.id }) };
+        }
+        case Types.RESET_TEST: {
+            return { ...state, test: null };
         }
     }
     return state;

@@ -22,9 +22,11 @@ const Test = sequelize.dbConnector.define("tests", {
         defaultValue: DataTypes.NOW
     },
     created_by: {
+        allowNull: false,
         type: DataTypes.UUID
     },
     updated_by: {
+        allowNull: false,
         type: DataTypes.UUID
     },
 }, {
@@ -35,7 +37,7 @@ const Test = sequelize.dbConnector.define("tests", {
     updatedAt: "updated_at"
 });
 
-Subject.hasMany(Test, { as: "tests", foreignKey: "subject_id" });
+Subject.hasMany(Test, { as: "tests", foreignKey: { name: "subject_id", allowNull: false }});
 Test.belongsTo(Subject, { as: "subject", foreignKey: "subject_id" });
 Test.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
 

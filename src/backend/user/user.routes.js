@@ -9,7 +9,7 @@ module.exports = function(app) {
     app.get("/api/profile", authenticate, controller.getUserProfile);
 
     app.route("/api/users")
-        .get(authenticate, authorizeFor(["admin"]), controller.getUsers)
+        .get(authenticate, authorizeFor(["admin", "teacher"]), controller.getUsers)
         .post(authenticate, authorizeFor(["admin"]), controller.createUser);
 
     app.route("/api/users/:id")

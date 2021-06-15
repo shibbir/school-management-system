@@ -1,9 +1,8 @@
 import { capitalize } from "lodash";
-import { FormattedDate } from "react-intl";
 import { Link, useHistory } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Divider, Segment, Header, Card, Label, Button, Table, Dropdown, Modal } from "semantic-ui-react";
+import { Icon, Divider, Segment, Header, Breadcrumb, Table, Dropdown } from "semantic-ui-react";
 
 import { getAssignedSubjects } from "../../user/user.actions";
 
@@ -11,12 +10,18 @@ export default function AssignedSubjects() {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const [subjectIdForGrades, setSubjectIdForGrades] = useState(undefined);
+    const [subjectIdForPupilGrades, setSubjectIdForPupilGrades] = useState(undefined);
     const [subjectIdForTests, setSubjectIdForTests] = useState(undefined);
 
     useEffect(() => {
         dispatch(getAssignedSubjects());
     }, []);
+
+    useEffect(() => {
+        if(subjectIdForPupilGrades) {
+            history.push(`/assigned-subjects/pupil-grades?subject_id=${subjectIdForPupilGrades}`);
+        }
+    }, [subjectIdForPupilGrades]);
 
     useEffect(() => {
         if(subjectIdForTests) {
@@ -37,7 +42,7 @@ export default function AssignedSubjects() {
                 <Table.Cell>
                     <Dropdown>
                         <Dropdown.Menu>
-                            <Dropdown.Item icon="edit" text="View Grades" onClick={() => setSubjectIdForGrades(subject.id)}/>
+                            <Dropdown.Item icon="edit" text="View Grades" onClick={() => setSubjectIdForPupilGrades(subject.id)}/>
                             <Dropdown.Item icon="archive" text="Manage Tests" onClick={() => setSubjectIdForTests(subject.id)}/>
                         </Dropdown.Menu>
                     </Dropdown>
@@ -48,6 +53,12 @@ export default function AssignedSubjects() {
 
     return (
         <>
+            <Breadcrumb>
+                <Breadcrumb.Section><Link to="/">Dashboard</Link></Breadcrumb.Section>
+                <Breadcrumb.Divider>/</Breadcrumb.Divider>
+                <Breadcrumb.Section active>Assigned Subjects</Breadcrumb.Section>
+            </Breadcrumb>
+
             <Divider hidden clearing/>
 
             { assigned_subjects.length > 0 &&
