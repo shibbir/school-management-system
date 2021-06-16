@@ -83,3 +83,9 @@ export function getAssignedSubjects(user_id) {
         })
     };
 }
+
+export function resetUser() {
+    return {
+        type: Types.RESET_USER
+    };
+}

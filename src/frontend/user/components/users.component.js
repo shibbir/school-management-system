@@ -17,6 +17,7 @@ export default function ClassList() {
     }, []);
 
     const users = useSelector(state => state.userReducer.users);
+    const loggedInUser = useSelector(state => state.userReducer.loggedInUser);
 
     const rows = users.map(function(row, index) {
         return (
@@ -32,7 +33,7 @@ export default function ClassList() {
                     <Dropdown>
                         <Dropdown.Menu>
                             <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setUserId(row.id)}/>
-                            <Dropdown.Item icon="trash" text="Remove User" onClick={() => onDeleteUser(row.id)}/>
+                            { loggedInUser.id !== row.id && <Dropdown.Item icon="trash" text="Remove User" onClick={() => onDeleteUser(row.id)}/> }
                         </Dropdown.Menu>
                     </Dropdown>
                 </Table.Cell>
@@ -81,27 +82,26 @@ export default function ClassList() {
             </TransitionablePortal>
 
             <Divider hidden clearing/>
-            { users.length > 0 &&
-                <>
-                    <Table selectable compact>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell>#</Table.HeaderCell>
-                                <Table.HeaderCell>Forename</Table.HeaderCell>
-                                <Table.HeaderCell>Surname</Table.HeaderCell>
-                                <Table.HeaderCell>Username</Table.HeaderCell>
-                                <Table.HeaderCell>Role</Table.HeaderCell>
-                                <Table.HeaderCell>Updated By</Table.HeaderCell>
-                                <Table.HeaderCell>Updated At</Table.HeaderCell>
-                                <Table.HeaderCell>Actions</Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
 
-                        <Table.Body>
-                            {rows}
-                        </Table.Body>
-                    </Table>
-                </>
+            { users.length > 0 &&
+                <Table selectable>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>#</Table.HeaderCell>
+                            <Table.HeaderCell>Forename</Table.HeaderCell>
+                            <Table.HeaderCell>Surname</Table.HeaderCell>
+                            <Table.HeaderCell>Username</Table.HeaderCell>
+                            <Table.HeaderCell>Role</Table.HeaderCell>
+                            <Table.HeaderCell>Updated By</Table.HeaderCell>
+                            <Table.HeaderCell>Updated At</Table.HeaderCell>
+                            <Table.HeaderCell>Actions</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
+                        {rows}
+                    </Table.Body>
+                </Table>
             }
 
             { users.length === 0 &&

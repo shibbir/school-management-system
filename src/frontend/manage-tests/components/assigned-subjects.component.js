@@ -1,6 +1,7 @@
 import { capitalize } from "lodash";
-import { Link, useHistory } from "react-router-dom";
+import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Header, Breadcrumb, Table, Dropdown } from "semantic-ui-react";
 
@@ -35,10 +36,10 @@ export default function AssignedSubjects() {
         return (
             <Table.Row key={subject.id}>
                 <Table.Cell>{index+1}</Table.Cell>
-                <Table.Cell>{subject.class.name}</Table.Cell>
                 <Table.Cell>{subject.name}</Table.Cell>
-                <Table.Cell>{subject.credit_point}</Table.Cell>
                 <Table.Cell>{capitalize(subject.status)}</Table.Cell>
+                <Table.Cell>{subject.class.name}</Table.Cell>
+                <Table.Cell><FormattedDate value={subject.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     <Dropdown>
                         <Dropdown.Menu>
@@ -53,7 +54,7 @@ export default function AssignedSubjects() {
 
     return (
         <>
-            <Breadcrumb>
+            <Breadcrumb size="large">
                 <Breadcrumb.Section><Link to="/">Dashboard</Link></Breadcrumb.Section>
                 <Breadcrumb.Divider>/</Breadcrumb.Divider>
                 <Breadcrumb.Section active>Assigned Subjects</Breadcrumb.Section>
@@ -66,10 +67,10 @@ export default function AssignedSubjects() {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>#</Table.HeaderCell>
-                            <Table.HeaderCell>Class Name</Table.HeaderCell>
                             <Table.HeaderCell>Subject Name</Table.HeaderCell>
-                            <Table.HeaderCell>Credit Point</Table.HeaderCell>
                             <Table.HeaderCell>Status</Table.HeaderCell>
+                            <Table.HeaderCell>Class Name</Table.HeaderCell>
+                            <Table.HeaderCell>Updated At</Table.HeaderCell>
                             <Table.HeaderCell>Actions</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>

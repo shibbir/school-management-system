@@ -15,10 +15,6 @@ const Subject = sequelize.dbConnector.define("subjects", {
         allowNull: false,
         type: DataTypes.STRING(50)
     },
-    credit_point: {
-        allowNull: false,
-        type: DataTypes.DECIMAL
-    },
     content: {
         type: DataTypes.STRING
     },

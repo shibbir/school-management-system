@@ -41,6 +41,9 @@ export default function reducer(state=initialState, action) {
         case Types.GET_ASSIGNED_SUBJECTS_FULFILLED: {
             return { ...state, assigned_subjects: action.payload.data };
         }
+        case Types.RESET_USER: {
+            return { ...state, user: null };
+        }
     }
 
     return state;

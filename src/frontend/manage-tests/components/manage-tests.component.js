@@ -45,10 +45,10 @@ export default function ManageTests() {
                 <Table.Cell>
                     <Dropdown>
                         <Dropdown.Menu>
-                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setTestId(row.id)}/>
+                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setTestId(row.id)} disabled={subject.status === "archived"}/>
                             <Dropdown.Item icon="list" text="Manage Test Results" onClick={() => setTestIdForResults(row.id)}/>
-                            <Dropdown.Item icon="upload" text="Import Test Results" onClick={() => setTestIdForImportResults(row.id)}/>
-                            <Dropdown.Item icon="trash" text="Remove Test" onClick={() => onDeleteTest(row.id)}/>
+                            <Dropdown.Item icon="upload" text="Import Test Results" onClick={() => setTestIdForImportResults(row.id)} disabled={subject.status === "acarchivedtive"}/>
+                            <Dropdown.Item icon="trash" text="Remove Test" onClick={() => onDeleteTest(row.id)} disabled={subject.status === "archived"}/>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Table.Cell>
@@ -75,7 +75,7 @@ export default function ManageTests() {
                     </Grid.Column>
 
                     <Grid.Column>
-                        <Button floated="right" primary size="small" onClick={() => setTestId(null)}>
+                        <Button floated="right" primary size="small" onClick={() => setTestId(null)} disabled={subject && subject.status === "archived"}>
                             Create new test
                         </Button>
                     </Grid.Column>

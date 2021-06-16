@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Divider, Button, Form as SemanticUIForm } from "semantic-ui-react";
 
 import { createUserSchema } from "../user.schema";
-import { createUser, updateUser, getUser } from "../user.actions";
+import { createUser, updateUser, getUser, resetUser } from "../user.actions";
 import { TextInput, DropdownInput } from "../../core/components/field-inputs.component";
 
 function UserForm({ id } = props) {
@@ -15,6 +15,8 @@ function UserForm({ id } = props) {
     useEffect(() => {
         if(id) {
             dispatch(getUser(id));
+        } else {
+            dispatch(resetUser());
         }
     }, [id, dispatch]);
 
@@ -45,6 +47,13 @@ function UserForm({ id } = props) {
                             message: "Your changes are saved.",
                             position: "topRight"
                         });
+                    }).catch(function(err) {
+                        iziToast["error"]({
+                            timeout: 3000,
+                            title: err.response.status,
+                            message: err.response.data,
+                            position: "topRight"
+                        });
                     });
                 } else {
                     dispatch(createUser(values)).then(function() {
@@ -54,6 +63,13 @@ function UserForm({ id } = props) {
                             position: "topRight"
                         });
                         actions.resetForm();
+                    }).catch(function(err) {
+                        iziToast["error"]({
+                            timeout: 3000,
+                            title: err.response.status,
+                            message: err.response.data,
+                            position: "topRight"
+                        });
                     });
                 }
 
@@ -93,7 +109,8 @@ function UserForm({ id } = props) {
                             label: "Role",
                             options: roleOptions,
                             onChange: (event, data) => {formikProps.setFieldValue(data.name, data.value)},
-                            required: true
+                            required: true,
+                            disabled: !!id
                         }}/>
                     </SemanticUIForm.Group>
 

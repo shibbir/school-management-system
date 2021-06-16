@@ -36,8 +36,9 @@ const TestResult = sequelize.dbConnector.define("test_results", {
     updatedAt: "updated_at"
 });
 
+User.hasMany(TestResult, { as: "test_results", foreignKey: { name: "pupil_id", allowNull: false }});
 Test.hasMany(TestResult, { as: "test_results", foreignKey: { name: "test_id", allowNull: false }});
-TestResult.belongsTo(User, { as: "pupil", foreignKey: "pupil_id" });
-TestResult.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
+TestResult.belongsTo(User, { as: "pupil", foreignKey: { name: "pupil_id", allowNull: false }});
+TestResult.belongsTo(User, { as: "modifier", foreignKey: { name: "updated_by", allowNull: false }});
 
 module.exports = TestResult;

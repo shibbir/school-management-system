@@ -3,6 +3,7 @@ const { Op } = require("sequelize");
 const User = require("./user.model");
 const Program = require("../class/class.model");
 const Subject = require("../subject/subject.model");
+const TestResult = require("../manage-test-results/test-result.model");
 const { generateAccessToken, generateRefreshToken } = require("../core/security.middleware");
 
 function formatUserProfile(user) {
@@ -72,9 +73,7 @@ async function getUser(req, res, next) {
 
 async function getUsers(req, res, next) {
     try {
-        const query = {
-            id: { [Op.ne]: req.user.id }
-        };
+        const query = {};
 
         if(req.query.role) {
             query.role = req.query.role;
@@ -88,7 +87,7 @@ async function getUsers(req, res, next) {
             where: query,
             attributes: { exclude: ["password", "refresh_token"] },
             order: [
-                ["forename"]
+                ["role"]
             ],
             include: [
                 {
@@ -113,6 +112,12 @@ async function getUsers(req, res, next) {
 async function createUser(req, res, next) {
     try {
         const { forename, surname, username, password, role } = req.body;
+
+        const matched_username = await User.count({ where: {
+            username: username.toLowerCase()
+        }});
+
+        if(matched_username) return res.status(400).send("Username already exists. Please try with a different one.");
 
         const entity = await User.create({
             role,
@@ -143,6 +148,13 @@ async function updateUser(req, res, next) {
     try {
         const { forename, surename, username, password } = req.body;
 
+        const matched_username = await User.count({ where: {
+            username: username.toLowerCase(),
+            id: { [Op.ne]: req.user.id }
+        }});
+
+        if(matched_username) return res.status(400).send("Username already exists. Please try with a different one.");
+
         await User.update({
             forename,
             surename,
@@ -168,6 +180,8 @@ async function updateUser(req, res, next) {
 
 async function deleteUser(req, res, next) {
     try {
+        if(req.params.id === req.user.id) return res.status(400).send("You cannot remove yourself.");
+
         const user = await User.findByPk(req.params.id, {
             include: [{
                 model: Subject,
@@ -181,9 +195,8 @@ async function deleteUser(req, res, next) {
             }
         }
 
-        //await User.destroy({ where: { id: req.params.id }});
-        //res.json({ id: req.params.id });
-        res.json(user);
+        await User.destroy({ where: { id: req.params.id }});
+        res.json({ id: req.params.id });
     } catch(err) {
         next(err);
     }
@@ -196,11 +209,11 @@ async function getAssignedSubjects(req, res, next) {
             order: [
                 ["created_at", "DESC"]
             ],
-            include: [{
+            include: {
                 model: Program,
                 as: "class",
                 attributes: ["id", "name"]
-            }]
+            }
         });
 
         res.json(subjects);

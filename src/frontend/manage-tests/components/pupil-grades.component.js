@@ -1,4 +1,3 @@
-import { capitalize } from "lodash";
 import queryString from "query-string";
 import { Link, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -25,7 +24,7 @@ export default function PupilGrades() {
 
     const rows = pupil_grades.map(function(row, index) {
         return (
-            <Table.Row key={row.id}>
+            <Table.Row key={row.pupil_id}>
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{`${row.forename} ${row.surname}`}</Table.Cell>
                 <Table.Cell>{row.grade}</Table.Cell>

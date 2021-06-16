@@ -19,3 +19,7 @@ a[disabled] {
 #loader {
     display: none;
 }
+
+.ui.form .disabled.fields .field, .ui.form .disabled.field, .ui.form .field :disabled {
+    opacity: 0.9;
+}

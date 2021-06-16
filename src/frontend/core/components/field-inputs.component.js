@@ -53,9 +53,14 @@ export const TextareaInput = ({ attributes }) => {
 };
 
 export const DropdownInput = ({ attributes }) => {
+    const label = attributes.label;
+    delete attributes.label;
+
     return (
         <Form.Field required={attributes.required}>
-            <Form.Select search {...attributes} options={attributes.options} disabled={attributes.disabled}/>
+            { label && <label>{label}</label> }
+
+            <Form.Select search {...attributes} name={attributes.name} options={attributes.options} disabled={attributes.disabled}/>
 
             <div className="field-validation-error">
                 <ErrorMessage name={attributes.name} />

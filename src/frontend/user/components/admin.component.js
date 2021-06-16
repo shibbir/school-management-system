@@ -1,12 +1,23 @@
-import React from "react";
-import { Link, useLocation, useHistory } from "react-router-dom";
-import { Card, Icon, Segment } from "semantic-ui-react";
+import { Link } from "react-router-dom";
+import { Card, Icon } from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { getUsers } from "../user.actions";
 
 export default function Admin() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getUsers());
+    }, []);
+
+    const users = useSelector(state => state.userReducer.users);
+
     return (
         <div id="dashboard">
             <Card.Group itemsPerRow={5} stackable>
-                <Link className="ui raised card" to="/manage-users">
+                <Link className="ui raised card" to="/manage-users" disabled={false}>
                     <Card.Content className="ui center aligned">
                         <Card.Header>Manage Users</Card.Header>
                         <Card.Description>
@@ -15,7 +26,7 @@ export default function Admin() {
                     </Card.Content>
                     <Card.Content extra>
                         <Icon name="user"/>
-                        22 Users
+                        {users.length} Users
                     </Card.Content>
                 </Link>
 
