@@ -1,14 +1,11 @@
-import axios from "axios";
 import { Form, Formik } from "formik";
-import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import iziToast from "izitoast/dist/js/iziToast";
-import { Button, Segment, Header, Divider, Image, Modal, Message, Icon } from "semantic-ui-react";
+import { Button, Segment, Header, Icon } from "semantic-ui-react";
 
 import { login } from "../user.actions";
 import { loginSchema } from "../user.schema";
-import OAuthProviders from "./oauth-providers.component";
 import { TextInput } from "../../core/components/field-inputs.component";
 
 export default function Login() {
@@ -70,8 +67,6 @@ export default function Login() {
                         </Formik>
                         <button className="ui primary tertiary button" onClick={() => setForgotPasswordModalActive(true)}>Forgot password?</button>
                     </Segment>
-
-                    <OAuthProviders/>
                 </div>
             </div>
         </div>

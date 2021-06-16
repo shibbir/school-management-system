@@ -1,8 +1,8 @@
 const bcrypt = require("bcryptjs");
 const { DataTypes } = require("sequelize");
 
-const Program = require("../class/class.model");
 const sequelize = require("../config/lib/sequelize");
+const Program = require("../manage-classes/class.model");
 
 const User = sequelize.dbConnector.define("users", {
     id: {
@@ -49,7 +49,7 @@ const User = sequelize.dbConnector.define("users", {
         type: DataTypes.UUID
     },
 }, {
-    schema: "sms",
+    schema: process.env.POSTGRES_DATABASE_SCHEMA,
     tableName: "users",
     timestamps: true,
     createdAt: "created_at",

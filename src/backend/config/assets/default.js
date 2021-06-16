@@ -5,9 +5,9 @@ module.exports = {
     },
     backend: {
         routes: [
-            "src/backend/user/user.routes.js",
-            "src/backend/class/class.routes.js",
-            "src/backend/subject/subject.routes.js",
+            "src/backend/manage-users/user.routes.js",
+            "src/backend/manage-classes/class.routes.js",
+            "src/backend/manage-subjects/subject.routes.js",
             "src/backend/manage-tests/test.routes.js",
             "src/backend/manage-test-results/test-result.routes.js",
             "src/backend/core/index.routes.js"

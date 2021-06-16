@@ -84,6 +84,17 @@ export function getAssignedSubjects(user_id) {
     };
 }
 
+export function changePassword(data) {
+    return {
+        type: Types.CHANGE_PASSWORD,
+        payload: axios({
+            method: "patch",
+            data,
+            url: "/api/profile/change-password"
+        })
+    };
+}
+
 export function resetUser() {
     return {
         type: Types.RESET_USER

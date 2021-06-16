@@ -1,8 +1,8 @@
 const path = require("path");
 const { DataTypes } = require("sequelize");
 
-const User = require("../user/user.model");
-const Program = require("../class/class.model");
+const User = require("../manage-users/user.model");
+const Program = require("../manage-classes/class.model");
 const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
 
 const Subject = sequelize.dbConnector.define("subjects", {
@@ -33,7 +33,7 @@ const Subject = sequelize.dbConnector.define("subjects", {
         type: DataTypes.UUID
     },
 }, {
-    schema: "sms",
+    schema: process.env.POSTGRES_DATABASE_SCHEMA,
     tableName: "subjects",
     timestamps: true,
     createdAt: "created_at",

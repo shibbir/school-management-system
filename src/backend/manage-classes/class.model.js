@@ -21,7 +21,7 @@ const Program = sequelize.dbConnector.define("classes", {
         type: DataTypes.UUID
     }
 }, {
-    schema: "sms",
+    schema: process.env.POSTGRES_DATABASE_SCHEMA,
     tableName: "classes",
     timestamps: true,
     createdAt: "created_at",

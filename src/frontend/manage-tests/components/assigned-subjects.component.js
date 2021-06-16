@@ -54,7 +54,7 @@ export default function AssignedSubjects() {
 
     return (
         <>
-            <Breadcrumb size="large">
+            <Breadcrumb>
                 <Breadcrumb.Section><Link to="/">Dashboard</Link></Breadcrumb.Section>
                 <Breadcrumb.Divider>/</Breadcrumb.Divider>
                 <Breadcrumb.Section active>Assigned Subjects</Breadcrumb.Section>

@@ -1,7 +1,7 @@
 const multer  = require("multer");
 
 module.exports = multer({
-    dest: "public/uploads/",
+    dest: "wwwroot/uploads/",
     limits: {
         fileSize: 2000000
     }

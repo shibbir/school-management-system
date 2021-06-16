@@ -1,9 +1,10 @@
 import { capitalize } from "lodash";
+import { Link } from "react-router-dom";
 import { FormattedDate } from "react-intl";
 import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown } from "semantic-ui-react";
+import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown, Breadcrumb } from "semantic-ui-react";
 
 import UserForm from "./user-form.component";
 import { getUsers, deleteUser } from "../user.actions";
@@ -61,6 +62,12 @@ export default function ClassList() {
 
     return (
         <>
+            <Breadcrumb>
+                <Breadcrumb.Section><Link to="/">Dashboard</Link></Breadcrumb.Section>
+                <Breadcrumb.Divider>/</Breadcrumb.Divider>
+                <Breadcrumb.Section active>Users</Breadcrumb.Section>
+            </Breadcrumb>
+
             <Button floated="right" primary size="small" onClick={() => setUserId(null)}>
                 Create new user
             </Button>

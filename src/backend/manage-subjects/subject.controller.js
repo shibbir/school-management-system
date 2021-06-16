@@ -1,6 +1,6 @@
 const Subject = require("./subject.model");
-const User = require("../user/user.model");
-const Program = require("../class/class.model");
+const User = require("../manage-users/user.model");
+const Program = require("../manage-classes/class.model");
 const Test = require("../manage-tests/test.model");
 const TestResult = require("../manage-test-results/test-result.model");
 

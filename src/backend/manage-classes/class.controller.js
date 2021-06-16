@@ -1,7 +1,8 @@
 const { Op } = require("sequelize");
+
 const Program = require("./class.model");
-const User = require("../user/user.model");
-const Subject = require("../subject/subject.model");
+const User = require("../manage-users/user.model");
+const Subject = require("../manage-subjects/subject.model");
 
 async function getClasess(req, res, next) {
     try {
@@ -31,16 +32,16 @@ async function getClasess(req, res, next) {
 
 async function createClass(req, res, next) {
     try {
-        let doc = new ClassModel({
-            name: req.body.name,
-            created_by: req.user._id,
-            updated_by: req.user._id
+        const { name } = req.body;
+
+        const program = await Program.create({
+            name,
+            created_by: req.user.id,
+            updated_by: req.user.id
         });
 
-        doc = await doc.save();
-        doc = await doc.populate("updated_by", "forename surname").execPopulate();
+        res.json(program);
 
-        res.json(doc);
     } catch(err) {
         next(err);
     }

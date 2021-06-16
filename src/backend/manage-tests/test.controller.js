@@ -1,6 +1,6 @@
-const User = require("../user/user.model");
 const Test = require("./test.model");
-const Subject = require("../subject/subject.model");
+const User = require("../manage-users/user.model");
+const Subject = require("../manage-subjects/subject.model");
 
 async function getTests(req, res, next) {
     try {

@@ -1,7 +1,7 @@
 {
   "name": "school-management-system",
   "version": "0.1.0",
-  "description": "School Management System built with MERN stack.",
+  "description": "School Management System built with Node.js, React.js, PostgreSQL.",
   "scripts": {
     "start": "run-p webpack:development pm2:development",
     "webpack:development": "cross-env NODE_ENV=development webpack --progress --watch --stats normal",

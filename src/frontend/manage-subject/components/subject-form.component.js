@@ -5,7 +5,7 @@ import { Divider, Button } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
 
 import SubjectSchema from "../subject.schema";
-import { getUsers } from "../../user/user.actions";
+import { getUsers } from "../../manage-user/user.actions";
 import { getClasses } from "../../class/class.actions";
 import { TextInput, DropdownInput } from "../../core/components/field-inputs.component";
 import { createSubject, updateSubject, getSubject, resetSubject } from "../subject.actions";

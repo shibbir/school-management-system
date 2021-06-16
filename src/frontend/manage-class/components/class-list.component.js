@@ -1,13 +1,14 @@
+
+import { Link } from "react-router-dom";
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Label } from "semantic-ui-react";
+import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Label, Breadcrumb } from "semantic-ui-react";
 
-import ClassForm from "./class-form.component";
 import { getClasses } from "../class.actions";
-
-import Subjects from "../../subject/components/subjects.component";
+import ClassForm from "./class-form.component";
 import PupilsEnrolment from "./pupils-enrolment.component";
+import Subjects from "../../subject/components/subjects.component";
 
 export default function ClassList() {
     const dispatch = useDispatch();
@@ -26,9 +27,9 @@ export default function ClassList() {
             <Table.Row key={row.id}>
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{row.name}</Table.Cell>
-                <Table.Cell>{row.subjects.length}</Table.Cell>
-                <Table.Cell>{row.pupils.length}</Table.Cell>
-                <Table.Cell>{row.updated_by}</Table.Cell>
+                <Table.Cell>{row.subjects ? row.subjects.length : 0}</Table.Cell>
+                <Table.Cell>{row.pupils ? row.pupils.length : 0}</Table.Cell>
+                <Table.Cell><FormattedDate value={row.created_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell><FormattedDate value={row.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     <Dropdown>
@@ -45,6 +46,12 @@ export default function ClassList() {
 
     return (
         <>
+            <Breadcrumb>
+                <Breadcrumb.Section><Link to="/">Dashboard</Link></Breadcrumb.Section>
+                <Breadcrumb.Divider>/</Breadcrumb.Divider>
+                <Breadcrumb.Section active>Available classes</Breadcrumb.Section>
+            </Breadcrumb>
+
             <Button floated="right" primary size="small" onClick={() => setClassId(null)}>
                 Create a new class
             </Button>
@@ -92,26 +99,25 @@ export default function ClassList() {
             </Modal>
 
             <Divider hidden clearing/>
-            { classes.length > 0 &&
-                <>
-                    <Table selectable compact>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell>#</Table.HeaderCell>
-                                <Table.HeaderCell>Name</Table.HeaderCell>
-                                <Table.HeaderCell>Subjects</Table.HeaderCell>
-                                <Table.HeaderCell>Pupils</Table.HeaderCell>
-                                <Table.HeaderCell>Updated By</Table.HeaderCell>
-                                <Table.HeaderCell>Updated At</Table.HeaderCell>
-                                <Table.HeaderCell>Actions</Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
 
-                        <Table.Body>
-                            {rows}
-                        </Table.Body>
-                    </Table>
-                </>
+            { classes.length > 0 &&
+                <Table selectable>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>#</Table.HeaderCell>
+                            <Table.HeaderCell>Name</Table.HeaderCell>
+                            <Table.HeaderCell>Total Subjects</Table.HeaderCell>
+                            <Table.HeaderCell>Total Pupils</Table.HeaderCell>
+                            <Table.HeaderCell>Created At</Table.HeaderCell>
+                            <Table.HeaderCell>Updated At</Table.HeaderCell>
+                            <Table.HeaderCell>Actions</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
+                        {rows}
+                    </Table.Body>
+                </Table>
             }
 
             { classes.length === 0 &&

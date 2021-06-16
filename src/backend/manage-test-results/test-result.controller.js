@@ -1,7 +1,7 @@
 const fs = require("fs");
 const parse = require("csv-parse");
 
-const User = require("../user/user.model");
+const User = require("../manage-users/user.model");
 const TestResult = require("./test-result.model");
 
 async function getTestResults(req, res, next) {
@@ -119,9 +119,12 @@ async function importTestResults(req, res, next) {
                 updated_by: req.user.id
             });
         }).on("end", async function() {
+            await fs.promises.unlink(req.file.path);
+
             test_results = await TestResult.bulkCreate(test_results, {
                 updateOnDuplicate: ["grade", "updated_by", "updated_at"]
             });
+
             res.json(test_results);
         });
     } catch(err) {

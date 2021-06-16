@@ -7,17 +7,17 @@ import "fomantic-ui-css/semantic.css";
 import "izitoast/dist/css/iziToast.css";
 import "./app.component.css";
 
+import Login from "../user/components/login.component";
 import Forbidden from "./components/forbidden.component";
 import NoMatch from "./components/nomatch-route.component";
+import Profile from "../user/components/profile.component";
 import PublicRoute from "./components/public-route.component";
 import PrivateRoute from "./components/private-route.component";
-import Login from "../user/components/login.component";
-import Profile from "../user/components/profile.component";
 import Dashboard from "../user/components/dashboard.component";
 import UserRoutes from "../user/user.routes";
 import ClassRoutes from "../class/class.routes";
-import AssignedSubjectsRoutes from "../manage-tests/test.routes";
 import { getSignedInUserProfile } from "../user/user.actions";
+import AssignedSubjectsRoutes from "../manage-tests/test.routes";
 
 let refCount = 0;
 
@@ -60,6 +60,8 @@ export default function App() {
             <PublicRoute path="/login" component={Login}/>
 
             <PrivateRoute exact path="/" component={Dashboard}/>
+
+            <PrivateRoute path="/profile" component={Profile}/>
 
             <Route path="/manage-users" component={UserRoutes}/>
 

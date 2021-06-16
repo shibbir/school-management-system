@@ -1,9 +1,8 @@
 const { Op } = require("sequelize");
 
 const User = require("./user.model");
-const Program = require("../class/class.model");
-const Subject = require("../subject/subject.model");
-const TestResult = require("../manage-test-results/test-result.model");
+const Program = require("../manage-classes/class.model");
+const Subject = require("../manage-subjects/subject.model");
 const { generateAccessToken, generateRefreshToken } = require("../core/security.middleware");
 
 function formatUserProfile(user) {
@@ -146,20 +145,25 @@ async function createUser(req, res, next) {
 
 async function updateUser(req, res, next) {
     try {
-        const { forename, surename, username, password } = req.body;
+        const { username, forename, surename } = req.body;
+
+        if(req.user.role !== "admin" && req.user.id !== req.params.id) {
+            return res.status(403).send("You don't have the permission.");
+        }
 
         const matched_username = await User.count({ where: {
             username: username.toLowerCase(),
             id: { [Op.ne]: req.user.id }
         }});
 
-        if(matched_username) return res.status(400).send("Username already exists. Please try with a different one.");
+        if(matched_username) {
+            return res.status(400).send("Username already exists. Please try with a different one.");
+        }
 
         await User.update({
             forename,
             surename,
             username,
-            password,
             updated_by: req.user.id
         }, { where: { id: req.params.id }});
 
@@ -202,6 +206,27 @@ async function deleteUser(req, res, next) {
     }
 }
 
+async function changePassword(req, res, next) {
+    try {
+        const { current_password, new_password, confirm_new_password } = req.body;
+
+        const user = await User.findByPk(req.user.id);
+
+        if (!user || !user.validPassword(current_password)) return res.status(400).send("Current password is incorrect.");
+
+        if(new_password !== confirm_new_password) return res.status(400).send("New password and confirm password does not match.");
+
+        user.password = new_password;
+        user.updated_by = req.user.id;
+
+        await user.save();
+
+        res.status(200).send("Password changed successfully.");
+    } catch (err) {
+        next(err);
+    }
+}
+
 async function getAssignedSubjects(req, res, next) {
     try {
         const subjects = await Subject.findAll({
@@ -230,4 +255,5 @@ exports.getUsers = getUsers;
 exports.createUser = createUser;
 exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
+exports.changePassword = changePassword;
 exports.getAssignedSubjects = getAssignedSubjects;

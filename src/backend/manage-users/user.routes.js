@@ -13,9 +13,11 @@ module.exports = function(app) {
         .post(authenticate, authorizeFor(["admin"]), controller.createUser);
 
     app.route("/api/users/:id")
-        .get(authenticate, authorizeFor(["admin"]), controller.getUser)
-        .patch(authenticate, authorizeFor(["admin"]), controller.updateUser)
+        .get(authenticate, controller.getUser)
+        .patch(authenticate, controller.updateUser)
         .delete(authenticate, authorizeFor(["admin"]), controller.deleteUser);
+
+    app.patch("/api/profile/change-password", authenticate, controller.changePassword);
 
     app.route("/api/users/:id/subjects")
         .get(authenticate, authorizeFor(["teacher"]), controller.getAssignedSubjects)

@@ -14,7 +14,7 @@ export default function reducer(state=initialState, action) {
             return { ...state, program: action.payload.data };
         }
         case Types.POST_CLASS_FULFILLED: {
-            return { ...state, classes: state.classes.concat(action.payload.data) };
+            return { ...state, classes: [action.payload.data].concat(state.classes) };
         }
         case Types.PATCH_CLASS_FULFILLED: {
             const classes = state.classes.map(function(x) {

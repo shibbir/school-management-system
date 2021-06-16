@@ -6,12 +6,12 @@ async function init() {
     require("dotenv").config();
     const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
 
-    await sequelize.dbConnector.query("DROP SCHEMA sms CASCADE");
-    await sequelize.dbConnector.query("CREATE SCHEMA IF NOT EXISTS sms");
+    await sequelize.dbConnector.query(`DROP SCHEMA ${process.env.POSTGRES_DATABASE_SCHEMA} CASCADE`);
+    await sequelize.dbConnector.query(`CREATE SCHEMA IF NOT EXISTS ${process.env.POSTGRES_DATABASE_SCHEMA}`);
 
-    const User = require(path.join(process.cwd(), "src/backend/user/user.model"));
-    const Program = require(path.join(process.cwd(), "src/backend/class/class.model"));
-    const Subject = require(path.join(process.cwd(), "src/backend/subject/subject.model"));
+    const User = require(path.join(process.cwd(), "src/backend/manage-users/user.model"));
+    const Program = require(path.join(process.cwd(), "src/backend/manage-classes/class.model"));
+    const Subject = require(path.join(process.cwd(), "src/backend/manage-subjects/subject.model"));
     const Test = require(path.join(process.cwd(), "src/backend/manage-tests/test.model"));
     require(path.join(process.cwd(), "src/backend/manage-test-results/test-result.model"));
 

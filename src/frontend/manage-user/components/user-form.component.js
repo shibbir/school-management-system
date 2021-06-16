@@ -29,6 +29,7 @@ function UserForm({ id } = props) {
     return (
         <Formik
             initialValues={{
+                id: user ? user.id : "",
                 forename: user ? user.forename : "",
                 surname: user ? user.surname : "",
                 username: user ? user.username : "",
@@ -114,21 +115,23 @@ function UserForm({ id } = props) {
                         }}/>
                     </SemanticUIForm.Group>
 
-                    <SemanticUIForm.Group widths="equal">
-                        <TextInput attributes={{
-                            type: "password",
-                            name: "password",
-                            label: "Password",
-                            required: true
-                        }}/>
+                    { !id &&
+                        <SemanticUIForm.Group widths="equal">
+                            <TextInput attributes={{
+                                type: "password",
+                                name: "password",
+                                label: "Password",
+                                required: true
+                            }}/>
 
-                        <TextInput attributes={{
-                            type: "password",
-                            name: "confirm_password",
-                            label: "Confirm Password",
-                            required: true
-                        }}/>
-                    </SemanticUIForm.Group>
+                            <TextInput attributes={{
+                                type: "password",
+                                name: "confirm_password",
+                                label: "Confirm Password",
+                                required: true
+                            }}/>
+                        </SemanticUIForm.Group>
+                    }
 
                     <Divider hidden/>
                     <Button type="submit" positive disabled={formikProps.isSubmitting}>Save changes</Button>
