@@ -38,7 +38,7 @@ export default function AssignedSubjects() {
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{subject.name}</Table.Cell>
                 <Table.Cell>{capitalize(subject.status)}</Table.Cell>
-                <Table.Cell>{subject.class.name}</Table.Cell>
+                <Table.Cell>{subject.class ? subject.class.name : '--'}</Table.Cell>
                 <Table.Cell><FormattedDate value={subject.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     <Dropdown>

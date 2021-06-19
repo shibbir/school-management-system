@@ -132,9 +132,19 @@ async function importTestResults(req, res, next) {
     }
 }
 
+async function archiveTestResults(test_id, updated_by) {
+    await TestResult.update({
+        status: "archived",
+        updated_by: updated_by
+    }, { where: {
+        test_id: test_id
+    }});
+}
+
 exports.getTestResults = getTestResults;
 exports.createTestResult = createTestResult;
 exports.getTestResult = getTestResult;
 exports.updateTestResult = updateTestResult;
 exports.deleteTestResult = deleteTestResult;
 exports.importTestResults = importTestResults;
+exports.archiveTestResults = archiveTestResults;

@@ -1,4 +1,4 @@
-import { capitalize } from "lodash"
+import { capitalize } from "lodash";
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";

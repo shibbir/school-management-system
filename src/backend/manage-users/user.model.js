@@ -61,8 +61,8 @@ User.prototype.validPassword = function(password) {
 };
 
 Program.hasMany(User, { as: "pupils", foreignKey: "class_id" });
+User.belongsTo(Program, { as: "class", foreignKey: "class_id" });
 
 User.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
-User.belongsTo(Program, { as: "class", foreignKey: "class_id" });
 
 module.exports = User;

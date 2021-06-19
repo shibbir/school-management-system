@@ -1,9 +1,9 @@
 const { Op } = require("sequelize");
 
 const Program = require("./class.model");
-const Test = require("../manage-tests/test.model");
 const User = require("../manage-users/user.model");
 const Subject = require("../manage-subjects/subject.model");
+const { archiveOrDeleteSubjects } = require("../manage-subjects/subject.controller");
 
 async function getClasess(req, res, next) {
     try {
@@ -12,16 +12,17 @@ async function getClasess(req, res, next) {
                 {
                     model: User,
                     as: "pupils",
-                    attributes: ["forename", "surname"]
+                    attributes: ["id"]
                 },
                 {
                     model: Subject,
                     as: "subjects",
-                    attributes: ["id", "name"]
+                    attributes: ["id"]
                 }
             ],
+            attributes: {exclude: ["created_by", "updated_by"]},
             order: [
-                ["updated_at", "DESC"]
+                ["created_at", "DESC"]
             ]
         });
 
@@ -82,31 +83,11 @@ async function deleteClass(req, res, next) {
             class_id: req.params.id
         }});
 
-        const subjects = await Subject.findAll({
-            where: { class_id: req.params.id },
-            include: [{
-                model: Test,
-                as: "tests",
-                attributes: ["id"]
-            }],
-            attributes: ["id"]
-        });
-
-        await Promise.all(subjects.map(async subject => {
-            if(subject.tests.length) {
-                subject.class_id = null;
-                subject.status = "archived";
-                subject.updated_by = req.user.id;
-
-                await subject.save();
-            } else {
-                await Subject.destroy({ where: { id: subject.id }});
-            }
-        }));
+        await archiveOrDeleteSubjects(req.params.id, req.user.id);
 
         await Program.destroy({ where: { id: req.params.id }});
 
-        res.json(subjects);
+        res.json({ id: req.params.id });
 
     } catch(err) {
         next(err);

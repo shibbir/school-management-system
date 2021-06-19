@@ -1,10 +1,11 @@
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Segment, Button, Table, Modal, Header, Dropdown, Divider } from "semantic-ui-react";
+import { Icon, Segment, Button, Table, Modal, Header, Dropdown, Divider, Label } from "semantic-ui-react";
 
 import TestResultForm from "./test-result-form.component";
 import { getTestResultsByTest, deleteTestResult } from "../test-result.actions";
+import { getTest } from "../../manage-tests/test.actions";
 
 export default function TestResults({ test_id }) {
     const dispatch = useDispatch();
@@ -12,6 +13,7 @@ export default function TestResults({ test_id }) {
     const [testResultId, setTestResultId] = useState(undefined);
 
     useEffect(() => {
+        dispatch(getTest(test_id));
         dispatch(getTestResultsByTest(test_id));
     }, [test_id]);
 
@@ -21,6 +23,7 @@ export default function TestResults({ test_id }) {
         }
     };
 
+    const test = useSelector(state => state.testReducer.test);
     const test_results = useSelector(state => state.testResultReducer.test_results);
 
     const rows = test_results.map(function(row, index) {
@@ -50,6 +53,7 @@ export default function TestResults({ test_id }) {
                 floated="right"
                 content="Add a grade"
                 onClick={() => setTestResultId(null)}
+                disabled={test && test.status === "archived"}
             />
 
             <Divider hidden clearing/>
@@ -83,7 +87,7 @@ export default function TestResults({ test_id }) {
             }
 
             <Modal dimmer size="tiny" open={testResultId !== undefined}>
-                <Modal.Header>Test Result Form</Modal.Header>
+                <Modal.Header>Add a new grade under <Label color="teal" size="medium">{test && test.name}</Label> test</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
                         <TestResultForm id={testResultId} test_id={test_id}/>

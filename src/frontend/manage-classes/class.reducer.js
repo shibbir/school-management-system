@@ -25,14 +25,8 @@ export default function reducer(state=initialState, action) {
             });
             return { ...state, classes, program: action.payload.data };
         }
-        case Types.PATCH_PUPILS_ENROLMENT_FULFILLED: {
-            const classes = state.classes.map(function(x) {
-                if(x.id === action.payload.data.id) {
-                    x.pupils = action.payload.data.pupils;
-                }
-                return x;
-            });
-            return { ...state, classes };
+        case Types.DELETE_CLASS_FULFILLED: {
+            return { ...state, classes: _.reject(state.classes, { id: action.payload.data.id }) };
         }
     }
     return state;

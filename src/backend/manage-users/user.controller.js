@@ -86,7 +86,8 @@ async function getUsers(req, res, next) {
             where: query,
             attributes: { exclude: ["password", "refresh_token"] },
             order: [
-                ["role"]
+                ["role"],
+                ["forename"]
             ],
             include: [
                 {

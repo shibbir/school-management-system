@@ -13,9 +13,9 @@ async function init() {
     const User = require(path.join(process.cwd(), "src/backend/manage-users/user.model"));
     const Program = require(path.join(process.cwd(), "src/backend/manage-classes/class.model"));
     const Subject = require(path.join(process.cwd(), "src/backend/manage-subjects/subject.model"));
+    const PupilSubject = require(path.join(process.cwd(), "src/backend/manage-users/pupil-subject.model"));
     const Test = require(path.join(process.cwd(), "src/backend/manage-tests/test.model"));
     require(path.join(process.cwd(), "src/backend/manage-test-results/test-result.model"));
-    //const PupilSubject = require(path.join(process.cwd(), "src/backend/manage-users/pupil-subject.model"));
 
     await sequelize.dbConnector.sync();
 
@@ -420,6 +420,25 @@ async function init() {
                 subject_id: subject1_id,
                 created_by: admin_id,
                 updated_by: admin_id
+            },
+
+            {
+                name: "Compiler Construction: First Test",
+                subject_id: subject4_id,
+                created_by: admin_id,
+                updated_by: admin_id
+            },
+            {
+                name: "Compiler Construction: Second Test",
+                subject_id: subject4_id,
+                created_by: admin_id,
+                updated_by: admin_id
+            },
+            {
+                name: "Compiler Construction: Third Test",
+                subject_id: subject4_id,
+                created_by: admin_id,
+                updated_by: admin_id
             }
         ];
 
@@ -435,7 +454,7 @@ async function init() {
         classSeeder,
         userSeeder,
         subjectSeeder,
-        //pupilSubjectSeeder,
+        pupilSubjectSeeder,
         testSeeder
     ], function (err) {
         if (err) console.error(err);

@@ -1,8 +1,9 @@
 const Subject = require("./subject.model");
+const Test = require("../manage-tests/test.model");
 const User = require("../manage-users/user.model");
 const Program = require("../manage-classes/class.model");
-const Test = require("../manage-tests/test.model");
 const TestResult = require("../manage-test-results/test-result.model");
+const { archiveTests } = require("../manage-tests/test.controller");
 
 async function getSubjects(req, res, next) {
     try {
@@ -108,25 +109,28 @@ async function updateSubject(req, res, next) {
         let subject = await Subject.findByPk(req.params.id, {
             include: {
                 model: Test,
-                as: "tests"
+                as: "tests",
+                attributes: ["id"]
             }
         });
 
         if(subject.status === "archived") return res.status(400).send("No further changes can be made to archived subjects.");
 
-        if(status === "archived" && !subject.tests.length) return res.status(400).send("Only subjects with dependent tests can be archived.");
+        if(status === "archived") {
+            if(!subject.tests.length) return res.status(400).send("Only subjects with dependent tests can be archived.");
 
-        const values = {
-            name,
-            teacher_id,
-            updated_by: req.user.id
-        };
+            subject.status = "archived";
+            subject.updated_by = req.user.id;
 
-        if(status) values.status = status;
+            await subject.save();
+            await archiveTests(req.params.id, req.user.id);
+        } else {
+            subject.name = name;
+            subject.teacher_id = teacher_id;
+            subject.updated_by = req.user.id;
 
-        await Subject.update(values, {
-            where: { id: req.params.id }
-        });
+            await subject.save();
+        }
 
         subject = await Subject.findByPk(req.params.id, {
             include: [
@@ -137,7 +141,8 @@ async function updateSubject(req, res, next) {
                 },
                 {
                     model: Test,
-                    as: "tests"
+                    as: "tests",
+                    attributes: ["id"]
                 }
             ]
         });
@@ -211,6 +216,32 @@ async function getPupilGrades(req, res, next) {
     }
 }
 
+async function archiveOrDeleteSubjects(class_id, updated_by) {
+    const subjects = await Subject.findAll({
+        where: { class_id },
+        include: [{
+            model: Test,
+            as: "tests",
+            attributes: ["id"]
+        }],
+        attributes: ["id"]
+    });
+
+    await Promise.all(subjects.map(async subject => {
+        if(subject.tests.length) {
+            subject.class_id = null;
+            subject.status = "archived";
+            subject.updated_by = updated_by;
+
+            await subject.save();
+
+            await archiveTests(subject.id, updated_by);
+        } else {
+            await Subject.destroy({ where: { id: subject.id }});
+        }
+    }));
+}
+
 exports.getSubjects = getSubjects;
 exports.getSubjectsByClass = getSubjectsByClass;
 exports.addSubject = addSubject;
@@ -218,3 +249,4 @@ exports.getSubject = getSubject;
 exports.updateSubject = updateSubject;
 exports.deleteSubject = deleteSubject;
 exports.getPupilGrades = getPupilGrades;
+exports.archiveOrDeleteSubjects = archiveOrDeleteSubjects;

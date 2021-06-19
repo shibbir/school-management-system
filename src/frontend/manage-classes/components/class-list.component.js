@@ -78,7 +78,7 @@ export default function ClassList() {
             </Modal>
 
             <Modal dimmer size="small" open={program !== undefined}>
-                <Modal.Header>Manage subjects of  <Label color="teal" size="medium">{program && program.name}</Label> class</Modal.Header>
+                <Modal.Header>Manage subjects of <Label color="teal" size="medium">{program && program.name}</Label> class</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
                         <Subjects class_id={program && program.id}/>

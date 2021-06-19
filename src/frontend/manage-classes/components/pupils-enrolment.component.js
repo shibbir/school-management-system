@@ -49,7 +49,7 @@ export default function PupilsEnrolment({ id } = props) {
         if(confirm("Are you sure you want to assign the selected pupils in this class? Assigning them to a new class automatically deassigns them from the previous class.")) {
             dispatch(bulkEnrolment(id, { pupils: selectedPupils.map((x => x.id )) })).then(function() {
                 dispatch(getUsers("?role=pupil"));
-                dispatch(getClasses());
+                //dispatch(getClasses());
 
                 iziToast["success"]({
                     timeout: 3000,
@@ -68,9 +68,9 @@ export default function PupilsEnrolment({ id } = props) {
                         <Checkbox onClick={() => togglePupilSelection(pupil)} checked={selectedPupils.includes(pupil)}/>
                     </SemanticUIForm.Field>
                 </Table.Cell>
+                <Table.Cell>{pupil.id}</Table.Cell>
                 <Table.Cell>{pupil.forename}</Table.Cell>
                 <Table.Cell>{pupil.surname}</Table.Cell>
-                <Table.Cell>{pupil.username}</Table.Cell>
                 <Table.Cell>{pupil.class ? pupil.class.name : '--'}</Table.Cell>
             </Table.Row>
         );
@@ -89,9 +89,9 @@ export default function PupilsEnrolment({ id } = props) {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell><Checkbox onClick={() => togglePupilsSelection()} checked={allPupilsSelected}/></Table.HeaderCell>
+                            <Table.HeaderCell>Matriculation Number</Table.HeaderCell>
                             <Table.HeaderCell>Forename</Table.HeaderCell>
                             <Table.HeaderCell>Surname</Table.HeaderCell>
-                            <Table.HeaderCell>Username</Table.HeaderCell>
                             <Table.HeaderCell>Assigned Class</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>

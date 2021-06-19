@@ -1,6 +1,7 @@
 const Test = require("./test.model");
 const User = require("../manage-users/user.model");
 const Subject = require("../manage-subjects/subject.model");
+const { archiveTestResults } = require("../manage-test-results/test-result.controller");
 
 async function getTests(req, res, next) {
     try {
@@ -106,8 +107,25 @@ async function deleteTest(req, res, next) {
     }
 }
 
+async function archiveTests(subject_id, updated_by) {
+    const tests = await Test.findAll({
+        where: { subject_id: subject_id },
+        attributes: ["id"]
+    });
+
+    await Promise.all(tests.map(async test => {
+        test.status = "archived";
+        test.updated_by = updated_by;
+
+        await test.save();
+
+        await archiveTestResults(test.id, updated_by);
+    }));
+}
+
 exports.getTests = getTests;
 exports.createTest = createTest;
 exports.getTest = getTest;
 exports.updateTest = updateTest;
 exports.deleteTest = deleteTest;
+exports.archiveTests = archiveTests;

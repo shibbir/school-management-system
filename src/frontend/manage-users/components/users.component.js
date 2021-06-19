@@ -24,10 +24,10 @@ export default function ClassList() {
         return (
             <Table.Row key={row.id}>
                 <Table.Cell>{index+1}</Table.Cell>
+                <Table.Cell>{capitalize(row.role)}</Table.Cell>
+                <Table.Cell>{row.username}</Table.Cell>
                 <Table.Cell>{row.forename}</Table.Cell>
                 <Table.Cell>{row.surname}</Table.Cell>
-                <Table.Cell>{row.username}</Table.Cell>
-                <Table.Cell>{capitalize(row.role)}</Table.Cell>
                 <Table.Cell>{`${row.modifier.forename} ${row.modifier.surname}`}</Table.Cell>
                 <Table.Cell><FormattedDate value={row.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
@@ -95,10 +95,10 @@ export default function ClassList() {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>#</Table.HeaderCell>
+                            <Table.HeaderCell>Role</Table.HeaderCell>
+                            <Table.HeaderCell>Username</Table.HeaderCell>
                             <Table.HeaderCell>Forename</Table.HeaderCell>
                             <Table.HeaderCell>Surname</Table.HeaderCell>
-                            <Table.HeaderCell>Username</Table.HeaderCell>
-                            <Table.HeaderCell>Role</Table.HeaderCell>
                             <Table.HeaderCell>Updated By</Table.HeaderCell>
                             <Table.HeaderCell>Updated At</Table.HeaderCell>
                             <Table.HeaderCell>Actions</Table.HeaderCell>

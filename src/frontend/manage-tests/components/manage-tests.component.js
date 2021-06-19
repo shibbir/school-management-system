@@ -1,3 +1,4 @@
+import { capitalize } from "lodash";
 import queryString from "query-string";
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
@@ -17,7 +18,7 @@ export default function ManageTests() {
     const params = queryString.parse(location.search);
 
     const [testId, setTestId] = useState(undefined);
-    const [testIdForResults, setTestIdForResults] = useState(undefined);
+    const [testForTestResults, setTestForTestResults] = useState(undefined);
     const [testIdForImportResults, setTestIdForImportResults] = useState(undefined);
 
     useEffect(() => {
@@ -34,21 +35,22 @@ export default function ManageTests() {
         }
     };
 
-    const rows = tests.map(function(row, index) {
+    const rows = tests.map(function(test, index) {
         return (
-            <Table.Row key={row.id}>
+            <Table.Row key={test.id}>
                 <Table.Cell>{index+1}</Table.Cell>
-                <Table.Cell>{row.name}</Table.Cell>
-                <Table.Cell><FormattedDate value={row.date} day="2-digit" month="long" year="numeric"/></Table.Cell>
-                <Table.Cell>{`${row.modifier.forename} ${row.modifier.surname}`}</Table.Cell>
-                <Table.Cell><FormattedDate value={row.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
+                <Table.Cell>{test.name}</Table.Cell>
+                <Table.Cell><FormattedDate value={test.date} day="2-digit" month="long" year="numeric"/></Table.Cell>
+                <Table.Cell>{capitalize(test.status)}</Table.Cell>
+                <Table.Cell>{`${test.modifier.forename} ${test.modifier.surname}`}</Table.Cell>
+                <Table.Cell><FormattedDate value={test.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     <Dropdown>
                         <Dropdown.Menu>
-                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setTestId(row.id)} disabled={subject.status === "archived"}/>
-                            <Dropdown.Item icon="list" text="Manage Test Results" onClick={() => setTestIdForResults(row.id)}/>
-                            <Dropdown.Item icon="upload" text="Import Test Results" onClick={() => setTestIdForImportResults(row.id)} disabled={subject.status === "acarchivedtive"}/>
-                            <Dropdown.Item icon="trash" text="Remove Test" onClick={() => onDeleteTest(row.id)} disabled={subject.status === "archived"}/>
+                            <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setTestId(test.id)} disabled={test.status === "archived"}/>
+                            <Dropdown.Item icon="list" text="Manage Test Results" onClick={() => setTestForTestResults({id: test.id, name: test.name})}/>
+                            <Dropdown.Item icon="upload" text="Import Test Results" onClick={() => setTestIdForImportResults(test.id)} disabled={test.status === "archived"}/>
+                            <Dropdown.Item icon="trash" text="Remove Test" onClick={() => onDeleteTest(test.id)} disabled={test.status === "archived"}/>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Table.Cell>
@@ -89,6 +91,7 @@ export default function ManageTests() {
                             <Table.HeaderCell>#</Table.HeaderCell>
                             <Table.HeaderCell>Test Name</Table.HeaderCell>
                             <Table.HeaderCell>Test Date</Table.HeaderCell>
+                            <Table.HeaderCell>Test Status</Table.HeaderCell>
                             <Table.HeaderCell>Updated By</Table.HeaderCell>
                             <Table.HeaderCell>Updated At</Table.HeaderCell>
                             <Table.HeaderCell>Actions</Table.HeaderCell>
@@ -126,15 +129,15 @@ export default function ManageTests() {
             </Modal>
 
             {/* Test Results Modal */}
-            <Modal dimmer size="small" open={testIdForResults !== undefined}>
-                <Modal.Header>Test Results</Modal.Header>
+            <Modal dimmer size="small" open={testForTestResults !== undefined}>
+                <Modal.Header>Manage test results of <Label color="teal" size="medium">{testForTestResults && testForTestResults.name}</Label> test</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                        <TestResults test_id={testIdForResults}/>
+                        <TestResults test_id={testForTestResults && testForTestResults.id}/>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button color="black" onClick={() => setTestIdForResults(undefined)}>
+                    <Button color="black" onClick={() => setTestForTestResults(undefined)}>
                         Close
                     </Button>
                 </Modal.Actions>

@@ -21,6 +21,12 @@ const Test = sequelize.dbConnector.define("tests", {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
     },
+    status: {
+        allowNull: false,
+        type: DataTypes.ENUM,
+        defaultValue: "active",
+        values: ["active", "archived"]
+    },
     created_by: {
         allowNull: false,
         type: DataTypes.UUID
@@ -39,6 +45,7 @@ const Test = sequelize.dbConnector.define("tests", {
 
 Subject.hasMany(Test, { as: "tests", foreignKey: { name: "subject_id", allowNull: false }});
 Test.belongsTo(Subject, { as: "subject", foreignKey: "subject_id" });
+
 Test.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
 
 module.exports = Test;

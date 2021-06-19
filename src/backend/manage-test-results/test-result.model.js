@@ -20,6 +20,12 @@ const TestResult = sequelize.dbConnector.define("test_results", {
         allowNull: false,
         type: DataTypes.DECIMAL
     },
+    status: {
+        allowNull: false,
+        type: DataTypes.ENUM,
+        defaultValue: "active",
+        values: ["active", "archived"]
+    },
     created_by: {
         allowNull: false,
         type: DataTypes.UUID
