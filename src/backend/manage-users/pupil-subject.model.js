@@ -13,9 +13,7 @@ const PupilSubejct = sequelize.dbConnector.define("pupil_subejcts", {
 }, {
     schema: process.env.POSTGRES_DATABASE_SCHEMA,
     tableName: "pupil_subejcts",
-    timestamps: true,
-    createdAt: "created_at",
-    updatedAt: "updated_at"
+    timestamps: false
 });
 
 User.belongsToMany(Subject, { through: PupilSubejct, foreignKey: { name: "pupil_id", allowNull: false }, otherKey: "subject_id" });

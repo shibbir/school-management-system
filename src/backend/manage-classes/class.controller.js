@@ -3,6 +3,8 @@ const { Op } = require("sequelize");
 const Program = require("./class.model");
 const User = require("../manage-users/user.model");
 const Subject = require("../manage-subjects/subject.model");
+const Test = require("../manage-tests/test.model");
+const PupilSubject = require("../manage-users/pupil-subject.model");
 const { archiveOrDeleteSubjects } = require("../manage-subjects/subject.controller");
 
 async function getClasess(req, res, next) {
@@ -96,14 +98,27 @@ async function deleteClass(req, res, next) {
 
 async function bulkEnrolment(req, res, next) {
     try {
-        const program = await Program.findByPk(req.params.id);
+        const class_id = req.params.id;
+
+        const program = await Program.findByPk(class_id, {
+            include: {
+                model: Subject,
+                as: "subjects",
+                attributes: ["id"],
+                include: {
+                    model: Test,
+                    as: "tests",
+                    attributes: ["id"]
+                }
+            }
+        });
 
         if(!program) return res.status(404).send("Class not found.");
 
         let pupils = await User.findAll({
             where: {
                 [Op.or]: {
-                    class_id: req.params.id,
+                    class_id,
                     id: {
                         [Op.in]: req.body.pupils
                     }
@@ -114,7 +129,7 @@ async function bulkEnrolment(req, res, next) {
 
         pupils = pupils.map(pupil => {
             if(req.body.pupils.includes(pupil.id)) {
-                pupil.class_id = req.params.id;
+                pupil.class_id = class_id;
             } else {
                 pupil.class_id = null;
             }
@@ -125,6 +140,27 @@ async function bulkEnrolment(req, res, next) {
         });
 
         await User.bulkCreate(pupils, { updateOnDuplicate: ["class_id", "updated_by", "updated_at"] });
+
+        await PupilSubject.destroy({ where: { pupil_id: {
+            [Op.in]: [...pupils.map(p => p.id)]
+        }}});
+
+        const pupil_subjects = [];
+
+        pupils.forEach(pupil => {
+            if(pupil.class_id === class_id) {
+                program.subjects.forEach(subject => {
+                    pupil_subjects.push({
+                        pupil_id: pupil.id,
+                        subject_id: subject.id
+                    });
+                });
+            }
+        });
+
+        if(pupil_subjects.length) {
+            await PupilSubject.bulkCreate(pupil_subjects);
+        }
 
         res.sendStatus(200);
     } catch(err) {

@@ -49,7 +49,7 @@ export default function PupilsEnrolment({ id } = props) {
         if(confirm("Are you sure you want to assign the selected pupils in this class? Assigning them to a new class automatically deassigns them from the previous class.")) {
             dispatch(bulkEnrolment(id, { pupils: selectedPupils.map((x => x.id )) })).then(function() {
                 dispatch(getUsers("?role=pupil"));
-                //dispatch(getClasses());
+                dispatch(getClasses());
 
                 iziToast["success"]({
                     timeout: 3000,
@@ -78,7 +78,7 @@ export default function PupilsEnrolment({ id } = props) {
 
     return (
         <>
-            <Button floated="right" positive size="small" onClick={() => onBulkEnrolment()} disabled={!selectedPupils.length}>
+            <Button floated="right" positive size="small" onClick={() => onBulkEnrolment()}>
                 Save changes
             </Button>
 
