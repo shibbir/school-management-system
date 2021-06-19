@@ -31,7 +31,7 @@ const Subject = sequelize.dbConnector.define("subjects", {
     updated_by: {
         allowNull: false,
         type: DataTypes.UUID
-    },
+    }
 }, {
     schema: process.env.POSTGRES_DATABASE_SCHEMA,
     tableName: "subjects",
@@ -40,7 +40,7 @@ const Subject = sequelize.dbConnector.define("subjects", {
     updatedAt: "updated_at"
 });
 
-Program.hasMany(Subject, { as: "subjects", foreignKey: { name: "class_id", allowNull: false }});
+Program.hasMany(Subject, { as: "subjects", foreignKey: "class_id" });
 User.hasMany(Subject, { as: "subjects", foreignKey: { name: "teacher_id", allowNull: false }});
 Subject.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
 Subject.belongsTo(User, { as: "teacher", foreignKey: "teacher_id" });

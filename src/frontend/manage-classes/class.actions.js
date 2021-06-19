@@ -43,6 +43,16 @@ export function getClass(id) {
     };
 }
 
+export function deleteClass(id) {
+    return {
+        type: Types.DELETE_CLASS,
+        payload: axios({
+            method: "delete",
+            url: `/api/classes/${id}`
+        })
+    };
+}
+
 export function bulkEnrolment(id, data) {
     return {
         type: Types.PATCH_PUPILS_ENROLMENT,

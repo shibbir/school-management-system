@@ -6,9 +6,9 @@ import iziToast from "izitoast/dist/js/iziToast";
 import { Divider, Button } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { getUsers } from "../../user/user.actions";
 import { testResultSchema } from "../test-result.schema";
-import { getSubject } from "../../subject/subject.actions";
+import { getUsers } from "../../manage-users/user.actions";
+import { getSubject } from "../../manage-subjects/subject.actions";
 import { TextInput, DropdownInput } from "../../core/components/field-inputs.component";
 import { getTestResult, createTestResult, updateTestResult, resetTestResult } from "../test-result.actions";
 

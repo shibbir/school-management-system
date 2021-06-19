@@ -5,10 +5,10 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Label, Breadcrumb } from "semantic-ui-react";
 
-import { getClasses } from "../class.actions";
+import { getClasses, deleteClass } from "../class.actions";
 import ClassForm from "./class-form.component";
 import PupilsEnrolment from "./pupils-enrolment.component";
-import Subjects from "../../subject/components/subjects.component";
+import Subjects from "../../manage-subjects/components/subjects.component";
 
 export default function ClassList() {
     const dispatch = useDispatch();
@@ -21,6 +21,12 @@ export default function ClassList() {
     }, []);
 
     const classes = useSelector(state => state.classReducer.classes);
+
+    const onDeleteClass = function(id) {
+        if(confirm("Are you sure you want to remove this class?")) {
+            dispatch(deleteClass(id));
+        }
+    };
 
     const rows = classes.map(function(row, index) {
         return (
@@ -37,6 +43,7 @@ export default function ClassList() {
                             <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setClassId(row.id)}/>
                             <Dropdown.Item icon="book" text="Manage Subjects" onClick={() => setProgram({id: row.id, name: row.name})}/>
                             <Dropdown.Item icon="users" text="Assign Pupils" onClick={() => setClassToAssignPupils(row)}/>
+                            <Dropdown.Item icon="trash" text="Remove Class" onClick={() => onDeleteClass(row.id)}/>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Table.Cell>

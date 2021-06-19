@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Header, Form as SemanticUIForm, Checkbox } from "semantic-ui-react";
 
 import { getClasses, bulkEnrolment } from "../class.actions";
-import { getUsers } from "../../manage-user/user.actions";
+import { getUsers } from "../../manage-users/user.actions";
 
 export default function PupilsEnrolment({ id } = props) {
     const dispatch = useDispatch();

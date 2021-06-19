@@ -7,7 +7,7 @@ import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Breadcr
 
 import TestForm from "./test-form.component";
 import { getTestsBySubject, deleteTest } from "../test.actions";
-import { getSubject } from "../../subject/subject.actions";
+import { getSubject } from "../../manage-subjects/subject.actions";
 import TestResults from "../../manage-test-results/components/test-results.component";
 import ImportTestResultsForm from "../../manage-test-results/components/test-results-import-form.component";
 

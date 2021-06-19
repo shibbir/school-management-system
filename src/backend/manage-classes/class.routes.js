@@ -8,7 +8,8 @@ module.exports = function(app) {
 
     app.route("/api/classes/:id")
         .get(authenticate, controller.getClass)
-        .patch(authenticate, controller.updateClass);
+        .patch(authenticate, controller.updateClass)
+        .delete(authenticate, controller.deleteClass);
 
     app.route("/api/classes/:id/pupils")
         .patch(authenticate, controller.bulkEnrolment);

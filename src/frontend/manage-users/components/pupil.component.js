@@ -1,6 +1,6 @@
 import React from "react";
-import { Link, useLocation, useHistory } from "react-router-dom";
-import { Card, Icon, Segment } from "semantic-ui-react";
+import { Link } from "react-router-dom";
+import { Card, Icon } from "semantic-ui-react";
 
 export default function Admin() {
     return (

@@ -7,17 +7,19 @@ import "fomantic-ui-css/semantic.css";
 import "izitoast/dist/css/iziToast.css";
 import "./app.component.css";
 
-import Login from "../user/components/login.component";
 import Forbidden from "./components/forbidden.component";
 import NoMatch from "./components/nomatch-route.component";
-import Profile from "../user/components/profile.component";
 import PublicRoute from "./components/public-route.component";
 import PrivateRoute from "./components/private-route.component";
-import Dashboard from "../user/components/dashboard.component";
-import UserRoutes from "../user/user.routes";
-import ClassRoutes from "../class/class.routes";
-import { getSignedInUserProfile } from "../user/user.actions";
+import Login from "../manage-users/components/login.component";
+import Profile from "../manage-users/components/profile.component";
+import Dashboard from "../manage-users/components/dashboard.component";
+
+import UserRoutes from "../manage-users/user.routes";
+import ClassRoutes from "../manage-classes/class.routes";
 import AssignedSubjectsRoutes from "../manage-tests/test.routes";
+
+import { getSignedInUserProfile } from "../manage-users/user.actions";
 
 let refCount = 0;
 

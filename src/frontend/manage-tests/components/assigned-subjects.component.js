@@ -5,7 +5,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Header, Breadcrumb, Table, Dropdown } from "semantic-ui-react";
 
-import { getAssignedSubjects } from "../../user/user.actions";
+import { getAssignedSubjects } from "../../manage-users/user.actions";
 
 export default function AssignedSubjects() {
     const history = useHistory();

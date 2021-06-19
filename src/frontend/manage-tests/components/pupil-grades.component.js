@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Header, Breadcrumb, Table } from "semantic-ui-react";
 
-import { getSubject, getPupilGrades } from "../../subject/subject.actions";
+import { getSubject, getPupilGrades } from "../../manage-subjects/subject.actions";
 
 export default function PupilGrades() {
     const location = useLocation();

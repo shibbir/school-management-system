@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown } from "semantic-ui-react";
 
 import SubjectForm from "./subject-form.component";
-import { getClasses } from "../../class/class.actions";
+import { getClasses } from "../../manage-classes/class.actions";
 import { getSubjects, deleteSubject, updateSubject } from "../subject.actions";
 
 export default function SubjectList({ class_id } = props) {
@@ -21,7 +21,7 @@ export default function SubjectList({ class_id } = props) {
     const subjects = useSelector(state => state.subjectReducer.subjects);
 
     const onArchiveSubject = function(id) {
-        if(confirm("Are you sure you want to archive the subject?")) {
+        if(confirm("Are you sure you want to archive this subject?")) {
             dispatch(updateSubject(id, { status: "archived" }));
         }
     };
@@ -29,7 +29,7 @@ export default function SubjectList({ class_id } = props) {
     const onDeleteSubject = function(id) {
         if(confirm("Are you sure you want to remove the subject?")) {
             dispatch(deleteSubject(id)).then(function() {
-                dispatch(getClasses());
+                dispatch(getClasses()); // TODO
             });
         }
     };
