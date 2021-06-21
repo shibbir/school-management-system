@@ -15,9 +15,10 @@ import Login from "../manage-users/components/login.component";
 import Profile from "../manage-users/components/profile.component";
 import Dashboard from "../manage-users/components/dashboard.component";
 
-import UserRoutes from "../manage-users/user.routes";
 import ClassRoutes from "../manage-classes/class.routes";
-import AssignedSubjectsRoutes from "../manage-tests/test.routes";
+import AdminRoutes from "../manage-users/admin/admin.routes";
+import PupilRoutes from "../manage-users/pupil/pupil.routes";
+import TeacherRoutes from "../manage-users/teacher/teacher.routes";
 
 import { getSignedInUserProfile } from "../manage-users/user.actions";
 
@@ -65,11 +66,13 @@ export default function App() {
 
             <PrivateRoute path="/profile" component={Profile}/>
 
-            <Route path="/manage-users" component={UserRoutes}/>
+            <Route path="/manage-users" component={AdminRoutes}/>
 
             <Route path="/manage-classes" component={ClassRoutes}/>
 
-            <Route path="/assigned-subjects" component={AssignedSubjectsRoutes}/>
+            <Route path="/assigned-subjects" component={TeacherRoutes}/>
+
+            <Route path="/pupil" component={PupilRoutes}/>
 
             <Route path="/forbidden" component={Forbidden}/>
 

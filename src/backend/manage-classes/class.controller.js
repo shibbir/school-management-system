@@ -4,7 +4,6 @@ const Program = require("./class.model");
 const User = require("../manage-users/user.model");
 const Subject = require("../manage-subjects/subject.model");
 const Test = require("../manage-tests/test.model");
-const PupilSubject = require("../manage-users/pupil-subject.model");
 const { archiveOrDeleteSubjects } = require("../manage-subjects/subject.controller");
 
 async function getClasess(req, res, next) {
@@ -140,27 +139,6 @@ async function bulkEnrolment(req, res, next) {
         });
 
         await User.bulkCreate(pupils, { updateOnDuplicate: ["class_id", "updated_by", "updated_at"] });
-
-        await PupilSubject.destroy({ where: { pupil_id: {
-            [Op.in]: [...pupils.map(p => p.id)]
-        }}});
-
-        const pupil_subjects = [];
-
-        pupils.forEach(pupil => {
-            if(pupil.class_id === class_id) {
-                program.subjects.forEach(subject => {
-                    pupil_subjects.push({
-                        pupil_id: pupil.id,
-                        subject_id: subject.id
-                    });
-                });
-            }
-        });
-
-        if(pupil_subjects.length) {
-            await PupilSubject.bulkCreate(pupil_subjects);
-        }
 
         res.sendStatus(200);
     } catch(err) {

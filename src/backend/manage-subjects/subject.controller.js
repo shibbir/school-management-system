@@ -191,15 +191,15 @@ async function getPupilGrades(req, res, next) {
             }
         });
 
-        const result = [];
+        let results = [];
 
         tests.forEach(test => {
             test.test_results.forEach(test_result => {
-                let pupil = result.find(x => x.pupil_id === test_result.pupil_id);
+                let pupil = results.find(x => x.pupil_id === test_result.pupil_id);
                 if(pupil) {
                     pupil.grade = pupil.grade + +test_result.grade;
                 } else {
-                    result.push({
+                    results.push({
                         pupil_id: test_result.pupil_id,
                         forename: test_result.pupil.forename,
                         surname: test_result.pupil.surname,
@@ -209,7 +209,12 @@ async function getPupilGrades(req, res, next) {
             });
         });
 
-        res.json(result);
+        results = results.map(result => {
+            result.grade = result.grade / tests.length;
+            return result;
+        });
+
+        res.json(results);
 
     } catch(err) {
         next(err);

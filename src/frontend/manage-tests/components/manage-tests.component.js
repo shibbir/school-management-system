@@ -1,8 +1,7 @@
 import { capitalize } from "lodash";
-import queryString from "query-string";
 import { FormattedDate } from "react-intl";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Breadcrumb, Label, Grid } from "semantic-ui-react";
 
@@ -14,17 +13,16 @@ import ImportTestResultsForm from "../../manage-test-results/components/test-res
 
 export default function ManageTests() {
     const dispatch = useDispatch();
-    const location = useLocation();
-    const params = queryString.parse(location.search);
+    const { subject_id } = useParams();
 
     const [testId, setTestId] = useState(undefined);
     const [testForTestResults, setTestForTestResults] = useState(undefined);
     const [testIdForImportResults, setTestIdForImportResults] = useState(undefined);
 
     useEffect(() => {
-        dispatch(getSubject(params.subject_id));
-        dispatch(getTestsBySubject(params.subject_id));
-    }, [location.search]);
+        dispatch(getSubject(subject_id));
+        dispatch(getTestsBySubject(subject_id));
+    }, [subject_id]);
 
     const tests = useSelector(state => state.testReducer.tests);
     const subject = useSelector(state => state.subjectReducer.subject);
@@ -49,7 +47,7 @@ export default function ManageTests() {
                         <Dropdown.Menu>
                             <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setTestId(test.id)} disabled={test.status === "archived"}/>
                             <Dropdown.Item icon="list" text="Manage Test Results" onClick={() => setTestForTestResults({id: test.id, name: test.name})}/>
-                            <Dropdown.Item icon="upload" text="Import Test Results" onClick={() => setTestIdForImportResults(test.id)} disabled={test.status === "archived"}/>
+                            <Dropdown.Item icon="upload" text="Import Grades" onClick={() => setTestIdForImportResults(test.id)} disabled={test.status === "archived"}/>
                             <Dropdown.Item icon="trash" text="Remove Test" onClick={() => onDeleteTest(test.id)} disabled={test.status === "archived"}/>
                         </Dropdown.Menu>
                     </Dropdown>
@@ -118,7 +116,7 @@ export default function ManageTests() {
                 <Modal.Header>Test Form</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                        <TestForm id={testId} subject_id={params.subject_id}/>
+                        <TestForm id={testId} subject_id={subject_id}/>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>

@@ -1,7 +1,6 @@
 import { Form, Formik } from "formik";
-import queryString from "query-string";
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import iziToast from "izitoast/dist/js/iziToast";
 import { Divider, Button } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,8 +13,7 @@ import { getTestResult, createTestResult, updateTestResult, resetTestResult } fr
 
 function TestResultForm({ id, test_id } = props) {
     const dispatch = useDispatch();
-    const location = useLocation();
-    const params = queryString.parse(location.search);
+    const { subject_id } = useParams();
 
     useEffect(() => {
         if(id) {
@@ -32,8 +30,8 @@ function TestResultForm({ id, test_id } = props) {
     }, [subject]);
 
     useEffect(() => {
-        dispatch(getSubject(params.subject_id));
-    }, [location.search]);
+        dispatch(getSubject(subject_id));
+    }, [subject_id]);
 
     const test_result = useSelector(state => state.testResultReducer.test_result);
     const pupils = useSelector(state => state.userReducer.users);

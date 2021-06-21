@@ -9,7 +9,7 @@ export default function Admin() {
                 <Label color="blue" corner="right" size="small">
                     <Icon name="user"/>
                 </Label>
-                <Card.Content>
+                <Card.Content extra>
                     <Card.Header>User Management</Card.Header>
                 </Card.Content>
                 <Card.Content>
@@ -51,7 +51,7 @@ export default function Admin() {
                 <Label color="blue" corner="right" size="small">
                     <Icon name="certificate"/>
                 </Label>
-                <Card.Content>
+                <Card.Content extra>
                     <Card.Header>Class Management</Card.Header>
                 </Card.Content>
                 <Card.Content>
@@ -93,7 +93,7 @@ export default function Admin() {
                 <Label color="blue" corner="right" size="small">
                     <Icon name="id badge"/>
                 </Label>
-                <Card.Content>
+                <Card.Content extra>
                     <Card.Header>Profile Management</Card.Header>
                 </Card.Content>
                 <Card.Content>
@@ -113,17 +113,7 @@ export default function Admin() {
                             <Feed.Content>
                                 <Feed.Date content="Change Password"/>
                                 <Feed.Summary>
-                                    Create, modify, remove, archive subjects. Assign teacher per subject.
-                                </Feed.Summary>
-                            </Feed.Content>
-                        </Feed.Event>
-
-                        <Feed.Event>
-                            <Feed.Label icon="mail"/>
-                            <Feed.Content>
-                                <Feed.Date content="Pupils Enrolment"/>
-                                <Feed.Summary>
-                                    Perform bulk assignments or deassignments of pupils into a class.
+                                    Change your sign in password.
                                 </Feed.Summary>
                             </Feed.Content>
                         </Feed.Event>

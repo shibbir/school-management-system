@@ -63,7 +63,7 @@ export default function TestResults({ test_id }) {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>#</Table.HeaderCell>
-                            <Table.HeaderCell>Pupil ID</Table.HeaderCell>
+                            <Table.HeaderCell>Matriculation Number</Table.HeaderCell>
                             <Table.HeaderCell>Pupil</Table.HeaderCell>
                             <Table.HeaderCell>Grade</Table.HeaderCell>
                             <Table.HeaderCell>Updated At</Table.HeaderCell>

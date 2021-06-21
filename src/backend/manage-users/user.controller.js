@@ -3,6 +3,8 @@ const { Op } = require("sequelize");
 const User = require("./user.model");
 const Program = require("../manage-classes/class.model");
 const Subject = require("../manage-subjects/subject.model");
+const Test = require("../manage-tests/test.model");
+const TestResult = require("../manage-test-results/test-result.model");
 const { generateAccessToken, generateRefreshToken } = require("../core/security.middleware");
 
 function formatUserProfile(user) {
@@ -248,6 +250,90 @@ async function getAssignedSubjects(req, res, next) {
     }
 }
 
+async function getPupilSubjects(req, res, next) {
+    try {
+        const pupil = await User.findByPk(req.params.id, {
+            attributes: ["class_id"]
+        });
+
+        const subjects = await Subject.findAll({
+            attributes: ["id", "name", "class_id"],
+            include: [
+                {
+                    model: User,
+                    as: "teacher",
+                    attributes: ["forename", "surname"]
+                },
+                {
+                    model: Test,
+                    as: "tests",
+                    attributes: ["id", "name"],
+                    include: {
+                        model: TestResult,
+                        as: "test_results",
+                        attributes: ["pupil_id", "grade"],
+                        where: { pupil_id: req.params.id }
+                    }
+                }
+            ]
+        });
+
+        const response = [];
+
+        subjects.forEach(subject => {
+            let test_results_sum = 0;
+            let is_assigned_subject = false;
+
+            subject.tests.forEach(test => {
+                if(test.test_results && test.test_results.length) {
+                    test_results_sum += +test.test_results[0].grade;
+                    is_assigned_subject = true;
+                }
+            });
+
+            if(pupil.class_id && pupil.class_id === subject.class_id) {
+                is_assigned_subject = true;
+            }
+
+            if(is_assigned_subject) {
+                response.push({
+                    subject_id: subject.id,
+                    subject_name: subject.name,
+                    teacher_name: `${subject.teacher.forename} ${subject.teacher.surname}`,
+                    grade: subject.tests && subject.tests.length ? test_results_sum / subject.tests.length : 0
+                });
+            }
+        });
+
+        res.json(response);
+    } catch(err) {
+        next(err);
+    }
+}
+
+async function getPupilSubject(req, res, next) {
+    try {
+        const subject = await Subject.findByPk(req.params.subject_id, {
+            attributes: ["id", "name"],
+            include: {
+                model: Test,
+                as: "tests",
+                attributes: ["id", "name", "date"],
+                include: {
+                    model: TestResult,
+                    as: "test_results",
+                    attributes: ["pupil_id", "grade"],
+                    where: { pupil_id: req.params.pupil_id }
+                }
+            }
+        });
+
+        res.json(subject);
+    } catch(err) {
+        next(err);
+    }
+}
+
 exports.login = login;
 exports.logout = logout;
 exports.getUserProfile = getUserProfile;
@@ -258,3 +344,5 @@ exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
 exports.changePassword = changePassword;
 exports.getAssignedSubjects = getAssignedSubjects;
+exports.getPupilSubject = getPupilSubject;
+exports.getPupilSubjects = getPupilSubjects;

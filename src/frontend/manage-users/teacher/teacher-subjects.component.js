@@ -5,7 +5,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Header, Breadcrumb, Table, Dropdown } from "semantic-ui-react";
 
-import { getAssignedSubjects } from "../../manage-users/user.actions";
+import { getAssignedSubjects } from "../user.actions";
 
 export default function AssignedSubjects() {
     const history = useHistory();
@@ -20,13 +20,13 @@ export default function AssignedSubjects() {
 
     useEffect(() => {
         if(subjectIdForPupilGrades) {
-            history.push(`/assigned-subjects/pupil-grades?subject_id=${subjectIdForPupilGrades}`);
+            history.push(`/assigned-subjects/${subjectIdForPupilGrades}/pupil-grades`);
         }
     }, [subjectIdForPupilGrades]);
 
     useEffect(() => {
         if(subjectIdForTests) {
-            history.push(`/assigned-subjects/manage-tests?subject_id=${subjectIdForTests}`);
+            history.push(`/assigned-subjects/${subjectIdForTests}/manage-tests`);
         }
     }, [subjectIdForTests]);
 

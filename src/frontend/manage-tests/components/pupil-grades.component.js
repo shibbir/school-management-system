@@ -1,5 +1,4 @@
-import queryString from "query-string";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Header, Breadcrumb, Table } from "semantic-ui-react";
@@ -7,17 +6,15 @@ import { Icon, Divider, Segment, Header, Breadcrumb, Table } from "semantic-ui-r
 import { getSubject, getPupilGrades } from "../../manage-subjects/subject.actions";
 
 export default function PupilGrades() {
-    const location = useLocation();
+    const { subject_id } = useParams();
     const dispatch = useDispatch();
 
     const [subjectIdForTests, setSubjectIdForTests] = useState(undefined);
 
     useEffect(() => {
-        const params = queryString.parse(location.search);
-
-        dispatch(getSubject(params.subject_id));
-        dispatch(getPupilGrades(params.subject_id));
-    }, [location.search]);
+        dispatch(getSubject(subject_id));
+        dispatch(getPupilGrades(subject_id));
+    }, [subject_id]);
 
     const subject = useSelector(state => state.subjectReducer.subject);
     const pupil_grades = useSelector(state => state.subjectReducer.pupil_grades);
@@ -39,7 +36,7 @@ export default function PupilGrades() {
                 <Breadcrumb.Divider>/</Breadcrumb.Divider>
                 <Breadcrumb.Section><Link to="/assigned-subjects">Assigned Subjects</Link></Breadcrumb.Section>
                 <Breadcrumb.Divider>/</Breadcrumb.Divider>
-                <Breadcrumb.Section active>Average Grades { subject && `for ${subject.name}`}</Breadcrumb.Section>
+                <Breadcrumb.Section active>Pupil Grades { subject && `for ${subject.name}`}</Breadcrumb.Section>
             </Breadcrumb>
 
             <Divider hidden clearing/>

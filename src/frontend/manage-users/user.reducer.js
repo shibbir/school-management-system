@@ -5,7 +5,9 @@ const initialState = {
     loggedInUser: null,
     user: null,
     users: [],
-    assigned_subjects: []
+    assigned_subjects: [],
+    pupil_subjects: [],
+    pupil_subject: null
 };
 
 export default function reducer(state=initialState, action) {
@@ -43,6 +45,12 @@ export default function reducer(state=initialState, action) {
         }
         case Types.RESET_USER: {
             return { ...state, user: null };
+        }
+        case Types.GET_PUPIL_SUBJECT_FULFILLED: {
+            return { ...state, pupil_subject: action.payload.data };
+        }
+        case Types.GET_PUPIL_SUBJECTS_FULFILLED: {
+            return { ...state, pupil_subjects: action.payload.data };
         }
     }
 

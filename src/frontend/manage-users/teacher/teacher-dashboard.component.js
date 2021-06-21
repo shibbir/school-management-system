@@ -1,15 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Card, Icon, Feed, Label } from "semantic-ui-react";
+import { Card, Icon, Label, Feed } from "semantic-ui-react";
 
-export default function Admin() {
+export default function Teacher() {
     return (
         <Card.Group itemsPerRow={3} stackable>
             <Link className="ui raised card" to="/assigned-subjects">
                 <Label color="blue" corner="right" size="small">
                     <Icon name="book"/>
                 </Label>
-                <Card.Content>
+                <Card.Content extra>
                     <Card.Header>Assigned Subjects Management</Card.Header>
                 </Card.Content>
                 <Card.Content>
@@ -51,7 +51,7 @@ export default function Admin() {
                 <Label color="blue" corner="right" size="small">
                     <Icon name="id badge"/>
                 </Label>
-                <Card.Content>
+                <Card.Content extra>
                     <Card.Header>Profile Management</Card.Header>
                 </Card.Content>
                 <Card.Content>
@@ -71,17 +71,7 @@ export default function Admin() {
                             <Feed.Content>
                                 <Feed.Date content="Change Password"/>
                                 <Feed.Summary>
-                                    Create, modify, remove, archive subjects. Assign teacher per subject.
-                                </Feed.Summary>
-                            </Feed.Content>
-                        </Feed.Event>
-
-                        <Feed.Event>
-                            <Feed.Label icon="mail"/>
-                            <Feed.Content>
-                                <Feed.Date content="Pupils Enrolment"/>
-                                <Feed.Summary>
-                                    Perform bulk assignments or deassignments of pupils into a class.
+                                    Change your sign in password.
                                 </Feed.Summary>
                             </Feed.Content>
                         </Feed.Event>

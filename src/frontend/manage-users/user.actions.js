@@ -79,7 +79,7 @@ export function getAssignedSubjects(user_id) {
         type: Types.GET_ASSIGNED_SUBJECTS,
         payload: axios({
             method: "get",
-            url: `/api/users/${user_id}/subjects`
+            url: `/api/teachers/${user_id}/subjects`
         })
     };
 }
@@ -98,5 +98,25 @@ export function changePassword(data) {
 export function resetUser() {
     return {
         type: Types.RESET_USER
+    };
+}
+
+export function getPupilSubjects(user_id) {
+    return {
+        type: Types.GET_PUPIL_SUBJECTS,
+        payload: axios({
+            method: "get",
+            url: `/api/pupils/${user_id}/subjects`
+        })
+    };
+}
+
+export function getPupilSubject(user_id, subject_id) {
+    return {
+        type: Types.GET_PUPIL_SUBJECT,
+        payload: axios({
+            method: "get",
+            url: `/api/pupils/${user_id}/subjects/${subject_id}`
+        })
     };
 }

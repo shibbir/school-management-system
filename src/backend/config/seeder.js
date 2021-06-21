@@ -13,7 +13,6 @@ async function init() {
     const User = require(path.join(process.cwd(), "src/backend/manage-users/user.model"));
     const Program = require(path.join(process.cwd(), "src/backend/manage-classes/class.model"));
     const Subject = require(path.join(process.cwd(), "src/backend/manage-subjects/subject.model"));
-    const PupilSubject = require(path.join(process.cwd(), "src/backend/manage-users/pupil-subject.model"));
     const Test = require(path.join(process.cwd(), "src/backend/manage-tests/test.model"));
     require(path.join(process.cwd(), "src/backend/manage-test-results/test-result.model"));
 
@@ -286,121 +285,6 @@ async function init() {
         });
     }
 
-    function pupilSubjectSeeder(callback) {
-        const pupil_subejcts = [
-            {
-                pupil_id: pupil1_id,
-                subject_id: subject1_id
-            },
-            {
-                pupil_id: pupil1_id,
-                subject_id: subject2_id
-            },
-            {
-                pupil_id: pupil1_id,
-                subject_id: subject3_id
-            },
-
-            {
-                pupil_id: pupil2_id,
-                subject_id: subject1_id
-            },
-            {
-                pupil_id: pupil2_id,
-                subject_id: subject2_id
-            },
-            {
-                pupil_id: pupil2_id,
-                subject_id: subject3_id
-            },
-
-            {
-                pupil_id: pupil3_id,
-                subject_id: subject1_id
-            },
-            {
-                pupil_id: pupil3_id,
-                subject_id: subject2_id
-            },
-            {
-                pupil_id: pupil3_id,
-                subject_id: subject3_id
-            },
-
-            {
-                pupil_id: pupil4_id,
-                subject_id: subject1_id
-            },
-            {
-                pupil_id: pupil4_id,
-                subject_id: subject2_id
-            },
-            {
-                pupil_id: pupil4_id,
-                subject_id: subject3_id
-            },
-
-            {
-                pupil_id: pupil5_id,
-                subject_id: subject4_id
-            },
-            {
-                pupil_id: pupil5_id,
-                subject_id: subject5_id
-            },
-            {
-                pupil_id: pupil5_id,
-                subject_id: subject6_id
-            },
-
-            {
-                pupil_id: pupil6_id,
-                subject_id: subject4_id
-            },
-            {
-                pupil_id: pupil6_id,
-                subject_id: subject5_id
-            },
-            {
-                pupil_id: pupil6_id,
-                subject_id: subject6_id
-            },
-
-            {
-                pupil_id: pupil7_id,
-                subject_id: subject4_id
-            },
-            {
-                pupil_id: pupil7_id,
-                subject_id: subject5_id
-            },
-            {
-                pupil_id: pupil7_id,
-                subject_id: subject6_id
-            },
-
-            {
-                pupil_id: pupil8_id,
-                subject_id: subject4_id
-            },
-            {
-                pupil_id: pupil8_id,
-                subject_id: subject5_id
-            },
-            {
-                pupil_id: pupil8_id,
-                subject_id: subject6_id
-            }
-        ];
-
-        PupilSubject.destroy({ truncate: { cascade: true } }).then(() => {
-            PupilSubject.bulkCreate(pupil_subejcts, {
-                returning: true,
-                ignoreDuplicates: false
-            }).then(() => callback());
-        });
-    }
-
     function testSeeder(callback) {
         const tests = [
             {
@@ -454,7 +338,6 @@ async function init() {
         classSeeder,
         userSeeder,
         subjectSeeder,
-        pupilSubjectSeeder,
         testSeeder
     ], function (err) {
         if (err) console.error(err);

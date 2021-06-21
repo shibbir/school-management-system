@@ -1,7 +1,6 @@
 import { Form, Formik } from "formik";
-import queryString from "query-string";
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import iziToast from "izitoast/dist/js/iziToast";
 import { Divider, Button } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,13 +12,11 @@ import { FileInput, DropdownInput } from "../../core/components/field-inputs.com
 
 export default function TestResultsImportForm({ test_id }) {
     const dispatch = useDispatch();
-    const location = useLocation();
+    const { subject_id } = useParams();
 
     useEffect(() => {
-        const params = queryString.parse(location.search);
-
-        dispatch(getTestsBySubject(params.subject_id));
-    }, [location.search]);
+        dispatch(getTestsBySubject(subject_id));
+    }, [subject_id]);
 
     const tests = useSelector(state => state.testReducer.tests);
 

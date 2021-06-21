@@ -6,10 +6,10 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown, Breadcrumb } from "semantic-ui-react";
 
-import UserForm from "./user-form.component";
+import UserForm from "../components/user-form.component";
 import { getUsers, deleteUser } from "../user.actions";
 
-export default function ClassList() {
+export default function Users() {
     const dispatch = useDispatch();
     const [userId, setUserId] = useState(undefined);
 

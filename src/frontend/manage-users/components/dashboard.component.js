@@ -2,9 +2,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Message, Divider } from "semantic-ui-react";
 
-import Admin from "./admin.component";
-import Pupil from "./pupil.component";
-import Teacher from "./teacher.component";
+import Admin from "../admin/admin-dashboard.component";
+import Pupil from "../pupil/pupil-dashboard.component";
+import Teacher from "../teacher/teacher-dashboard.component";
 
 export default function Dashboard() {
     const loggedInUser = useSelector(state => state.userReducer.loggedInUser);
