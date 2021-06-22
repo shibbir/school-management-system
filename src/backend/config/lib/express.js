@@ -5,6 +5,8 @@ const express = require("express");
 const hbs = require("express-hbs");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
+const swaggerUi = require("swagger-ui-express");
+const swaggerConfig = require("./swagger/swagger");
 
 const defaultAssets = require(path.join(process.cwd(), "src/backend/config/assets/default"));
 const environmentAssets = process.env.NODE_ENV === "production" ? require(path.join(process.cwd(), "src/backend/config/assets/production")) : {};
@@ -18,6 +20,7 @@ module.exports = function() {
     app.use(express.urlencoded({ extended: true }));
     app.use(cookieParser(process.env.COOKIE_SECRET));
     app.use(express.static(path.join(process.cwd(), "wwwroot")));
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerConfig.specs));
 
     app.engine("html", hbs.express4({ extname: ".html" }));
     app.set("view engine", "html");

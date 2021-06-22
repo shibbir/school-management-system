@@ -1,0 +1,354 @@
+paths:
+    /api/login:
+        post:
+            tags:
+                - user
+            summary: Logs user into the system
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                                grant_type:
+                                    type: string
+                            required:
+                                - username
+                                - password
+                                - grant_type
+            responses:
+                200:
+                    content:
+                        applicaiton/json:
+                            schema:
+                                $ref: "#/components/schemas/UserProfile"
+                400:
+                    description: An error message stating the problem.
+                401:
+                    description: Username or password is invalid.
+
+    /api/logout:
+        get:
+            tags:
+                - user
+            summary: Logs out current logged in user session
+            responses:
+                204:
+                    description: OK
+
+    /api/profile:
+        get:
+            tags:
+                - user
+            summary: Get the logged in user profile
+            responses:
+                200:
+                    content:
+                        applicaiton/json:
+                            schema:
+                                $ref: "#/components/schemas/UserProfile"
+                401:
+                    description: Unauthorized.
+
+    /api/profile/change-password:
+        patch:
+            tags:
+                - user
+            summary: Update logged in user password
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                current_password:
+                                    type: string
+                                new_password:
+                                    type: string
+                                confirm_new_password:
+                                    type: string
+                            required:
+                                - current_password
+                                - new_password
+                                - confirm_new_password
+            responses:
+                200:
+                    description: Password updated successfully.
+                400:
+                    description: An error message stating the problem.
+
+    /api/users:
+        get:
+            tags:
+                - user
+            summary: Get all users in the system
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: "#/components/schemas/UserProfile"
+                                properties:
+                                    class:
+                                        type: object
+                                    class_id:
+                                        type: string
+                                    modifier:
+                                        type: object
+                500:
+                    description: Internal Server Error
+        post:
+            tags:
+                - user
+            summary: Create a new user in the system
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+                                forename:
+                                    type: string
+                                surname:
+                                    type: string
+                                role:
+                                    type: string
+                            required:
+                                - username
+                                - password
+                                - forename
+                                - surname
+                                - role
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: "#/components/schemas/UserProfile"
+                                properties:
+                                    modifier:
+                                        type: object
+                400:
+                    description: An error message stating the problem.
+
+    /api/users/{id}:
+        get:
+            tags:
+                - user
+            summary: Get a single user by id
+            parameters:
+              - name: id
+                in: path
+                description: User Unique ID
+                required: true
+                schema:
+                    type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: "#/components/schemas/UserProfile"
+        patch:
+            tags:
+                - user
+            summary: Update attributes of a single user
+            parameters:
+              - name: id
+                in: path
+                description: User Unique ID
+                required: true
+                schema:
+                    type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                forename:
+                                    type: string
+                                surname:
+                                    type: string
+                            required:
+                                - username
+                                - forename
+                                - surname
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: "#/components/schemas/UserProfile"
+                                properties:
+                                    modifier:
+                                        type: object
+                400:
+                    description: Username already exists. Please try with a different one.
+                403:
+                    description: Access Forbidden.
+        delete:
+            tags:
+                - user
+            summary: Permanently delete an user
+            parameters:
+              - name: id
+                in: path
+                description: User Unique ID
+                required: true
+                schema:
+                    type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: string
+                400:
+                    description: An error message stating the problem.
+                403:
+                    description: Access Forbidden.
+
+    /api/teachers/{id}/subjects:
+        get:
+            tags:
+                - teacher
+            summary: Get all subjects asigned to a teacher
+            parameters:
+              - name: id
+                in: path
+                description: Teacher Unique ID
+                required: true
+                schema:
+                    type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: string
+                                    name:
+                                        type: string
+                                    status:
+                                        type: string
+                                    class:
+                                        type: object
+                                    updated_at:
+                                        type: string
+
+    /api/pupils/{id}/subjects:
+        get:
+            tags:
+                - pupil
+            summary: Get all subjects asigned to a pupil
+            parameters:
+              - name: id
+                in: path
+                description: Pupil Unique ID
+                required: true
+                schema:
+                    type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    subject_id:
+                                        type: string
+                                    subject_name:
+                                        type: string
+                                    grade:
+                                        type: number
+                                    teacher_name:
+                                        type: string
+
+    /api/pupils/{pupil_id}/subjects/{subject_id}:
+        get:
+            tags:
+                - pupil
+            summary: Get all the test with grades under a selected subject
+            parameters:
+              - name: pupil_id
+                in: path
+                description: Pupil Unique ID
+                required: true
+                schema:
+                    type: string
+              - name: subject_id
+                in: path
+                description: Subject Unique ID
+                required: true
+                schema:
+                    type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: string
+                                    name:
+                                        type: string
+                                    tests:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: string
+                                                name:
+                                                    type: string
+                                                date:
+                                                    type: string
+                                                test_results:
+                                                    type: array
+                                                    items:
+                                                        type: object
+                                                        properties:
+                                                            pupil_id:
+                                                                type: string
+                                                            grade:
+                                                                type: string
+
+components:
+    schemas:
+        UserProfile:
+            properties:
+                id:
+                    type: string
+                username:
+                    type: string
+                forename:
+                    type: string
+                surname:
+                    type: string
+                role:
+                    type: string

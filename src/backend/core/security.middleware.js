@@ -25,7 +25,7 @@ function generateRefreshToken(doc) {
 function authorizeFor(roles) {
     return function (req, res, next) {
         if (req.user && req.user.role && !roles.includes(req.user.role)) {
-            return res.status(403).send("Access Forbidden");
+            return res.status(403).send("Access Forbidden.");
         }
 
         next();
@@ -40,7 +40,7 @@ async function authenticate (req, res, next) {
             try {
                 const refresh_token = req.signedCookies["refresh_token"];
 
-                if(!refresh_token) return res.status(401).send("Unauthorized").end();
+                if(!refresh_token) return res.status(401).send("Unauthorized.").end();
 
                 const payload = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
                 const doc = await User.findByPk(payload.id);
@@ -53,7 +53,7 @@ async function authenticate (req, res, next) {
             } catch(e) {
                 res.clearCookie("access_token");
                 res.clearCookie("refresh_token");
-                return res.status(401).send("Unauthorized").end();
+                return res.status(401).send("Unauthorized.").end();
             }
         }
 

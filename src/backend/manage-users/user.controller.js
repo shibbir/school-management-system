@@ -13,8 +13,7 @@ function formatUserProfile(user) {
         username: user.username,
         forename: user.forename,
         surname: user.surname,
-        role: user.role,
-        modifier: user.modifier
+        role: user.role
     };
 
     return profile;
@@ -25,8 +24,6 @@ async function login(req, res, next) {
         let user;
         const { username, password, grant_type } = req.body;
 
-        if(!grant_type) return res.status(401).send("Invalid credentials.");
-
         if(grant_type === "password") {
             user = await User.findOne({ where: {
                 username: {
@@ -35,7 +32,7 @@ async function login(req, res, next) {
             }});
 
             if(!user || !user.validPassword(password)) {
-                return res.status(401).send("Invalid credentials.");
+                return res.status(401).send("Username or password is invalid.");
             }
 
             user.refresh_token = generateRefreshToken(user);
@@ -63,10 +60,10 @@ async function getUserProfile(req, res) {
 async function getUser(req, res, next) {
     try {
         const user = await User.findByPk(req.params.id, {
-            attributes: { exclude: ["password", "refresh_token"] },
+            attributes: { exclude: ["password", "refresh_token", "created_by", "updated_by", "created_at"] },
         });
 
-        res.json(user);
+        res.json(formatUserProfile(user));
     } catch(err) {
         next(err);
     }
@@ -86,7 +83,7 @@ async function getUsers(req, res, next) {
 
         const users = await User.findAll({
             where: query,
-            attributes: { exclude: ["password", "refresh_token"] },
+            attributes: { exclude: ["password", "refresh_token", "created_by", "updated_by", "created_at"] },
             order: [
                 ["role"],
                 ["forename"]
@@ -140,7 +137,7 @@ async function createUser(req, res, next) {
             }]
         });
 
-        res.json(formatUserProfile(user));
+        res.json({ ...formatUserProfile(user), modifier: user.modifier });
     } catch(err) {
         next(err);
     }
@@ -151,7 +148,15 @@ async function updateUser(req, res, next) {
         const { username, forename, surename } = req.body;
 
         if(req.user.role !== "admin" && req.user.id !== req.params.id) {
-            return res.status(403).send("You don't have the permission.");
+            return res.status(403).send("Access Forbidden.");
+        }
+
+        const matched_user = await User.count({ where: {
+            id: req.params.id
+        }});
+
+        if(!matched_user) {
+            return res.status(400).send("User does not exists.");
         }
 
         const matched_username = await User.count({ where: {
@@ -171,7 +176,7 @@ async function updateUser(req, res, next) {
         }, { where: { id: req.params.id }});
 
         const user = await User.findByPk(req.params.id, {
-            attributes: { exclude: ["password", "refresh_token"] },
+            attributes: ["id", "forename", "surname", "username", "role"],
             include: [{
                 model: User,
                 as: "modifier",
@@ -211,20 +216,18 @@ async function deleteUser(req, res, next) {
 
 async function changePassword(req, res, next) {
     try {
-        const { current_password, new_password, confirm_new_password } = req.body;
+        const { current_password, new_password } = req.body;
 
         const user = await User.findByPk(req.user.id);
 
         if (!user || !user.validPassword(current_password)) return res.status(400).send("Current password is incorrect.");
-
-        if(new_password !== confirm_new_password) return res.status(400).send("New password and confirm password does not match.");
 
         user.password = new_password;
         user.updated_by = req.user.id;
 
         await user.save();
 
-        res.status(200).send("Password changed successfully.");
+        res.status(204).send("Password updated successfully.");
     } catch (err) {
         next(err);
     }
@@ -240,8 +243,9 @@ async function getAssignedSubjects(req, res, next) {
             include: {
                 model: Program,
                 as: "class",
-                attributes: ["id", "name"]
-            }
+                attributes: ["name"]
+            },
+            attributes: ["id", "name", "status", "updated_at"]
         });
 
         res.json(subjects);
