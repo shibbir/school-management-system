@@ -18,9 +18,7 @@ export default function PupilsEnrolment({ id } = props) {
     }, []);
 
     useEffect(() => {
-        const enrolled_pupils = pupils.filter(function(pupil) {
-            return pupil.class_id === id;
-        });
+        const enrolled_pupils = pupils.filter(pupil => pupil.class_id === id);
 
         setSelectedPupils(enrolled_pupils);
     }, [pupils]);

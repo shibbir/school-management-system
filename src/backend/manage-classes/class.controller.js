@@ -37,6 +37,12 @@ async function createClass(req, res, next) {
     try {
         const { name } = req.body;
 
+        const matched_name = await Program.count({ where: {
+            name
+        }});
+
+        if(matched_name) return res.status(400).send("Name already exists. Please try with a different one.");
+
         const program = await Program.create({
             name,
             created_by: req.user.id,
@@ -64,7 +70,7 @@ async function updateClass(req, res, next) {
     try {
         let program = await Program.findByPk(req.params.id);
 
-        let = await program.update({
+        program = await program.update({
             name: req.body.name,
             updated_by: req.user.id
         }, { returning: true });
@@ -99,18 +105,7 @@ async function bulkEnrolment(req, res, next) {
     try {
         const class_id = req.params.id;
 
-        const program = await Program.findByPk(class_id, {
-            include: {
-                model: Subject,
-                as: "subjects",
-                attributes: ["id"],
-                include: {
-                    model: Test,
-                    as: "tests",
-                    attributes: ["id"]
-                }
-            }
-        });
+        const program = await Program.findByPk(class_id);
 
         if(!program) return res.status(404).send("Class not found.");
 
@@ -140,7 +135,7 @@ async function bulkEnrolment(req, res, next) {
 
         await User.bulkCreate(pupils, { updateOnDuplicate: ["class_id", "updated_by", "updated_at"] });
 
-        res.sendStatus(200);
+        res.sendStatus(204);
     } catch(err) {
         next(err);
     }

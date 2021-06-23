@@ -1,0 +1,195 @@
+paths:
+    /api/classes:
+        get:
+            tags:
+                - class
+            summary: Get all classes in the system
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: "#/components/schemas/ClassWithSubjectsAndPupils"
+                500:
+                    description: Internal Server Error
+        post:
+            tags:
+                - class
+            summary: Create a new class
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                            required:
+                                - name
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: "#/components/schemas/Class"
+                400:
+                    description: An error message stating the problem.
+                403:
+                    description: Access Forbidden.
+
+    /api/classes/{id}:
+        get:
+            tags:
+                - class
+            summary: Get a class by id
+            parameters:
+              - name: id
+                in: path
+                description: Class Unique ID
+                required: true
+                schema:
+                    type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: "#/components/schemas/Class"
+        patch:
+            tags:
+                - class
+            summary: Update attributes of a class
+            parameters:
+              - name: id
+                in: path
+                description: Class Unique ID
+                required: true
+                schema:
+                    type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                            required:
+                                - name
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    - $ref: "#/components/schemas/Class"
+                400:
+                    description: Name already exists. Please try with a different one.
+                403:
+                    description: Access Forbidden.
+        delete:
+            tags:
+                - class
+            summary: Permanently delete a class
+            parameters:
+              - name: id
+                in: path
+                description: Class Unique ID
+                required: true
+                schema:
+                    type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: string
+                400:
+                    description: An error message stating the problem.
+                403:
+                    description: Access Forbidden.
+
+    /api/classes/{id}/bulk-enrolment:
+        patch:
+            tags:
+                - class
+            summary: Bulk assignment and de-assignment of pupils in a class
+            parameters:
+              - name: id
+                in: path
+                description: Class Unique ID
+                required: true
+                schema:
+                    type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                pupils:
+                                    type: array
+                                    items:
+                                        type: string
+                                        properties:
+                                            id:
+                                                type: string
+                            required:
+                                - pupils
+            responses:
+                204:
+                    description: OK
+                403:
+                    description: Access Forbidden.
+                404:
+                    description: Class not found.
+
+components:
+    schemas:
+        ClassWithSubjectsAndPupils:
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                created_at:
+                    type: string
+                updated_at:
+                    type: string
+                pupils:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: string
+                subjects:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: string
+        Class:
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                created_at:
+                    type: string
+                updated_at:
+                    type: string
+                created_by:
+                    type: string
+                updated_by:
+                    type: string

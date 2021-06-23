@@ -59,7 +59,7 @@ export function bulkEnrolment(id, data) {
         payload: axios({
             method: "patch",
             data,
-            url: `/api/classes/${id}/pupils`
+            url: `/api/classes/${id}/bulk-enrolment`
         })
     };
 }

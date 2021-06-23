@@ -4,7 +4,7 @@ const options = {
     definition: {
         openapi: "3.0.0",
         info: {
-            title: "Schools Management System APIs",
+            title: "School Management System APIs",
             version: "1.0.0",
         },
         servers: [

@@ -1,16 +1,18 @@
 const controller = require("./class.controller");
-const { authenticate } = require("../core/security.middleware");
+const { authenticate, authorizeFor } = require("../core/security.middleware");
+const { validateBody, validateParams } = require("../core/validator.middleware");
+const { classSchema, idSchema } = require("./class.schema");
 
 module.exports = function(app) {
     app.route("/api/classes")
         .get(authenticate, controller.getClasess)
-        .post(authenticate, controller.createClass);
+        .post(authenticate, authorizeFor(["admin"]), validateBody(classSchema), controller.createClass);
 
     app.route("/api/classes/:id")
-        .get(authenticate, controller.getClass)
-        .patch(authenticate, controller.updateClass)
-        .delete(authenticate, controller.deleteClass);
+        .get(authenticate, validateParams(idSchema), controller.getClass)
+        .patch(authenticate, authorizeFor(["admin"]), validateParams(idSchema), controller.updateClass)
+        .delete(authenticate, authorizeFor(["admin"]), validateParams(idSchema), controller.deleteClass);
 
-    app.route("/api/classes/:id/pupils")
-        .patch(authenticate, controller.bulkEnrolment);
+    app.route("/api/classes/:id/bulk-enrolment")
+        .patch(authenticate, authorizeFor(["admin"]), validateParams(idSchema), controller.bulkEnrolment);
 };

@@ -11,13 +11,16 @@ const Program = sequelize.dbConnector.define("classes", {
         defaultValue: DataTypes.UUIDV4
     },
     name: {
+        unique: true,
         allowNull: false,
         type: DataTypes.STRING(50)
     },
     created_by: {
+        allowNull: false,
         type: DataTypes.UUID
     },
     updated_by: {
+        allowNull: false,
         type: DataTypes.UUID
     }
 }, {

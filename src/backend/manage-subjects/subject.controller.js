@@ -5,40 +5,15 @@ const Program = require("../manage-classes/class.model");
 const TestResult = require("../manage-test-results/test-result.model");
 const { archiveTests } = require("../manage-tests/test.controller");
 
-async function getSubjects(req, res, next) {
-    try {
-        const query = {};
-
-        if(req.params.teacher_id) {
-            query.teacher_id = req.params.teacher_id;
-        }
-
-        const subjects = await Subject.findAll({
-            where: query,
-            order: [
-                ["created_at", "DESC"]
-            ],
-            include: [{
-                model: Program,
-                as: "class",
-                attributes: ["id", "name"]
-            }]
-        });
-
-        res.json(subjects);
-    } catch(err) {
-        next(err);
-    }
-}
-
 async function getSubjectsByClass(req, res, next) {
     try {
         const program = await Program.findByPk(req.params.id, {
             include: {
                 model: Subject,
                 as: "subjects",
+                attributes: ["id", "name", "status", "updated_at"],
                 order: [
-                    ["created_at", "DESC"]
+                    ["name"]
                 ],
                 include: [
                     {
@@ -48,7 +23,8 @@ async function getSubjectsByClass(req, res, next) {
                     },
                     {
                         model: Test,
-                        as: "tests"
+                        as: "tests",
+                        attributes: ["id"]
                     }
                 ]
             }
@@ -73,15 +49,12 @@ async function addSubject(req, res, next) {
         });
 
         const subject = await Subject.findByPk(entity.id, {
+            attributes: ["id", "name", "status", "updated_at"],
             include: [
                 {
                     model: User,
                     as: "teacher",
                     attributes: ["forename", "surname"]
-                },
-                {
-                    model: Test,
-                    as: "tests"
                 }
             ]
         });
@@ -94,7 +67,9 @@ async function addSubject(req, res, next) {
 
 async function getSubject(req, res, next) {
     try {
-        const subject = await Subject.findByPk(req.params.id);
+        const subject = await Subject.findByPk(req.params.id, {
+            attributes: ["id", "name", "status", "updated_at"],
+        });
 
         res.json(subject);
     } catch(err) {
@@ -133,16 +108,12 @@ async function updateSubject(req, res, next) {
         }
 
         subject = await Subject.findByPk(req.params.id, {
+            attributes: ["id", "name", "status", "updated_at"],
             include: [
                 {
                     model: User,
                     as: "teacher",
                     attributes: ["forename", "surname"]
-                },
-                {
-                    model: Test,
-                    as: "tests",
-                    attributes: ["id"]
                 }
             ]
         });
@@ -247,7 +218,6 @@ async function archiveOrDeleteSubjects(class_id, updated_by) {
     }));
 }
 
-exports.getSubjects = getSubjects;
 exports.getSubjectsByClass = getSubjectsByClass;
 exports.addSubject = addSubject;
 exports.getSubject = getSubject;

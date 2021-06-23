@@ -141,6 +141,11 @@ paths:
                                 properties:
                                     modifier:
                                         type: object
+                                        properties:
+                                            forename:
+                                                type: string
+                                            surname:
+                                                type: string
                 400:
                     description: An error message stating the problem.
 
@@ -201,6 +206,11 @@ paths:
                                 properties:
                                     modifier:
                                         type: object
+                                        properties:
+                                            forename:
+                                                type: string
+                                            surname:
+                                                type: string
                 400:
                     description: Username already exists. Please try with a different one.
                 403:
@@ -233,7 +243,7 @@ paths:
     /api/teachers/{id}/subjects:
         get:
             tags:
-                - teacher
+                - user
             summary: Get all subjects asigned to a teacher
             parameters:
               - name: id
@@ -263,7 +273,7 @@ paths:
     /api/pupils/{id}/subjects:
         get:
             tags:
-                - pupil
+                - user
             summary: Get all subjects asigned to a pupil
             parameters:
               - name: id
@@ -291,8 +301,8 @@ paths:
     /api/pupils/{pupil_id}/subjects/{subject_id}:
         get:
             tags:
-                - pupil
-            summary: Get all the test with grades under a selected subject
+                - user
+            summary: Get all the test with grades for logged in pupil under a selected subject
             parameters:
               - name: pupil_id
                 in: path

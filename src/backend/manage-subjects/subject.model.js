@@ -14,9 +14,6 @@ const Subject = sequelize.dbConnector.define("subjects", {
         allowNull: false,
         type: DataTypes.STRING(50)
     },
-    content: {
-        type: DataTypes.STRING
-    },
     status: {
         allowNull: false,
         type: DataTypes.ENUM,

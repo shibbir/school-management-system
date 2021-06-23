@@ -35,6 +35,12 @@ function ClassForm({id} = props) {
                             message: "Your changes are saved.",
                             position: "topRight"
                         });
+                    }).catch(function(err) {
+                        iziToast["error"]({
+                            timeout: 3000,
+                            message: err ? err.response.data : "An error occurred. Please try again.",
+                            position: "topRight"
+                        });
                     });
                 } else {
                     dispatch(createClass(values)).then(function() {
@@ -44,6 +50,12 @@ function ClassForm({id} = props) {
                             position: "topRight"
                         });
                         actions.resetForm();
+                    }).catch(function(err) {
+                        iziToast["error"]({
+                            timeout: 3000,
+                            message: err ? err.response.data : "An error occurred. Please try again.",
+                            position: "topRight"
+                        });
                     });
                 }
 

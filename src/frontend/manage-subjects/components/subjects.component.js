@@ -29,7 +29,7 @@ export default function SubjectList({ class_id } = props) {
     const onDeleteSubject = function(id) {
         if(confirm("Are you sure you want to remove the subject?")) {
             dispatch(deleteSubject(id)).then(function() {
-                dispatch(getClasses()); // TODO
+                dispatch(getClasses());
             });
         }
     };
@@ -50,8 +50,8 @@ export default function SubjectList({ class_id } = props) {
                         <Dropdown>
                             <Dropdown.Menu>
                                 <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setSubjectId(subject.id)}/>
-                                { subject.tests.length > 0 && <Dropdown.Item icon="archive" text="Archive Subject" onClick={() => onArchiveSubject(subject.id)}/> }
-                                { subject.tests.length === 0 && <Dropdown.Item icon="trash" text="Remove Subject" onClick={() => onDeleteSubject(subject.id)}/> }
+                                { subject.tests && subject.tests.length > 0 && <Dropdown.Item icon="archive" text="Archive Subject" onClick={() => onArchiveSubject(subject.id)}/> }
+                                { subject.tests && subject.tests.length === 0 && <Dropdown.Item icon="trash" text="Remove Subject" onClick={() => onDeleteSubject(subject.id)}/> }
                             </Dropdown.Menu>
                         </Dropdown>
                     }

@@ -224,7 +224,6 @@ async function init() {
             {
                 id: subject1_id,
                 name: "Automotive Sensor Systems",
-                content: "General aspects of sensor application in vehicles Sensors for engine management, Driving assistance systems, Sensors for air quality control, Exhaust gas sensor, Sensors for acceleration, force, pressure, rotational speed",
                 class_id: class1_id,
                 teacher_id: teacher1_id,
                 created_by: admin_id,
@@ -233,7 +232,6 @@ async function init() {
             {
                 id: subject2_id,
                 name: "Software Platforms for Automotive Systems",
-                content: "Introduction to the topic of 'Development of Automotive Controllers'. According to the V-model, relevant processes methods and technologies are considered.",
                 class_id: class1_id,
                 teacher_id: teacher1_id,
                 created_by: admin_id,
@@ -242,7 +240,6 @@ async function init() {
             {
                 id: subject3_id,
                 name: "Formal Specification and Verification",
-                content: "Theoretical basics of system modeling and simulation. System life cycle and system development processes. Formal specification technology for embedded systems.",
                 class_id: class1_id,
                 teacher_id: teacher2_id,
                 created_by: admin_id,
@@ -251,7 +248,6 @@ async function init() {
             {
                 id: subject4_id,
                 name: "Compiler Construction",
-                content: "Concepts and techniques of compiler construction that are required for the development of a compiler.",
                 class_id: class2_id,
                 teacher_id: teacher1_id,
                 created_by: admin_id,
@@ -260,7 +256,6 @@ async function init() {
             {
                 id: subject5_id,
                 name: "Databases and Web Techniques",
-                content: "Basic techniques of web-programming to access databases, ODBC, JDBC, DCE, CORBA, COM/DCOM, portal-techniques, XML, web-services.",
                 class_id: class2_id,
                 teacher_id: teacher2_id,
                 created_by: admin_id,
@@ -269,7 +264,6 @@ async function init() {
             {
                 id: subject6_id,
                 name: "Data Security and Cryptography",
-                content: "Turing machine, computability, NP-completeness, classic and modern cryptographic methods, digital signatures, hashes, etc.",
                 class_id: class2_id,
                 teacher_id: teacher2_id,
                 created_by: admin_id,
