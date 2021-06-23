@@ -8,16 +8,12 @@ async function getTestResults(req, res, next) {
     try {
         const test_results = await TestResult.findAll({
             where: { test_id: req.params.id },
+            attributes: ["id", "grade", "updated_at"],
             include: [
                 {
                     model: User,
                     as: "pupil",
                     attributes: ["id", "forename", "surname"]
-                },
-                {
-                    model: User,
-                    as: "modifier",
-                    attributes: ["forename", "surname"]
                 }
             ]
         });
@@ -45,6 +41,7 @@ async function createTestResult(req, res, next) {
         });
 
         const test_result = await TestResult.findByPk(entity.id, {
+            attributes: ["id", "grade", "updated_at"],
             include: {
                 model: User,
                 as: "pupil",
@@ -60,7 +57,9 @@ async function createTestResult(req, res, next) {
 
 async function getTestResult(req, res, next) {
     try {
-        const test_result = await TestResult.findByPk(req.params.id);
+        const test_result = await TestResult.findByPk(req.params.id, {
+            attributes: ["id", "pupil_id", "grade", "updated_at"]
+        });
 
         res.json(test_result);
     } catch(err) {
@@ -80,6 +79,7 @@ async function updateTestResult(req, res, next) {
         });
 
         const test_result = await TestResult.findByPk(req.params.id, {
+            attributes: ["id", "grade", "updated_at"],
             include: {
                 model: User,
                 as: "pupil",
@@ -95,7 +95,9 @@ async function updateTestResult(req, res, next) {
 
 async function deleteTestResult(req, res, next) {
     try {
-        await TestResult.destroy({ where: { id: req.params.id }});
+        const number_of_destroyed_rows = await TestResult.destroy({ where: { id: req.params.id }});
+
+        if(!number_of_destroyed_rows) return res.status(404).send("No data found.");
 
         res.json({ id: req.params.id });
     } catch(err) {
@@ -125,7 +127,7 @@ async function importTestResults(req, res, next) {
                 updateOnDuplicate: ["grade", "updated_by", "updated_at"]
             });
 
-            res.json(test_results);
+            res.sendStatus(204);
         });
     } catch(err) {
         next(err);

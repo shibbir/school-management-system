@@ -13,6 +13,7 @@ const Test = sequelize.dbConnector.define("tests", {
         defaultValue: DataTypes.UUIDV4
     },
     name: {
+        unique: true,
         allowNull: false,
         type: DataTypes.STRING(50)
     },

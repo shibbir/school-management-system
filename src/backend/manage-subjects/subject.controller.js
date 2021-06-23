@@ -68,7 +68,7 @@ async function addSubject(req, res, next) {
 async function getSubject(req, res, next) {
     try {
         const subject = await Subject.findByPk(req.params.id, {
-            attributes: ["id", "name", "status", "updated_at"],
+            attributes: ["id", "name", "status", "updated_at", "class_id"],
         });
 
         res.json(subject);

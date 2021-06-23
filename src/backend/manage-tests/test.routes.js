@@ -1,13 +1,15 @@
 const controller = require("./test.controller");
 const { authenticate } = require("../core/security.middleware");
+const { validateBody, validateParams } = require("../core/validator.middleware");
+const { testSchema, testIdSchema, subjectIdSchema } = require("./test.schema");
 
 module.exports = function(app) {
     app.route("/api/subjects/:id/tests")
-        .get(authenticate, controller.getTests)
-        .post(authenticate, controller.createTest);
+        .get(authenticate, validateParams(subjectIdSchema), controller.getTests)
+        .post(authenticate, validateParams(subjectIdSchema), validateBody(testSchema), controller.createTest);
 
     app.route("/api/tests/:id")
-        .get(authenticate, controller.getTest)
-        .patch(authenticate, controller.updateTest)
-        .delete(authenticate, controller.deleteTest);
+        .get(authenticate, validateParams(testIdSchema), controller.getTest)
+        .patch(authenticate, validateParams(testIdSchema), controller.updateTest)
+        .delete(authenticate, validateParams(testIdSchema), controller.deleteTest);
 };

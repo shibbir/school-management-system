@@ -7,6 +7,7 @@ async function getTests(req, res, next) {
     try {
         const tests = await Test.findAll({
             where: { subject_id: req.params.id },
+            attributes: ["id", "name", "date", "status", "updated_at"],
             include: [
                 {
                     model: User,
@@ -38,6 +39,7 @@ async function createTest(req, res, next) {
         });
 
         const test = await Test.findByPk(entity.id, {
+            attributes: ["id", "name", "date", "status", "updated_at"],
             include: [
                 {
                     model: User,

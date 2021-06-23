@@ -1,13 +1,13 @@
 paths:
-    /api/classes/{id}/subjects:
+    /api/tests/{id}/results:
         get:
             tags:
-                - Subject
-            summary: Get all the subjects by class
+                - Test Result
+            summary: Get all the grades of a test
             parameters:
               - name: id
                 in: path
-                description: Class Unique ID
+                description: Test Unique ID
                 required: true
                 schema:
                     type: string
@@ -17,25 +17,15 @@ paths:
                         application/json:
                             schema:
                                 allOf:
-                                    - $ref: "#/components/schemas/Subject"
-                                properties:
-                                    tests:
-                                        type: array
-                                        items:
-                                            type: object
-                                            properties:
-                                                id:
-                                                    type: string
-                500:
-                    description: Internal Server Error
+                                    - $ref: "#/components/schemas/TestResult"
         post:
             tags:
-                - Subject
-            summary: Create and assign a subject in a class
+                - Test Result
+            summary: Add a grade under a test
             parameters:
               - name: id
                 in: path
-                description: Class Unique ID
+                description: Test Unique ID
                 required: true
                 schema:
                     type: string
@@ -46,34 +36,67 @@ paths:
                         schema:
                             type: object
                             properties:
-                                name:
+                                pupil_id:
                                     type: string
-                                teacher_id:
-                                    type: string
+                                grade:
+                                    type: number
                             required:
-                                - name
-                                - teacher_id
+                                - pupil_id
+                                - grade
             responses:
                 200:
                     content:
                         application/json:
                             schema:
                                 allOf:
-                                    - $ref: "#/components/schemas/Subject"
+                                    - $ref: "#/components/schemas/TestResult"
                 400:
                     description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
 
-    /api/subjects/{id}:
-        get:
+    /api/tests/{id}/import-results:
+        post:
             tags:
-                - Subject
-            summary: Get a subject by id
+                - Test Result
+            summary: Import grades of a test
             parameters:
               - name: id
                 in: path
-                description: Subject Unique ID
+                description: Test Unique ID
+                required: true
+                schema:
+                    type: string
+            requestBody:
+                required: true
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                result:
+                                    type: string
+                                    format: binary
+                                    description: You can upload a CSV file of maximum 500 pupil's grade on each import.
+                            required:
+                                - result
+            responses:
+                204:
+                    description: Grades import successful.
+                400:
+                    description: An error message stating the problem.
+                403:
+                    description: Access Forbidden.
+
+    /api/test-results/{id}:
+        get:
+            tags:
+                - Test Result
+            summary: Get a test grade by id
+            parameters:
+              - name: id
+                in: path
+                description: Unique ID of a Test Grade of a Pupil
                 required: true
                 schema:
                     type: string
@@ -83,18 +106,15 @@ paths:
                         application/json:
                             schema:
                                 allOf:
-                                    - $ref: "#/components/schemas/Subject"
-                                properties:
-                                    class_id:
-                                        type: string
+                                    - $ref: "#/components/schemas/TestResult"
         patch:
             tags:
-                - Subject
-            summary: Update attributes of a subject
+                - Test Result
+            summary: Update a test grade
             parameters:
               - name: id
                 in: path
-                description: Subject Unique ID
+                description: Unique ID of a Test Grade of a Pupil
                 required: true
                 schema:
                     type: string
@@ -105,32 +125,29 @@ paths:
                         schema:
                             type: object
                             properties:
-                                name:
-                                    type: string
-                                teacher_id:
-                                    type: string
+                                grade:
+                                    type: number
                             required:
-                                - name
-                                - teacher_id
+                                - grade
             responses:
                 200:
                     content:
                         application/json:
                             schema:
                                 allOf:
-                                    - $ref: "#/components/schemas/Subject"
+                                    - $ref: "#/components/schemas/TestResult"
                 400:
                     description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
         delete:
             tags:
-                - Subject
-            summary: Permanently delete a subject
+                - Test Result
+            summary: Permanently delete a test grade
             parameters:
               - name: id
                 in: path
-                description: Subject Unique ID
+                description: Unique ID of a Test Grade of a Pupil
                 required: true
                 schema:
                     type: string
@@ -147,56 +164,25 @@ paths:
                     description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
-
-    /api/subjects/{id}/pupil-grades:
-        get:
-            tags:
-                - Subject
-            summary: Get all the pupil grades of a subject
-            parameters:
-              - name: id
-                in: path
-                description: Subject Unique ID
-                required: true
-                schema:
-                    type: string
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    pupil_id:
-                                        type: string
-                                    forename:
-                                        type: string
-                                    surname:
-                                        type: string
-                                    grade:
-                                        type: number
-                403:
-                    description: Access Forbidden.
                 404:
-                    description: Subject not found.
+                    description: No data found.
 
 components:
     schemas:
-        Subject:
+        TestResult:
             properties:
                 id:
                     type: string
-                name:
-                    type: string
-                status:
+                grade:
                     type: string
                 updated_at:
                     type: string
-                teacher:
+                pupil:
                     type: object
                     properties:
+                        id:
+                            type: string
                         forename:
                             type: string
                         surname:
                             type: string
-

@@ -76,7 +76,7 @@ export const FileInput = ({ attributes }) => {
 
             <div className="field" style={{margin: 0}}>
                 <div className="ui input">
-                    <input type="file" name={attributes.name} multiple={attributes.multiple} accept=".csv" onChange={attributes.onChange}/>
+                    <input type="file" name={attributes.name} accept=".csv" onChange={attributes.onChange}/>
                 </div>
             </div>
 

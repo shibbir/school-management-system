@@ -13,7 +13,13 @@ const options = {
             }
         ]
     },
-    apis: ["./src/backend/config/lib/swagger/*.swagger.yaml"]
+    apis: [
+        "./src/backend/config/lib/swagger/user.swagger.yaml",
+        "./src/backend/config/lib/swagger/class.swagger.yaml",
+        "./src/backend/config/lib/swagger/subject.swagger.yaml",
+        "./src/backend/config/lib/swagger/test.swagger.yaml",
+        "./src/backend/config/lib/swagger/test-result.swagger.yaml"
+    ]
 };
 
 const specs = swaggerJsdoc(options);

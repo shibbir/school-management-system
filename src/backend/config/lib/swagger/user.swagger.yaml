@@ -2,7 +2,7 @@ paths:
     /api/login:
         post:
             tags:
-                - user
+                - User
             summary: Logs user into the system
             requestBody:
                 required: true
@@ -35,7 +35,7 @@ paths:
     /api/logout:
         get:
             tags:
-                - user
+                - User
             summary: Logs out current logged in user session
             responses:
                 204:
@@ -44,7 +44,7 @@ paths:
     /api/profile:
         get:
             tags:
-                - user
+                - User
             summary: Get the logged in user profile
             responses:
                 200:
@@ -58,7 +58,7 @@ paths:
     /api/profile/change-password:
         patch:
             tags:
-                - user
+                - User
             summary: Update logged in user password
             requestBody:
                 required: true
@@ -86,7 +86,7 @@ paths:
     /api/users:
         get:
             tags:
-                - user
+                - User
             summary: Get all users in the system
             responses:
                 200:
@@ -106,7 +106,7 @@ paths:
                     description: Internal Server Error
         post:
             tags:
-                - user
+                - User
             summary: Create a new user in the system
             requestBody:
                 required: true
@@ -152,7 +152,7 @@ paths:
     /api/users/{id}:
         get:
             tags:
-                - user
+                - User
             summary: Get a single user by id
             parameters:
               - name: id
@@ -170,7 +170,7 @@ paths:
                                     - $ref: "#/components/schemas/UserProfile"
         patch:
             tags:
-                - user
+                - User
             summary: Update attributes of a single user
             parameters:
               - name: id
@@ -217,7 +217,7 @@ paths:
                     description: Access Forbidden.
         delete:
             tags:
-                - user
+                - User
             summary: Permanently delete an user
             parameters:
               - name: id
@@ -243,7 +243,7 @@ paths:
     /api/teachers/{id}/subjects:
         get:
             tags:
-                - user
+                - User
             summary: Get all subjects asigned to a teacher
             parameters:
               - name: id
@@ -273,7 +273,7 @@ paths:
     /api/pupils/{id}/subjects:
         get:
             tags:
-                - user
+                - User
             summary: Get all subjects asigned to a pupil
             parameters:
               - name: id
@@ -301,7 +301,7 @@ paths:
     /api/pupils/{pupil_id}/subjects/{subject_id}:
         get:
             tags:
-                - user
+                - User
             summary: Get all the test with grades for logged in pupil under a selected subject
             parameters:
               - name: pupil_id
