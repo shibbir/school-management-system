@@ -1,8 +1,10 @@
+import axios from "axios";
 import { Form, Formik } from "formik";
 import React, { useEffect } from "react";
+import fileDownload from "js-file-download";
 import { useParams } from "react-router-dom";
 import iziToast from "izitoast/dist/js/iziToast";
-import { Divider, Button } from "semantic-ui-react";
+import { Divider, Button, Icon, Label } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getTestsBySubject } from "../../manage-tests/test.actions";
@@ -23,6 +25,20 @@ export default function TestResultsImportForm({ test_id }) {
     const test_options = tests.map(function(option) {
         return { key: option.id, value: option.id, text: option.name };
     });
+
+    const downloadSampleGradesImportFile = function() {
+        axios.get(`/api/tests/${test_id}/download-sample-batch-grade-file`, {
+            responseType: "blob",
+        }).then(res => {
+            fileDownload(res.data, "sample-batch-grade-file.csv");
+        }).catch(err => {
+            iziToast["error"]({
+                timeout: 3000,
+                message: "An error occurred. Please try again.",
+                position: "topRight"
+            });
+        });
+    };
 
     return (
         <Formik
@@ -75,14 +91,19 @@ export default function TestResultsImportForm({ test_id }) {
 
                     <FileInput attributes={{
                         name: "result",
-                        label: "Upload Result Sheet",
+                        label: "Result Sheet",
                         required: true,
-                        info: "You can upload a CSV file of maximum 500 pupil's grade on each import.",
+                        info: "You can upload a CSV file of maximum 500 pupil's grade on each upload.",
                         onChange: event => {formikProps.setFieldValue("result", event.currentTarget.files[0])}
                     }}/>
 
+                    <span onClick={() => downloadSampleGradesImportFile()} style={{textDecoration: "underline", cursor: "pointer"}}>
+                        <Icon name="download"/>
+                        Download a sample CSV file
+                    </span>
+
                     <Divider hidden/>
-                    <Button type="submit" positive disabled={formikProps.isSubmitting}>Upload</Button>
+                    <Button type="submit" positive disabled={formikProps.isSubmitting}>Upload For Batch Grading</Button>
                 </Form>
             )}
         </Formik>

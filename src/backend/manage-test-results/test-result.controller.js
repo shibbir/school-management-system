@@ -1,8 +1,12 @@
 const fs = require("fs");
-const parse = require("csv-parse");
+const csvParse = require("csv-parse");
+const { Parser } = require("json2csv");
 
 const User = require("../manage-users/user.model");
 const TestResult = require("./test-result.model");
+const Test = require("../manage-tests/test.model");
+const Subject = require("../manage-subjects/subject.model");
+const Program = require("../manage-classes/class.model");
 
 async function getTestResults(req, res, next) {
     try {
@@ -105,17 +109,78 @@ async function deleteTestResult(req, res, next) {
     }
 }
 
+async function downloadSampleBatchGradeFile(req, res) {
+    try {
+        const test = await Test.findByPk(req.params.id, {
+            include: {
+                model: Subject,
+                as: "subject",
+                attributes: ["id"],
+                include: {
+                    model: Program,
+                    as: "class",
+                    attributes: ["id"],
+                    include: {
+                        model: User,
+                        as: "pupils",
+                        attributes: ["id", "forename", "surname"]
+                    }
+                }
+            }
+        });
+
+        const data = [];
+
+        if(test && test.subject && test.subject.class && test.subject.class.pupils) {
+            test.subject.class.pupils.forEach(pupil => {
+                data.push({
+                    "Matriculation Number": pupil.id,
+                    Forename: pupil.forename,
+                    Surname: pupil.surname,
+                    Grade: 0
+                });
+            });
+        } else {
+            data.push({
+                "Matriculation Number": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+                Forename: "John",
+                Surname: "Doe",
+                Grade: 0
+            });
+        }
+
+        const json2csvParser = new Parser({ quote: "" });
+        const csv = json2csvParser.parse(data);
+
+        res.header("Content-Type", "text/csv");
+        res.attachment("sample-batch-grade-file.csv");
+        res.send(csv);
+    } catch(err) {
+        next(err);
+    }
+}
+
 async function importTestResults(req, res, next) {
     try {
+        const test = await Test.findByPk(req.params.id, {
+            include: {
+                model: Subject,
+                as: "subject",
+                attributes: ["id", "status"]
+            }
+        });
+
+        if(test && test.subject && test.subject.status === "archived") return res.status(400).send("No further changes can be made to a test of an archived subjects.");
+
         let test_results = [];
 
-        fs.createReadStream(req.file.path).pipe(parse({
+        fs.createReadStream(req.file.path).pipe(csvParse({
             columns: true,
             skip_empty_lines: true
         })).on("data", function(row) {
             test_results.push({
                 test_id: req.params.id,
-                pupil_id: row["Pupil ID"],
+                pupil_id: row["Matriculation Number"],
                 grade: row["Grade"],
                 created_by: req.user.id,
                 updated_by: req.user.id
@@ -150,3 +215,4 @@ exports.updateTestResult = updateTestResult;
 exports.deleteTestResult = deleteTestResult;
 exports.importTestResults = importTestResults;
 exports.archiveTestResults = archiveTestResults;
+exports.downloadSampleBatchGradeFile = downloadSampleBatchGradeFile;

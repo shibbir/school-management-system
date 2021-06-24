@@ -49,4 +49,12 @@ module.exports = function(app) {
             multer.single("result"),
             controller.importTestResults
         );
+
+    app.route("/api/tests/:id/download-sample-batch-grade-file")
+        .get(
+            authenticate,
+            authorizeFor(["teacher"]),
+            validateParams(testIdSchema),
+            controller.downloadSampleBatchGradeFile
+        );
 };

@@ -18,8 +18,8 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/Test"
-                500:
-                    description: Internal Server Error
+                403:
+                    description: Access Forbidden.
         post:
             tags:
                 - Test
@@ -76,6 +76,8 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/Test"
+                403:
+                    description: Access Forbidden.
         patch:
             tags:
                 - Test
@@ -158,4 +160,3 @@ components:
                             type: string
                         surname:
                             type: string
-

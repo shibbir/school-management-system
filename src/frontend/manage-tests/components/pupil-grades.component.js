@@ -1,5 +1,5 @@
+import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Header, Breadcrumb, Table } from "semantic-ui-react";
 
@@ -8,8 +8,6 @@ import { getSubject, getPupilGrades } from "../../manage-subjects/subject.action
 export default function PupilGrades() {
     const { subject_id } = useParams();
     const dispatch = useDispatch();
-
-    const [subjectIdForTests, setSubjectIdForTests] = useState(undefined);
 
     useEffect(() => {
         dispatch(getSubject(subject_id));
@@ -23,6 +21,7 @@ export default function PupilGrades() {
         return (
             <Table.Row key={row.pupil_id}>
                 <Table.Cell>{index+1}</Table.Cell>
+                <Table.Cell>{row.pupil_id}</Table.Cell>
                 <Table.Cell>{`${row.forename} ${row.surname}`}</Table.Cell>
                 <Table.Cell>{row.grade}</Table.Cell>
             </Table.Row>
@@ -46,6 +45,7 @@ export default function PupilGrades() {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>#</Table.HeaderCell>
+                            <Table.HeaderCell>Matriculation Number</Table.HeaderCell>
                             <Table.HeaderCell>Pupil Name</Table.HeaderCell>
                             <Table.HeaderCell>Average Grade</Table.HeaderCell>
                         </Table.Row>

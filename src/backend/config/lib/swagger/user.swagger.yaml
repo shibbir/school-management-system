@@ -82,6 +82,8 @@ paths:
                     description: Password updated successfully.
                 400:
                     description: An error message stating the problem.
+                401:
+                    description: Unauthorized.
 
     /api/users:
         get:
@@ -102,8 +104,8 @@ paths:
                                         type: string
                                     modifier:
                                         type: object
-                500:
-                    description: Internal Server Error
+                403:
+                    description: Access Forbidden.
         post:
             tags:
                 - User
@@ -148,6 +150,8 @@ paths:
                                                 type: string
                 400:
                     description: An error message stating the problem.
+                403:
+                    description: Access Forbidden.
 
     /api/users/{id}:
         get:
@@ -168,6 +172,8 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/UserProfile"
+                403:
+                    description: Access Forbidden.
         patch:
             tags:
                 - User
@@ -269,6 +275,8 @@ paths:
                                         type: object
                                     updated_at:
                                         type: string
+                403:
+                    description: Access Forbidden.
 
     /api/pupils/{id}/subjects:
         get:
@@ -297,6 +305,8 @@ paths:
                                         type: number
                                     teacher_name:
                                         type: string
+                403:
+                    description: Access Forbidden.
 
     /api/pupils/{pupil_id}/subjects/{subject_id}:
         get:
@@ -347,6 +357,8 @@ paths:
                                                                 type: string
                                                             grade:
                                                                 type: string
+                403:
+                    description: Access Forbidden.
 
 components:
     schemas:

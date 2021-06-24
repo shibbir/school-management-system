@@ -18,6 +18,8 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/TestResult"
+                403:
+                    description: Access Forbidden.
         post:
             tags:
                 - Test Result
@@ -107,6 +109,8 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/TestResult"
+                403:
+                    description: Access Forbidden.
         patch:
             tags:
                 - Test Result
