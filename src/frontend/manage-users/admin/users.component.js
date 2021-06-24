@@ -1,6 +1,8 @@
+import axios from "axios";
 import { capitalize } from "lodash";
 import { Link } from "react-router-dom";
 import { FormattedDate } from "react-intl";
+import fileDownload from "js-file-download";
 import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -60,6 +62,20 @@ export default function Users() {
         }
     };
 
+    const exportData = function() {
+        axios.get(`/api/users/export`, {
+            responseType: "blob",
+        }).then(res => {
+            fileDownload(res.data, "users.csv");
+        }).catch(err => {
+            iziToast["error"]({
+                timeout: 3000,
+                message: "An error occurred. Please try again.",
+                position: "topRight"
+            });
+        });
+    };
+
     return (
         <>
             <Breadcrumb>
@@ -68,8 +84,12 @@ export default function Users() {
                 <Breadcrumb.Section active>Users</Breadcrumb.Section>
             </Breadcrumb>
 
-            <Button floated="right" primary size="small" onClick={() => setUserId(null)}>
+            <Button floated="right" primary onClick={() => setUserId(null)}>
                 Create new user
+            </Button>
+
+            <Button floated="right" basic onClick={() => exportData()} disabled={users.length === 0}>
+                <Icon name="download" color="blue"/> Export Data
             </Button>
 
             <TransitionablePortal open={userId !== undefined} transition={{ animation: "scale", duration: 400 }}>

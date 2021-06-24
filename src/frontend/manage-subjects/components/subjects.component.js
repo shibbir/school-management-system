@@ -1,5 +1,8 @@
+import axios from "axios";
 import { capitalize } from "lodash";
 import { FormattedDate } from "react-intl";
+import fileDownload from "js-file-download";
+import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown } from "semantic-ui-react";
@@ -32,6 +35,20 @@ export default function SubjectList({ class_id } = props) {
                 dispatch(getClasses());
             });
         }
+    };
+
+    const exportData = function() {
+        axios.get(`/api/classes/${class_id}/subjects/export`, {
+            responseType: "blob",
+        }).then(res => {
+            fileDownload(res.data, "subjects.csv");
+        }).catch(err => {
+            iziToast["error"]({
+                timeout: 3000,
+                message: "An error occurred. Please try again.",
+                position: "topRight"
+            });
+        });
     };
 
     const rows = subjects.map(function(subject, index) {
@@ -71,6 +88,10 @@ export default function SubjectList({ class_id } = props) {
                 content="Create a new subject"
                 onClick={() => setSubjectId(null)}
             />
+
+            <Button floated="right" basic onClick={() => exportData()} disabled={subjects.length === 0}>
+                <Icon name="download" color="blue"/> Export Data
+            </Button>
 
             <Divider hidden clearing/>
 

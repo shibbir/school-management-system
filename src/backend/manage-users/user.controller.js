@@ -1,4 +1,6 @@
 const { Op } = require("sequelize");
+const { Parser } = require("json2csv");
+const { capitalize } = require("lodash");
 
 const User = require("./user.model");
 const Program = require("../manage-classes/class.model");
@@ -338,6 +340,44 @@ async function getPupilSubject(req, res, next) {
     }
 }
 
+async function exportData(req, res, next) {
+    try {
+        const users = await User.findAll({
+            attributes: ["id", "forename", "surname", "username", "role", "created_at", "updated_at"],
+            order: [
+                ["role"],
+                ["forename"]
+            ],
+            raw: true
+        });
+
+        if(!users.length) return res.status(400).send("No data found.");
+
+        const data = [];
+
+        users.forEach(function(user) {
+            data.push({
+                "User ID": user.id,
+                Role: capitalize(user.role),
+                Forename: user.forename,
+                Surname: user.surname,
+                Username: user.username,
+                "Created At": new Date(user.created_at).toLocaleDateString("en-US"),
+                "Updated At": new Date(user.updated_at).toLocaleDateString("en-US")
+            });
+        });
+
+        const json2csvParser = new Parser({ quote: "" });
+        const csv = json2csvParser.parse(data);
+
+        res.header("Content-Type", "text/csv");
+        res.attachment("users.csv");
+        res.send(csv);
+    } catch(err) {
+        next(err);
+    }
+}
+
 exports.login = login;
 exports.logout = logout;
 exports.getUserProfile = getUserProfile;
@@ -350,3 +390,4 @@ exports.changePassword = changePassword;
 exports.getAssignedSubjects = getAssignedSubjects;
 exports.getPupilSubject = getPupilSubject;
 exports.getPupilSubjects = getPupilSubjects;
+exports.exportData = exportData;

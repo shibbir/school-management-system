@@ -1,6 +1,8 @@
-
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { FormattedDate } from "react-intl";
+import fileDownload from "js-file-download";
+import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Label, Breadcrumb } from "semantic-ui-react";
@@ -51,6 +53,20 @@ export default function ClassList() {
         );
     });
 
+    const exportData = function() {
+        axios.get(`/api/classes/export`, {
+            responseType: "blob",
+        }).then(res => {
+            fileDownload(res.data, "classes.csv");
+        }).catch(err => {
+            iziToast["error"]({
+                timeout: 3000,
+                message: "An error occurred. Please try again.",
+                position: "topRight"
+            });
+        });
+    };
+
     return (
         <>
             <Breadcrumb>
@@ -59,8 +75,12 @@ export default function ClassList() {
                 <Breadcrumb.Section active>Available classes</Breadcrumb.Section>
             </Breadcrumb>
 
-            <Button floated="right" primary size="small" onClick={() => setClassId(null)}>
+            <Button floated="right" primary onClick={() => setClassId(null)}>
                 Create a new class
+            </Button>
+
+            <Button floated="right" basic onClick={() => exportData()} disabled={classes.length === 0}>
+                <Icon name="download" color="blue"/> Export Data
             </Button>
 
             <Modal dimmer size="tiny" open={classId !== undefined}>

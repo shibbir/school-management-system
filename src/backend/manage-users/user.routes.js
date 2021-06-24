@@ -16,6 +16,9 @@ module.exports = function(app) {
         .get(authenticate, authorizeFor(["admin", "teacher"]), controller.getUsers)
         .post(authenticate, authorizeFor(["admin"]), validateBody(registrationSchema), controller.createUser);
 
+    app.route("/api/users/export")
+        .get(authenticate, authorizeFor(["admin"]), controller.exportData);
+
     app.route("/api/users/:id")
         .get(authenticate, validateParams(idSchema), controller.getUser)
         .patch(authenticate, validateParams(idSchema), controller.updateUser)

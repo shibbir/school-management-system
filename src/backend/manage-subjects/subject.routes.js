@@ -45,4 +45,11 @@ module.exports = function(app) {
             validateBody(subjectSchema),
             controller.addSubject
         );
+
+    app.route("/api/classes/:id/subjects/export")
+        .get(
+            authenticate,
+            authorizeFor(["admin"]),
+            controller.exportData
+        );
 };

@@ -1,9 +1,9 @@
 const { Op } = require("sequelize");
+const { Parser } = require("json2csv");
 
 const Program = require("./class.model");
 const User = require("../manage-users/user.model");
 const Subject = require("../manage-subjects/subject.model");
-const Test = require("../manage-tests/test.model");
 const { archiveOrDeleteSubjects } = require("../manage-subjects/subject.controller");
 
 async function getClasess(req, res, next) {
@@ -141,9 +141,44 @@ async function bulkEnrolment(req, res, next) {
     }
 }
 
+async function exportData(req, res, next) {
+    try {
+        const classes = await Program.findAll({
+            attributes: ["id", "name", "created_at", "updated_at"],
+            order: [
+                ["name"]
+            ],
+            raw: true
+        });
+
+        if(!classes.length) return res.status(400).send("No data found.");
+
+        const data = [];
+
+        classes.forEach(function(program) {
+            data.push({
+                "Class ID": program.id,
+                Name: program.name,
+                "Created At": new Date(program.created_at).toLocaleDateString("en-US"),
+                "Updated At": new Date(program.updated_at).toLocaleDateString("en-US")
+            });
+        });
+
+        const json2csvParser = new Parser({ quote: "" });
+        const csv = json2csvParser.parse(data);
+
+        res.header("Content-Type", "text/csv");
+        res.attachment("classes.csv");
+        res.send(csv);
+    } catch(err) {
+        next(err);
+    }
+}
+
 exports.getClasess = getClasess;
 exports.createClass = createClass;
 exports.getClass = getClass;
 exports.updateClass = updateClass;
 exports.deleteClass = deleteClass;
 exports.bulkEnrolment = bulkEnrolment;
+exports.exportData = exportData;

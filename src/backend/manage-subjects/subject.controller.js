@@ -1,3 +1,6 @@
+const { Parser } = require("json2csv");
+const { capitalize } = require("lodash");
+
 const Subject = require("./subject.model");
 const Test = require("../manage-tests/test.model");
 const User = require("../manage-users/user.model");
@@ -218,6 +221,45 @@ async function archiveOrDeleteSubjects(class_id, updated_by) {
     }));
 }
 
+async function exportData(req, res, next) {
+    try {
+        const program = await Program.findByPk(req.params.id, {
+            attributes: ["name"],
+            include: {
+                model: Subject,
+                as: "subjects",
+                attributes: ["id", "name", "status", "created_at", "updated_at"],
+                order: [
+                    ["name"]
+                ]
+            }
+        });
+
+        if(!program || !program.subjects.length) return res.status(400).send("No data found.");
+
+        const data = [];
+
+        program.subjects.forEach(function(subject) {
+            data.push({
+                "Class": program.name,
+                Subject: subject.name,
+                "Subject Status": capitalize(subject.status),
+                "Created At": new Date(subject.created_at).toLocaleDateString("en-US"),
+                "Updated At": new Date(subject.updated_at).toLocaleDateString("en-US")
+            });
+        });
+
+        const json2csvParser = new Parser({ quote: "" });
+        const csv = json2csvParser.parse(data);
+
+        res.header("Content-Type", "text/csv");
+        res.attachment("subjects.csv");
+        res.send(csv);
+    } catch(err) {
+        next(err);
+    }
+}
+
 exports.getSubjectsByClass = getSubjectsByClass;
 exports.addSubject = addSubject;
 exports.getSubject = getSubject;
@@ -225,3 +267,4 @@ exports.updateSubject = updateSubject;
 exports.deleteSubject = deleteSubject;
 exports.getPupilGrades = getPupilGrades;
 exports.archiveOrDeleteSubjects = archiveOrDeleteSubjects;
+exports.exportData = exportData;

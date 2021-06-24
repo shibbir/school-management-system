@@ -8,6 +8,9 @@ module.exports = function(app) {
         .get(authenticate, controller.getClasess)
         .post(authenticate, authorizeFor(["admin"]), validateBody(classSchema), controller.createClass);
 
+    app.route("/api/classes/export")
+        .get(authenticate, authorizeFor(["admin"]), controller.exportData);
+
     app.route("/api/classes/:id")
         .get(authenticate, validateParams(idSchema), controller.getClass)
         .patch(authenticate, authorizeFor(["admin"]), validateParams(idSchema), controller.updateClass)

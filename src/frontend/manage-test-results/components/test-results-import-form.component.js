@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import fileDownload from "js-file-download";
 import { useParams } from "react-router-dom";
 import iziToast from "izitoast/dist/js/iziToast";
-import { Divider, Button, Icon, Label } from "semantic-ui-react";
+import { Divider, Button, Icon } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getTestsBySubject } from "../../manage-tests/test.actions";
