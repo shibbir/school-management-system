@@ -6,11 +6,10 @@ import { useSelector, useDispatch } from "react-redux";
 
 import SubjectSchema from "../subject.schema";
 import { getUsers } from "../../manage-users/user.actions";
-import { getClasses } from "../../manage-classes/class.actions";
 import { TextInput, DropdownInput } from "../../core/components/field-inputs.component";
 import { createSubject, updateSubject, getSubject, resetSubject } from "../subject.actions";
 
-function SubjectForm({ id, class_id } = props) {
+function SubjectForm({ id } = props) {
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -46,17 +45,29 @@ function SubjectForm({ id, class_id } = props) {
                             message: "Your changes are saved.",
                             position: "topRight"
                         });
+                    }).catch(function(err) {
+                        iziToast["error"]({
+                            timeout: 3000,
+                            title: err.response.status,
+                            message: err.response.data,
+                            position: "topRight"
+                        });
                     });
                 } else {
-                    dispatch(createSubject(class_id, values)).then(function() {
-                        dispatch(getClasses());
-
+                    dispatch(createSubject(values)).then(function() {
                         iziToast["success"]({
                             timeout: 3000,
                             message: "Your changes are saved.",
                             position: "topRight"
                         });
                         actions.resetForm();
+                    }).catch(function(err) {
+                        iziToast["error"]({
+                            timeout: 3000,
+                            title: err.response.status,
+                            message: err.response.data,
+                            position: "topRight"
+                        });
                     });
                 }
 

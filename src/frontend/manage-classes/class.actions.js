@@ -53,6 +53,16 @@ export function deleteClass(id) {
     };
 }
 
+export function getSubjectsByClass(class_id) {
+    return {
+        type: Types.GET_CLASS_SUBJECTS,
+        payload: axios({
+            method: "get",
+            url: `/api/classes/${class_id}/subjects`
+        })
+    };
+}
+
 export function bulkEnrolment(id, data) {
     return {
         type: Types.PATCH_PUPILS_ENROLMENT,
@@ -60,6 +70,17 @@ export function bulkEnrolment(id, data) {
             method: "patch",
             data,
             url: `/api/classes/${id}/bulk-enrolment`
+        })
+    };
+}
+
+export function bulkSubjectsSelection(id, data) {
+    return {
+        type: Types.BULK_SUBJECTS_SELECTION,
+        payload: axios({
+            method: "put",
+            data,
+            url: `/api/classes/${id}/bulk-subjects-selection`
         })
     };
 }

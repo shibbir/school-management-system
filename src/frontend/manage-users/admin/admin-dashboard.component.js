@@ -61,7 +61,7 @@ export default function Admin() {
                             <Feed.Content>
                                 <Feed.Date content="Manage Classes"/>
                                 <Feed.Summary>
-                                    View all classes currently in the system. Create, modify, remove classes.
+                                    View and export all classes currently in the system. Create, modify, remove classes.
                                 </Feed.Summary>
                             </Feed.Content>
                         </Feed.Event>
@@ -69,9 +69,9 @@ export default function Admin() {
                         <Feed.Event>
                             <Feed.Label icon="book"/>
                             <Feed.Content>
-                                <Feed.Date content="Manage Subjects"/>
+                                <Feed.Date content="Subjects Assignment"/>
                                 <Feed.Summary>
-                                    Create, modify, remove, archive subjects. Assign teacher per subject.
+                                    Manage bulk assignments or deassignments of subjects into a class.
                                 </Feed.Summary>
                             </Feed.Content>
                         </Feed.Event>
@@ -81,7 +81,39 @@ export default function Admin() {
                             <Feed.Content>
                                 <Feed.Date content="Pupils Enrolment"/>
                                 <Feed.Summary>
-                                    Perform bulk assignments or deassignments of pupils into a class.
+                                    Manage bulk assignments or deassignments of pupils into a class.
+                                </Feed.Summary>
+                            </Feed.Content>
+                        </Feed.Event>
+                    </Feed>
+                </Card.Content>
+            </Link>
+
+            <Link className="ui raised card" to="/manage-subjects">
+                <Label color="blue" corner="right" size="small">
+                    <Icon name="book"/>
+                </Label>
+                <Card.Content extra>
+                    <Card.Header>Subject Management</Card.Header>
+                </Card.Content>
+                <Card.Content>
+                    <Feed>
+                        <Feed.Event>
+                            <Feed.Label icon="book"/>
+                            <Feed.Content>
+                                <Feed.Date content="Manage Subjects"/>
+                                <Feed.Summary>
+                                    View and export all subjects currently available in the system.
+                                </Feed.Summary>
+                            </Feed.Content>
+                        </Feed.Event>
+
+                        <Feed.Event>
+                            <Feed.Label icon="pencil"/>
+                            <Feed.Content>
+                                <Feed.Date content="Manage Subjects"/>
+                                <Feed.Summary>
+                                    Create, modify, remove, archive subjects. Assign teacher per subject.
                                 </Feed.Summary>
                             </Feed.Content>
                         </Feed.Event>

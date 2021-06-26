@@ -60,7 +60,7 @@ export const DropdownInput = ({ attributes }) => {
         <Form.Field required={attributes.required}>
             { label && <label>{label}</label> }
 
-            <Form.Select search {...attributes} name={attributes.name} options={attributes.options} disabled={attributes.disabled}/>
+            <Form.Select {...attributes}/>
 
             <div className="field-validation-error">
                 <ErrorMessage name={attributes.name} />

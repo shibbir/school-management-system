@@ -5,9 +5,8 @@ const initialState = {
     loggedInUser: null,
     user: null,
     users: [],
-    assigned_subjects: [],
-    pupil_subjects: [],
-    pupil_subject: null
+    subjects: [],
+    subject: null
 };
 
 export default function reducer(state=initialState, action) {
@@ -40,17 +39,14 @@ export default function reducer(state=initialState, action) {
             });
             return { ...state, users, user: action.payload.data };
         }
-        case Types.GET_ASSIGNED_SUBJECTS_FULFILLED: {
-            return { ...state, assigned_subjects: action.payload.data };
-        }
         case Types.RESET_USER: {
             return { ...state, user: null };
         }
-        case Types.GET_PUPIL_SUBJECT_FULFILLED: {
-            return { ...state, pupil_subject: action.payload.data };
+        case Types.GET_USER_SUBJECT_FULFILLED: {
+            return { ...state, subject: action.payload.data };
         }
-        case Types.GET_PUPIL_SUBJECTS_FULFILLED: {
-            return { ...state, pupil_subjects: action.payload.data };
+        case Types.GET_USER_SUBJECTS_FULFILLED: {
+            return { ...state, subjects: action.payload.data };
         }
     }
 

@@ -224,7 +224,6 @@ async function init() {
             {
                 id: subject1_id,
                 name: "Automotive Sensor Systems",
-                class_id: class1_id,
                 teacher_id: teacher1_id,
                 created_by: admin_id,
                 updated_by: admin_id
@@ -232,7 +231,6 @@ async function init() {
             {
                 id: subject2_id,
                 name: "Software Platforms for Automotive Systems",
-                class_id: class1_id,
                 teacher_id: teacher1_id,
                 created_by: admin_id,
                 updated_by: admin_id
@@ -240,7 +238,6 @@ async function init() {
             {
                 id: subject3_id,
                 name: "Formal Specification and Verification",
-                class_id: class1_id,
                 teacher_id: teacher2_id,
                 created_by: admin_id,
                 updated_by: admin_id
@@ -248,7 +245,6 @@ async function init() {
             {
                 id: subject4_id,
                 name: "Compiler Construction",
-                class_id: class2_id,
                 teacher_id: teacher1_id,
                 created_by: admin_id,
                 updated_by: admin_id
@@ -256,7 +252,6 @@ async function init() {
             {
                 id: subject5_id,
                 name: "Databases and Web Techniques",
-                class_id: class2_id,
                 teacher_id: teacher2_id,
                 created_by: admin_id,
                 updated_by: admin_id
@@ -264,7 +259,6 @@ async function init() {
             {
                 id: subject6_id,
                 name: "Data Security and Cryptography",
-                class_id: class2_id,
                 teacher_id: teacher2_id,
                 created_by: admin_id,
                 updated_by: admin_id
@@ -276,6 +270,27 @@ async function init() {
                 returning: true,
                 ignoreDuplicates: false
             }).then(() => callback());
+        });
+    }
+
+    function classSubjectSeeder(callback) {
+        Promise.all([
+            Subject.findByPk(subject1_id),
+            Subject.findByPk(subject2_id),
+            Subject.findByPk(subject3_id),
+            Subject.findByPk(subject4_id),
+            Subject.findByPk(subject5_id),
+            Subject.findByPk(subject6_id)
+        ]).then(function(subjects) {
+            Program.findByPk(class1_id).then(function(class_1) {
+                class_1.addSubjects([subjects[0], subjects[1], subjects[2]]).then(function() {
+                    Program.findByPk(class2_id).then(function(class_2) {
+                        class_2.addSubjects([subjects[3], subjects[4], subjects[5]]).then(function() {
+                            callback();
+                        });
+                    });
+                });
+            });
         });
     }
 
@@ -332,6 +347,7 @@ async function init() {
         classSeeder,
         userSeeder,
         subjectSeeder,
+        classSubjectSeeder,
         testSeeder
     ], function (err) {
         if (err) console.error(err);

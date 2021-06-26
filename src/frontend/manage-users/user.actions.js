@@ -76,7 +76,7 @@ export function deleteUser(id) {
 
 export function getAssignedSubjects(user_id) {
     return {
-        type: Types.GET_ASSIGNED_SUBJECTS,
+        type: Types.GET_USER_SUBJECTS,
         payload: axios({
             method: "get",
             url: `/api/teachers/${user_id}/subjects`
@@ -103,7 +103,7 @@ export function resetUser() {
 
 export function getPupilSubjects(user_id) {
     return {
-        type: Types.GET_PUPIL_SUBJECTS,
+        type: Types.GET_USER_SUBJECTS,
         payload: axios({
             method: "get",
             url: `/api/pupils/${user_id}/subjects`
@@ -113,7 +113,7 @@ export function getPupilSubjects(user_id) {
 
 export function getPupilSubject(user_id, subject_id) {
     return {
-        type: Types.GET_PUPIL_SUBJECT,
+        type: Types.GET_USER_SUBJECT,
         payload: axios({
             method: "get",
             url: `/api/pupils/${user_id}/subjects/${subject_id}`

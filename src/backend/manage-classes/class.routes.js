@@ -18,4 +18,7 @@ module.exports = function(app) {
 
     app.route("/api/classes/:id/bulk-enrolment")
         .patch(authenticate, authorizeFor(["admin"]), validateParams(idSchema), controller.bulkEnrolment);
+
+    app.route("/api/classes/:id/bulk-subjects-selection")
+        .put(authenticate, authorizeFor(["admin"]), validateParams(idSchema), controller.bulkSubjectsSelection);
 };

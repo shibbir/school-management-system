@@ -162,7 +162,7 @@ async function updateUser(req, res, next) {
         }
 
         const matched_username = await User.count({ where: {
-            username: username.toLowerCase(),
+            username: { [Op.iLike]: username },
             id: { [Op.ne]: req.user.id }
         }});
 
@@ -203,10 +203,8 @@ async function deleteUser(req, res, next) {
             }]
         });
 
-        if(user.role === "teacher") {
-            if(user.subjects.find(x => x.status === "active")) {
-                res.status(400).send("Teachers cannot be removed while they are assigned to at least one non-archived subject.");
-            }
+        if(user.role === "teacher" && user.subjects.find(x => x.status === "active")) {
+            res.status(400).send("Teachers cannot be removed while they are assigned to at least one non-archived subject.");
         }
 
         await User.destroy({ where: { id: req.params.id }});
@@ -238,16 +236,17 @@ async function changePassword(req, res, next) {
 async function getAssignedSubjects(req, res, next) {
     try {
         const subjects = await Subject.findAll({
-            where: { teacher_id: req.user.id },
+            where: { teacher_id: req.params.id },
+            attributes: ["id", "name", "status", "updated_at"],
             order: [
-                ["created_at", "DESC"]
+                ["name"]
             ],
             include: {
                 model: Program,
-                as: "class",
-                attributes: ["name"]
-            },
-            attributes: ["id", "name", "status", "updated_at"]
+                as: "classes",
+                attributes: ["id", "name"],
+                through: { attributes: [] }
+            }
         });
 
         res.json(subjects);
@@ -263,8 +262,14 @@ async function getPupilSubjects(req, res, next) {
         });
 
         const subjects = await Subject.findAll({
-            attributes: ["id", "name", "class_id"],
+            attributes: ["id", "name"],
             include: [
+                {
+                    model: Program,
+                    as: "classes",
+                    attributes: ["id"],
+                    through: { where: { class_id: pupil.class_id }, attributes: []}
+                },
                 {
                     model: User,
                     as: "teacher",
@@ -297,7 +302,7 @@ async function getPupilSubjects(req, res, next) {
                 }
             });
 
-            if(pupil.class_id && pupil.class_id === subject.class_id) {
+            if(pupil.class_id && subject.classes.find(x => x.id === pupil.class_id)) {
                 is_assigned_subject = true;
             }
 
@@ -378,6 +383,123 @@ async function exportData(req, res, next) {
     }
 }
 
+async function exportAssignedSubjects(req, res, next) {
+    try {
+        const subjects = await Subject.findAll({
+            where: { teacher_id: req.params.id },
+            attributes: ["name", "status", "created_at", "updated_at"],
+            order: [
+                ["name"]
+            ],
+            raw: true
+        });
+
+        if(!subjects.length) return res.status(400).send("No data found.");
+
+        const data = [];
+
+        subjects.forEach(function(subject) {
+            data.push({
+                Name: subject.name,
+                Status: capitalize(subject.status),
+                "Created At": new Date(subject.created_at).toLocaleDateString("en-US"),
+                "Updated At": new Date(subject.updated_at).toLocaleDateString("en-US")
+            });
+        });
+
+        const json2csvParser = new Parser({ quote: "" });
+        const csv = json2csvParser.parse(data);
+
+        res.header("Content-Type", "text/csv");
+        res.attachment("assigned-subjects.csv");
+        res.send(csv);
+    } catch(err) {
+        next(err);
+    }
+}
+
+async function exportPupilSubjects(req, res, next) {
+    try {
+        const pupil = await User.findByPk(req.params.id, {
+            attributes: ["class_id"]
+        });
+
+        const subjects = await Subject.findAll({
+            attributes: ["id", "name"],
+            include: [
+                {
+                    model: Program,
+                    as: "classes",
+                    attributes: ["id"],
+                    through: { where: { class_id: pupil.class_id }, attributes: []}
+                },
+                {
+                    model: User,
+                    as: "teacher",
+                    attributes: ["forename", "surname"]
+                },
+                {
+                    model: Test,
+                    as: "tests",
+                    attributes: ["id", "name"],
+                    include: {
+                        model: TestResult,
+                        as: "test_results",
+                        attributes: ["pupil_id", "grade"],
+                        where: { pupil_id: req.params.id }
+                    }
+                }
+            ]
+        });
+
+        const response = [];
+
+        subjects.forEach(subject => {
+            let test_results_sum = 0;
+            let is_assigned_subject = false;
+
+            subject.tests.forEach(test => {
+                if(test.test_results && test.test_results.length) {
+                    test_results_sum += +test.test_results[0].grade;
+                    is_assigned_subject = true;
+                }
+            });
+
+            if(pupil.class_id && subject.classes.find(x => x.id === pupil.class_id)) {
+                is_assigned_subject = true;
+            }
+
+            if(is_assigned_subject) {
+                response.push({
+                    subject_id: subject.id,
+                    subject_name: subject.name,
+                    teacher_name: `${subject.teacher.forename} ${subject.teacher.surname}`,
+                    grade: subject.tests && subject.tests.length ? test_results_sum / subject.tests.length : 0
+                });
+            }
+        });
+
+        const data = [];
+
+        response.forEach(function(subject) {
+            data.push({
+                "Subject Name": subject.subject_name,
+                "Teacher Name": subject.teacher_name,
+                Grade: subject.grade
+            });
+        });
+
+        const json2csvParser = new Parser({ quote: "" });
+        const csv = json2csvParser.parse(data);
+
+        res.header("Content-Type", "text/csv");
+        res.attachment("subjects-overview.csv");
+        res.send(csv);
+    } catch(err) {
+        next(err);
+    }
+}
+
 exports.login = login;
 exports.logout = logout;
 exports.getUserProfile = getUserProfile;
@@ -391,3 +513,5 @@ exports.getAssignedSubjects = getAssignedSubjects;
 exports.getPupilSubject = getPupilSubject;
 exports.getPupilSubjects = getPupilSubjects;
 exports.exportData = exportData;
+exports.exportAssignedSubjects = exportAssignedSubjects;
+exports.exportPupilSubjects = exportPupilSubjects;

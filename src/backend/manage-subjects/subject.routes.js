@@ -4,6 +4,25 @@ const { validateBody, validateParams } = require("../core/validator.middleware")
 const { subjectSchema, classIdSchema, subjectIdSchema } = require("./subject.schema");
 
 module.exports = function(app) {
+    app.route("/api/subjects")
+        .get(
+            authenticate,
+            authorizeFor(["admin"]),
+            controller.getSubjects
+        ).post(
+            authenticate,
+            authorizeFor(["admin"]),
+            validateBody(subjectSchema),
+            controller.addSubject
+        );
+
+    app.route("/api/subjects/export")
+        .get(
+            authenticate,
+            authorizeFor(["admin"]),
+            controller.exportData
+        );
+
     app.route("/api/subjects/:id")
         .get(
             authenticate,
@@ -31,25 +50,19 @@ module.exports = function(app) {
             controller.getPupilGrades
         );
 
-    app.route("/api/classes/:id/subjects")
-        .get(
-            authenticate,
-            authorizeFor(["admin"]),
-            validateParams(classIdSchema),
-            controller.getSubjectsByClass
-        )
-        .post(
-            authenticate,
-            authorizeFor(["admin"]),
-            validateParams(classIdSchema),
-            validateBody(subjectSchema),
-            controller.addSubject
-        );
+    // app.route("/api/classes/:id/subjects")
+    //     .get(
+    //         authenticate,
+    //         authorizeFor(["admin"]),
+    //         validateParams(classIdSchema),
+    //         controller.getSubjectsByClass
+    //     )
+    //     .post(
+    //         authenticate,
+    //         authorizeFor(["admin"]),
+    //         validateParams(classIdSchema),
+    //         validateBody(subjectSchema),
+    //         controller.addSubject
+    //     );
 
-    app.route("/api/classes/:id/subjects/export")
-        .get(
-            authenticate,
-            authorizeFor(["admin"]),
-            controller.exportData
-        );
 };

@@ -10,7 +10,7 @@ export default function Admin() {
                     <Icon name="book"/>
                 </Label>
                 <Card.Content extra>
-                    <Card.Header>Assigned Subjects Management</Card.Header>
+                    <Card.Header>Subjects Overview</Card.Header>
                 </Card.Content>
                 <Card.Content>
                     <Feed>
@@ -19,7 +19,7 @@ export default function Admin() {
                             <Feed.Content>
                                 <Feed.Date content="Overview of All Assigned Subjects"/>
                                 <Feed.Summary>
-                                    View all the subejcts that are assigned to you.
+                                    View all the subjects you are registered for.
                                 </Feed.Summary>
                             </Feed.Content>
                         </Feed.Event>

@@ -16,6 +16,7 @@ import Profile from "../manage-users/components/profile.component";
 import Dashboard from "../manage-users/components/dashboard.component";
 
 import ClassRoutes from "../manage-classes/class.routes";
+import SubjectRoutes from "../manage-subjects/subject.routes";
 import AdminRoutes from "../manage-users/admin/admin.routes";
 import PupilRoutes from "../manage-users/pupil/pupil.routes";
 import TeacherRoutes from "../manage-users/teacher/teacher.routes";
@@ -69,6 +70,8 @@ export default function App() {
             <Route path="/manage-users" component={AdminRoutes}/>
 
             <Route path="/manage-classes" component={ClassRoutes}/>
+
+            <Route path="/manage-subjects" component={SubjectRoutes}/>
 
             <Route path="/assigned-subjects" component={TeacherRoutes}/>
 

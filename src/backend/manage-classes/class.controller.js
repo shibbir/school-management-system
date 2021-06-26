@@ -18,7 +18,8 @@ async function getClasess(req, res, next) {
                 {
                     model: Subject,
                     as: "subjects",
-                    attributes: ["id"]
+                    attributes: ["id"],
+                    through: { attributes: [] }
                 }
             ],
             attributes: {exclude: ["created_by", "updated_by"]},
@@ -141,10 +142,31 @@ async function bulkEnrolment(req, res, next) {
     }
 }
 
+async function bulkSubjectsSelection(req, res, next) {
+    try {
+        const program = await Program.findByPk(req.params.id);
+
+        if(!program) return res.status(404).send("Class not found.");
+
+        const all_subjects = await Subject.findAll();
+
+        const subjects = await Subject.findAll({ where: { id: {
+            [Op.in]: req.body.subjects
+        }}});
+
+        await program.removeSubjects(all_subjects);
+        await program.addSubjects(subjects);
+
+        res.sendStatus(204);
+    } catch(err) {
+        next(err);
+    }
+}
+
 async function exportData(req, res, next) {
     try {
         const classes = await Program.findAll({
-            attributes: ["id", "name", "created_at", "updated_at"],
+            attributes: ["name", "created_at", "updated_at"],
             order: [
                 ["name"]
             ],
@@ -157,7 +179,6 @@ async function exportData(req, res, next) {
 
         classes.forEach(function(program) {
             data.push({
-                "Class ID": program.id,
                 Name: program.name,
                 "Created At": new Date(program.created_at).toLocaleDateString("en-US"),
                 "Updated At": new Date(program.updated_at).toLocaleDateString("en-US")
@@ -181,4 +202,5 @@ exports.getClass = getClass;
 exports.updateClass = updateClass;
 exports.deleteClass = deleteClass;
 exports.bulkEnrolment = bulkEnrolment;
+exports.bulkSubjectsSelection = bulkSubjectsSelection;
 exports.exportData = exportData;

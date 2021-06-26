@@ -1,7 +1,17 @@
 import axios from "axios";
 import Types from "./subject.types";
 
-export function getSubjects(class_id) {
+export function getSubjects() {
+    return {
+        type: Types.GET_SUBJECTS,
+        payload: axios({
+            method: "get",
+            url: "/api/subjects"
+        })
+    };
+}
+
+export function getSubjects2(class_id) {
     return {
         type: Types.GET_SUBJECTS,
         payload: axios({
@@ -11,13 +21,13 @@ export function getSubjects(class_id) {
     };
 }
 
-export function createSubject(class_id, subject) {
+export function createSubject(subject) {
     return {
         type: Types.POST_SUBJECT,
         payload: axios({
             method: "post",
             data: subject,
-            url: `/api/classes/${class_id}/subjects`
+            url: `/api/subjects`
         })
     };
 }

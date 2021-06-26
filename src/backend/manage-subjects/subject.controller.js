@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { Parser } = require("json2csv");
 const { capitalize } = require("lodash");
 
@@ -39,27 +40,65 @@ async function getSubjectsByClass(req, res, next) {
     }
 }
 
+async function getSubjects(req, res, next) {
+    try {
+        const subjects = await Subject.findAll({
+            attributes: ["id", "name", "status", "updated_at"],
+            order: [
+                ["updated_at", "DESC"]
+            ],
+            include: [
+                {
+                    model: User,
+                    as: "teacher",
+                    attributes: ["forename", "surname"]
+                },
+                {
+                    model: Test,
+                    as: "tests",
+                    attributes: ["id"]
+                },
+                {
+                    model: Program,
+                    as: "classes",
+                    attributes: ["id"],
+                    through: { attributes: [] }
+                }
+            ]
+        });
+
+        res.json(subjects);
+    } catch(err) {
+        next(err);
+    }
+}
+
 async function addSubject(req, res, next) {
     try {
         const { name, teacher_id } = req.body;
 
+        const matched_name = await Subject.count({ where: {
+            name: { [Op.iLike]: name }
+        }});
+
+        if(matched_name) {
+            return res.status(400).send("Subject name already exists. Please try with a different name.");
+        }
+
         const entity = await Subject.create({
             name,
             teacher_id,
-            class_id: req.params.id,
             created_by: req.user.id,
             updated_by: req.user.id
         });
 
         const subject = await Subject.findByPk(entity.id, {
             attributes: ["id", "name", "status", "updated_at"],
-            include: [
-                {
-                    model: User,
-                    as: "teacher",
-                    attributes: ["forename", "surname"]
-                }
-            ]
+            include: {
+                model: User,
+                as: "teacher",
+                attributes: ["forename", "surname"]
+            }
         });
 
         res.json(subject);
@@ -71,7 +110,7 @@ async function addSubject(req, res, next) {
 async function getSubject(req, res, next) {
     try {
         const subject = await Subject.findByPk(req.params.id, {
-            attributes: ["id", "name", "status", "updated_at", "class_id"],
+            attributes: ["id", "name", "status", "teacher_id"]
         });
 
         res.json(subject);
@@ -103,6 +142,15 @@ async function updateSubject(req, res, next) {
             await subject.save();
             await archiveTests(req.params.id, req.user.id);
         } else {
+            const matched_name = await Subject.count({ where: {
+                name: { [Op.iLike]: name },
+                id: { [Op.ne]: req.params.id }
+            }});
+
+            if(matched_name) {
+                return res.status(400).send("Subject name already exists. Please try with a different name.");
+            }
+
             subject.name = name;
             subject.teacher_id = teacher_id;
             subject.updated_by = req.user.id;
@@ -223,27 +271,21 @@ async function archiveOrDeleteSubjects(class_id, updated_by) {
 
 async function exportData(req, res, next) {
     try {
-        const program = await Program.findByPk(req.params.id, {
-            attributes: ["name"],
-            include: {
-                model: Subject,
-                as: "subjects",
-                attributes: ["id", "name", "status", "created_at", "updated_at"],
-                order: [
-                    ["name"]
-                ]
-            }
+        const subjects = await Subject.findAll({
+            attributes: ["id", "name", "status", "created_at", "updated_at"],
+            order: [
+                ["name"]
+            ]
         });
 
-        if(!program || !program.subjects.length) return res.status(400).send("No data found.");
+        if(!subjects || !subjects.length) return res.status(400).send("No data found.");
 
         const data = [];
 
-        program.subjects.forEach(function(subject) {
+        subjects.forEach(function(subject) {
             data.push({
-                "Class": program.name,
                 Subject: subject.name,
-                "Subject Status": capitalize(subject.status),
+                Status: capitalize(subject.status),
                 "Created At": new Date(subject.created_at).toLocaleDateString("en-US"),
                 "Updated At": new Date(subject.updated_at).toLocaleDateString("en-US")
             });
@@ -262,6 +304,7 @@ async function exportData(req, res, next) {
 
 exports.getSubjectsByClass = getSubjectsByClass;
 exports.addSubject = addSubject;
+exports.getSubjects = getSubjects;
 exports.getSubject = getSubject;
 exports.updateSubject = updateSubject;
 exports.deleteSubject = deleteSubject;

@@ -1,25 +1,23 @@
 import axios from "axios";
 import { capitalize } from "lodash";
+import { Link } from "react-router-dom";
 import { FormattedDate } from "react-intl";
 import fileDownload from "js-file-download";
 import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown } from "semantic-ui-react";
+import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Breadcrumb } from "semantic-ui-react";
 
 import SubjectForm from "./subject-form.component";
-import { getClasses } from "../../manage-classes/class.actions";
 import { getSubjects, deleteSubject, updateSubject } from "../subject.actions";
 
-export default function SubjectList({ class_id } = props) {
+export default function SubjectList() {
     const dispatch = useDispatch();
     const [subjectId, setSubjectId] = useState(undefined);
 
     useEffect(() => {
-        if(class_id) {
-            dispatch(getSubjects(class_id));
-        }
-    }, [class_id]);
+        dispatch(getSubjects());
+    }, []);
 
     const subjects = useSelector(state => state.subjectReducer.subjects);
 
@@ -31,14 +29,12 @@ export default function SubjectList({ class_id } = props) {
 
     const onDeleteSubject = function(id) {
         if(confirm("Are you sure you want to remove the subject?")) {
-            dispatch(deleteSubject(id)).then(function() {
-                dispatch(getClasses());
-            });
+            dispatch(deleteSubject(id));
         }
     };
 
     const exportData = function() {
-        axios.get(`/api/classes/${class_id}/subjects/export`, {
+        axios.get("/api/subjects/export", {
             responseType: "blob",
         }).then(res => {
             fileDownload(res.data, "subjects.csv");
@@ -68,7 +64,7 @@ export default function SubjectList({ class_id } = props) {
                             <Dropdown.Menu>
                                 <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setSubjectId(subject.id)}/>
                                 { subject.tests && subject.tests.length > 0 && <Dropdown.Item icon="archive" text="Archive Subject" onClick={() => onArchiveSubject(subject.id)}/> }
-                                { subject.tests && subject.tests.length === 0 && <Dropdown.Item icon="trash" text="Remove Subject" onClick={() => onDeleteSubject(subject.id)}/> }
+                                { !subject.tests || subject.tests && subject.tests.length === 0 && <Dropdown.Item icon="trash" text="Remove Subject" onClick={() => onDeleteSubject(subject.id)}/> }
                             </Dropdown.Menu>
                         </Dropdown>
                     }
@@ -80,10 +76,14 @@ export default function SubjectList({ class_id } = props) {
 
     return (
         <>
+            <Breadcrumb>
+                <Breadcrumb.Section><Link to="/">Dashboard</Link></Breadcrumb.Section>
+                <Breadcrumb.Divider>/</Breadcrumb.Divider>
+                <Breadcrumb.Section active>Available subjects</Breadcrumb.Section>
+            </Breadcrumb>
+
             <Button
                 primary
-                icon="arrow right"
-                labelPosition="right"
                 floated="right"
                 content="Create a new subject"
                 onClick={() => setSubjectId(null)}
@@ -96,7 +96,7 @@ export default function SubjectList({ class_id } = props) {
             <Divider hidden clearing/>
 
             { subjects.length > 0 &&
-                <Table selectable compact>
+                <Table selectable>
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>#</Table.HeaderCell>
@@ -127,7 +127,7 @@ export default function SubjectList({ class_id } = props) {
                 <Modal.Header>Subject Form</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                        <SubjectForm class_id={class_id} id={subjectId}/>
+                        <SubjectForm id={subjectId}/>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>

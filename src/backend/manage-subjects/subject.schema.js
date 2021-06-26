@@ -7,6 +7,7 @@ const subjectSchema = object().shape({
         .required("Subject name must not be empty."),
     teacher_id: string()
         .required("Teacher is required.")
+        .uuid("Teacher Id must be a valid UUID")
 });
 
 const classIdSchema = object().shape({

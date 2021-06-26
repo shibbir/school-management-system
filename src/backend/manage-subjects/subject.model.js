@@ -11,6 +11,7 @@ const Subject = sequelize.dbConnector.define("subjects", {
         defaultValue: DataTypes.UUIDV4
     },
     name: {
+        unique: true,
         allowNull: false,
         type: DataTypes.STRING(50)
     },
@@ -36,8 +37,14 @@ const Subject = sequelize.dbConnector.define("subjects", {
     updatedAt: "updated_at"
 });
 
-Program.hasMany(Subject, { as: "subjects", foreignKey: "class_id" });
-Subject.belongsTo(Program, { as: "class", foreignKey: "class_id" });
+const ClassSubject = sequelize.dbConnector.define("class_subjects", {}, {
+    schema: process.env.POSTGRES_DATABASE_SCHEMA,
+    tableName: "class_subjects",
+    timestamps: false
+});
+
+Program.belongsToMany(Subject, { as: "subjects", through: ClassSubject, foreignKey: "class_id" });
+Subject.belongsToMany(Program, { as: "classes", through: ClassSubject, foreignKey: "subject_id" });
 
 User.hasMany(Subject, { as: "subjects", foreignKey: { name: "teacher_id", allowNull: false }});
 Subject.belongsTo(User, { as: "teacher", foreignKey: { name: "teacher_id", allowNull: false }});

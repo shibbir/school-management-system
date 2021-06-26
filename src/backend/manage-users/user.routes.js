@@ -27,6 +27,12 @@ module.exports = function(app) {
     app.route("/api/teachers/:id/subjects")
         .get(authenticate, authorizeFor(["teacher"]), controller.getAssignedSubjects);
 
+    app.route("/api/teachers/:id/export-subjects")
+        .get(authenticate, authorizeFor(["teacher"]), controller.exportAssignedSubjects);
+
+    app.route("/api/pupils/:id/export-subjects")
+        .get(authenticate, authorizeFor(["pupil"]), controller.exportPupilSubjects);
+
     app.route("/api/pupils/:id/subjects")
         .get(authenticate, authorizeFor(["pupil"]), controller.getPupilSubjects);
 

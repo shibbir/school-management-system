@@ -1,5 +1,8 @@
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { FormattedDate } from "react-intl";
+import fileDownload from "js-file-download";
+import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Header, Breadcrumb, Table, Dropdown, Modal, Button, Label } from "semantic-ui-react";
@@ -24,10 +27,10 @@ export default function SubjectsOverview() {
     }, [logged_in_user, subjectId]);
 
     const subject = useSelector(state => state.userReducer.pupil_subject);
-    const subjects = useSelector(state => state.userReducer.pupil_subjects);
+    const subjects = useSelector(state => state.userReducer.subjects);
     const logged_in_user = useSelector(state => state.userReducer.loggedInUser);
 
-    const subjects_rows = subjects.map(function(subject, index) {
+    const rows = subjects.map(function(subject, index) {
         return (
             <Table.Row key={subject.subject_id}>
                 <Table.Cell>{index+1}</Table.Cell>
@@ -56,6 +59,20 @@ export default function SubjectsOverview() {
         );
     });
 
+    const exportData = function() {
+        axios.get(`/api/pupils/${logged_in_user.id}/export-subjects`, {
+            responseType: "blob",
+        }).then(res => {
+            fileDownload(res.data, "subjects-overview.csv");
+        }).catch(err => {
+            iziToast["error"]({
+                timeout: 3000,
+                message: "An error occurred. Please try again.",
+                position: "topRight"
+            });
+        });
+    };
+
     return (
         <>
             <Breadcrumb>
@@ -64,9 +81,13 @@ export default function SubjectsOverview() {
                 <Breadcrumb.Section active>Subjects Overview</Breadcrumb.Section>
             </Breadcrumb>
 
+            <Button floated="right" basic onClick={() => exportData()} disabled={subjects.length === 0}>
+                <Icon name="download" color="blue"/> Export Data
+            </Button>
+
             <Divider hidden clearing/>
 
-            { subjects_rows.length > 0 &&
+            { subjects.length > 0 &&
                 <Table selectable>
                     <Table.Header>
                         <Table.Row>
@@ -79,12 +100,12 @@ export default function SubjectsOverview() {
                     </Table.Header>
 
                     <Table.Body>
-                        {subjects_rows}
+                        {rows}
                     </Table.Body>
                 </Table>
             }
 
-            { subjects_rows.length === 0 &&
+            { subjects.length === 0 &&
                 <Segment placeholder raised>
                     <Header icon>
                         <Icon name="book"/>

@@ -7,10 +7,10 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Label, Breadcrumb } from "semantic-ui-react";
 
-import { getClasses, deleteClass } from "../class.actions";
 import ClassForm from "./class-form.component";
+import { getClasses, deleteClass } from "../class.actions";
 import PupilsEnrolment from "./pupils-enrolment.component";
-import Subjects from "../../manage-subjects/components/subjects.component";
+import SubjectsSelection from "./subjects-selection.component";
 
 export default function ClassList() {
     const dispatch = useDispatch();
@@ -43,7 +43,7 @@ export default function ClassList() {
                     <Dropdown>
                         <Dropdown.Menu>
                             <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setClassId(row.id)}/>
-                            <Dropdown.Item icon="book" text="Manage Subjects" onClick={() => setProgram({id: row.id, name: row.name})}/>
+                            <Dropdown.Item icon="book" text="Assign Subjects" onClick={() => setProgram(row)}/>
                             <Dropdown.Item icon="users" text="Assign Pupils" onClick={() => setClassToAssignPupils(row)}/>
                             <Dropdown.Item icon="trash" text="Remove Class" onClick={() => onDeleteClass(row.id)}/>
                         </Dropdown.Menu>
@@ -98,10 +98,10 @@ export default function ClassList() {
             </Modal>
 
             <Modal dimmer size="small" open={program !== undefined}>
-                <Modal.Header>Manage subjects of <Label color="teal" size="medium">{program && program.name}</Label> class</Modal.Header>
+                <Modal.Header>Manage subjects in <Label color="teal" size="medium">{program && program.name}</Label> class</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                        <Subjects class_id={program && program.id}/>
+                        <SubjectsSelection id={program && program.id}/>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>
