@@ -40,8 +40,8 @@ export default function TestResults({ test_id }) {
                 <Table.Cell>
                     <Dropdown>
                         <Dropdown.Menu>
-                            <Dropdown.Item icon="edit" text="Update Grade" onClick={() => setTestResultId(row.id)}/>
-                            <Dropdown.Item icon="trash" text="Remove Grade" onClick={() => onDeleteTestResult(row.id)}/>
+                            <Dropdown.Item icon="edit" text="Update Grade" onClick={() => setTestResultId(row.id)} disabled={test.status === "archived"}/>
+                            <Dropdown.Item icon="trash" text="Remove Grade" onClick={() => onDeleteTestResult(row.id)} disabled={test.status === "archived"}/>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Table.Cell>

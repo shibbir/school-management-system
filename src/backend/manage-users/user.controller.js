@@ -81,25 +81,57 @@ async function getUsers(req, res, next) {
             query.role = req.query.role;
         }
 
-        if(req.query.class_id) {
-            query.class_id = req.query.class_id;
-        }
-
         if(req.query.subject_id) {
             const subject = await Subject.findByPk(req.query.subject_id, {
                 attributes: [],
-                include: {
-                    model: Program,
-                    as: "classes",
-                    attributes: ["id"],
-                    through: { attributes: [] }
-                }
+                include: [
+                    {
+                        model: Program,
+                        as: "classes",
+                        attributes: ["id"],
+                        through: { attributes: [] }
+                    },
+                    {
+                        model: Test,
+                        as: "tests",
+                        attributes: ["id"],
+                        include: {
+                            model: TestResult,
+                            as: "test_results",
+                            attributes: ["id", "pupil_id"]
+                        }
+                    }
+                ]
             });
 
             if(subject && subject.classes && subject.classes.length) {
                 query.class_id = {
                     [Op.in]: [...subject.classes.map(x => x.id)]
                 };
+            }
+
+            const pupil_ids = [];
+            if(subject && subject.tests) {
+                subject.tests.forEach(test => {
+                    test.test_results.forEach(test_result => {
+                        pupil_ids.push(test_result.pupil_id);
+                    });
+                });
+            }
+
+            if(pupil_ids.length) {
+                if(query.class_id) {
+                    query[Op.or] = [
+                        { id: { [Op.in]: pupil_ids }},
+                        { class_id: query.class_id }
+                    ];
+
+                    delete query.class_id;
+                } else {
+                    query.id = {
+                        [Op.in]: pupil_ids
+                    };
+                }
             }
         }
 

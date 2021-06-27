@@ -58,6 +58,13 @@ function TestResultForm({ id, test_id } = props) {
                             message: "Your changes are saved.",
                             position: "topRight"
                         });
+                    }).catch(function(err) {
+                        iziToast["error"]({
+                            timeout: 3000,
+                            title: err.response.status,
+                            message: err.response.data,
+                            position: "topRight"
+                        });
                     });
                 } else {
                     dispatch(createTestResult(test_id, values)).then(function() {

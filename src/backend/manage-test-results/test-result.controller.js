@@ -121,14 +121,34 @@ async function updateTestResult(req, res, next) {
     try {
         const { grade } = req.body;
 
-        await TestResult.update({
-            grade: Number.parseFloat(grade).toFixed(2),
-            updated_by: req.user.id
-        }, {
-            where: { id: req.params.id }
+        let test_result = await TestResult.findByPk(req.params.id, {
+            include: {
+                model: Test,
+                as: "test",
+                include: {
+                    model: Subject,
+                    as: "subject",
+                    include: {
+                        model: Program,
+                        as: "classes",
+                        attributes: ["id"],
+                        through: { attributes: [] }
+                    }
+                }
+            }
         });
 
-        const test_result = await TestResult.findByPk(req.params.id, {
+        if(test_result.test.status === "archived") return res.status(400).send("No further changes can be made to archived tests.");
+
+        const pupil = await User.findByPk(test_result.pupil_id);
+
+        if(!test_result.test.subject.classes.find(x => x.id === pupil.class_id)) return res.status(400).send("You cannot change the grade because this pupil had been de-assigned from this subject.");
+
+        test_result.updated_by = req.user.id;
+        test_result.grade = Number.parseFloat(grade).toFixed(2);
+        await test_result.save();
+
+        test_result = await TestResult.findByPk(req.params.id, {
             attributes: ["id", "grade", "updated_at"],
             include: {
                 model: User,
