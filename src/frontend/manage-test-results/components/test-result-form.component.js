@@ -24,8 +24,8 @@ function TestResultForm({ id, test_id } = props) {
     }, [id]);
 
     useEffect(() => {
-        if(subject && subject.class_id) {
-            dispatch(getUsers(`?role=pupil&class_id=${subject.class_id}`));
+        if(subject && subject.id) {
+            dispatch(getUsers(`?role=pupil&subject_id=${subject.id}`));
         }
     }, [subject]);
 

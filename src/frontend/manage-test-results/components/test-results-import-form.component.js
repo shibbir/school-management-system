@@ -99,7 +99,7 @@ export default function TestResultsImportForm({ test_id }) {
 
                     <span onClick={() => downloadSampleGradesImportFile()} style={{textDecoration: "underline", cursor: "pointer"}}>
                         <Icon name="download"/>
-                        Download a sample CSV file
+                        Download a sample CSV file for this subject
                     </span>
 
                     <Divider hidden/>

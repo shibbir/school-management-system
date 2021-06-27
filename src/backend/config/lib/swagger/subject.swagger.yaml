@@ -26,8 +26,6 @@ paths:
                                             properties:
                                                 id:
                                                     type: string
-                500:
-                    description: Internal Server Error
         post:
             tags:
                 - Subject
@@ -84,9 +82,6 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/Subject"
-                                properties:
-                                    class_id:
-                                        type: string
         patch:
             tags:
                 - Subject

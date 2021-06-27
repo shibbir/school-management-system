@@ -14,7 +14,8 @@ const TestResult = sequelize.dbConnector.define("test_results", {
     },
     pupil_id: {
         allowNull: false,
-        type: DataTypes.UUID
+        type: DataTypes.UUID,
+        unique: "unique_pupil_test"
     },
     grade: {
         allowNull: false,
@@ -39,12 +40,17 @@ const TestResult = sequelize.dbConnector.define("test_results", {
     tableName: "test_results",
     timestamps: true,
     createdAt: "created_at",
-    updatedAt: "updated_at"
+    updatedAt: "updated_at",
+    uniqueKeys: {
+        unique_pupil_test: {
+            fields: ["pupil_id", "test_id"]
+        }
+    }
 });
 
 User.hasMany(TestResult, { as: "test_results", foreignKey: { name: "pupil_id", allowNull: false }});
 
-Test.hasMany(TestResult, { as: "test_results", foreignKey: { name: "test_id", allowNull: false }});
+Test.hasMany(TestResult, { as: "test_results", foreignKey: { name: "test_id", allowNull: false, unique: "unique_pupil_test" }});
 TestResult.belongsTo(Test, { as: "test", foreignKey: "test_id" });
 
 TestResult.belongsTo(User, { as: "pupil", foreignKey: { name: "pupil_id", allowNull: false }});

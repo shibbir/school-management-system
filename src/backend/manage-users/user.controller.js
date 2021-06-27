@@ -83,6 +83,24 @@ async function getUsers(req, res, next) {
             query.class_id = req.query.class_id;
         }
 
+        if(req.query.subject_id) {
+            const subject = await Subject.findByPk(req.query.subject_id, {
+                attributes: [],
+                include: {
+                    model: Program,
+                    as: "classes",
+                    attributes: ["id"],
+                    through: { attributes: [] }
+                }
+            });
+
+            if(subject && subject.classes && subject.classes.length) {
+                query.class_id = {
+                    [Op.in]: [...subject.classes.map(x => x.id)]
+                };
+            }
+        }
+
         const users = await User.findAll({
             where: query,
             attributes: { exclude: ["password", "refresh_token", "created_by", "updated_by", "created_at"] },

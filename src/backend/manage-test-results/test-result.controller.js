@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { Op } = require("sequelize");
 const csvParse = require("csv-parse");
 const { Parser } = require("json2csv");
 
@@ -109,7 +110,7 @@ async function deleteTestResult(req, res, next) {
     }
 }
 
-async function downloadSampleBatchGradeFile(req, res) {
+async function downloadSampleBatchGradeFile(req, res, next) {
     try {
         const test = await Test.findByPk(req.params.id, {
             include: {
@@ -118,21 +119,27 @@ async function downloadSampleBatchGradeFile(req, res) {
                 attributes: ["id"],
                 include: {
                     model: Program,
-                    as: "class",
+                    as: "classes",
                     attributes: ["id"],
-                    include: {
-                        model: User,
-                        as: "pupils",
-                        attributes: ["id", "forename", "surname"]
-                    }
+                    through: { attributes: [] }
                 }
             }
         });
 
         const data = [];
 
-        if(test && test.subject && test.subject.class && test.subject.class.pupils) {
-            test.subject.class.pupils.forEach(pupil => {
+        if(test && test.subject && test.subject.classes && test.subject.classes.length) {
+            const pupils = await User.findAll({
+                attributes: ["id", "forename", "surname"],
+                where: {
+                    role: "pupil",
+                    class_id: {
+                        [Op.in]: [...test.subject.classes.map(x => x.id)]
+                    }
+                }
+            });
+
+            pupils.forEach(pupil => {
                 data.push({
                     "Matriculation Number": pupil.id,
                     Forename: pupil.forename,
@@ -140,7 +147,9 @@ async function downloadSampleBatchGradeFile(req, res) {
                     Grade: 0
                 });
             });
-        } else {
+        }
+
+        if(!data.length) {
             data.push({
                 "Matriculation Number": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
                 Forename: "John",
@@ -172,24 +181,39 @@ async function importTestResults(req, res, next) {
 
         if(test && test.subject && test.subject.status === "archived") return res.status(400).send("No further changes can be made to a test of an archived subjects.");
 
-        let test_results = [];
+        const current_test_results = await TestResult.findAll({ where: { test_id: req.params.id }, raw: true });
+        const new_test_results = [];
+
+        let pupil_id;
+        let grade;
 
         fs.createReadStream(req.file.path).pipe(csvParse({
             columns: true,
             skip_empty_lines: true
-        })).on("data", function(row) {
-            test_results.push({
-                test_id: req.params.id,
-                pupil_id: row["Matriculation Number"],
-                grade: row["Grade"],
-                created_by: req.user.id,
-                updated_by: req.user.id
-            });
+        })).on("data", async function(row) {
+
+            pupil_id = row["Matriculation Number"];
+            grade = +row["Grade"];
+
+            if(current_test_results.find(x => x.pupil_id === pupil_id)) {
+                await TestResult.update({
+                    grade,
+                    updated_by: req.user.id
+                }, { where: { test_id: req.params.id, pupil_id }});
+            } else {
+                new_test_results.push({
+                    test_id: req.params.id,
+                    pupil_id,
+                    grade,
+                    created_by: req.user.id,
+                    updated_by: req.user.id
+                });
+            }
         }).on("end", async function() {
             await fs.promises.unlink(req.file.path);
 
-            test_results = await TestResult.bulkCreate(test_results, {
-                updateOnDuplicate: ["grade", "updated_by", "updated_at"]
+            await TestResult.bulkCreate(new_test_results, {
+                ignoreDuplicates: false
             });
 
             res.sendStatus(204);
