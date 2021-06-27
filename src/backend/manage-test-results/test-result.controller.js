@@ -29,6 +29,51 @@ async function getTestResults(req, res, next) {
     }
 }
 
+async function exportTestResults(req, res, next) {
+    try {
+        const test_results = await TestResult.findAll({
+            where: { test_id: req.params.id },
+            attributes: ["id", "grade", "updated_at"],
+            include: [
+                {
+                    model: User,
+                    as: "pupil",
+                    attributes: ["id", "forename", "surname"]
+                },
+                {
+                    model: Test,
+                    as: "test",
+                    attributes: ["name", "date"]
+                }
+            ]
+        });
+
+        if(!test_results || !test_results.length) return res.status(400).send("No data found.");
+
+        const data = [];
+
+        test_results.forEach(function(test_result) {
+            data.push({
+                "Test Name": test_result.test.name,
+                "Test Date": new Date(test_result.test.date).toLocaleDateString("en-US"),
+                "Matriculation Number": test_result.pupil.id,
+                "Pupil Name": `${test_result.pupil.forename} ${test_result.pupil.surname}`,
+                "Grade": Number.parseFloat(test_result.grade).toFixed(2),
+                "Updated At": new Date(test_result.updated_at).toLocaleDateString("en-US")
+            });
+        });
+
+        const json2csvParser = new Parser({ quote: "" });
+        const csv = json2csvParser.parse(data);
+
+        res.header("Content-Type", "text/csv");
+        res.attachment("test-results.csv");
+        res.send(csv);
+    } catch(err) {
+        next(err);
+    }
+}
+
 async function createTestResult(req, res, next) {
     try {
         const { pupil_id, grade } = req.body;
@@ -40,7 +85,7 @@ async function createTestResult(req, res, next) {
         const entity = await TestResult.create({
             test_id: req.params.id,
             pupil_id,
-            grade,
+            grade: Number.parseFloat(grade).toFixed(2),
             created_by: req.user.id,
             updated_by: req.user.id
         });
@@ -77,7 +122,7 @@ async function updateTestResult(req, res, next) {
         const { grade } = req.body;
 
         await TestResult.update({
-            grade,
+            grade: Number.parseFloat(grade).toFixed(2),
             updated_by: req.user.id
         }, {
             where: { id: req.params.id }
@@ -197,14 +242,14 @@ async function importTestResults(req, res, next) {
 
             if(current_test_results.find(x => x.pupil_id === pupil_id)) {
                 await TestResult.update({
-                    grade,
+                    grade: Number.parseFloat(grade).toFixed(2),
                     updated_by: req.user.id
                 }, { where: { test_id: req.params.id, pupil_id }});
             } else {
                 new_test_results.push({
                     test_id: req.params.id,
                     pupil_id,
-                    grade,
+                    grade: Number.parseFloat(grade).toFixed(2),
                     created_by: req.user.id,
                     updated_by: req.user.id
                 });
@@ -233,6 +278,7 @@ async function archiveTestResults(test_id, updated_by) {
 }
 
 exports.getTestResults = getTestResults;
+exports.exportTestResults = exportTestResults;
 exports.createTestResult = createTestResult;
 exports.getTestResult = getTestResult;
 exports.updateTestResult = updateTestResult;

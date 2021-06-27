@@ -6,7 +6,7 @@ import fileDownload from "js-file-download";
 import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Breadcrumb } from "semantic-ui-react";
+import { Icon, Divider, Segment, Button, Table, Modal, Header, Dropdown, Breadcrumb, List } from "semantic-ui-react";
 
 import SubjectForm from "./subject-form.component";
 import { getSubjects, deleteSubject, updateSubject } from "../subject.actions";
@@ -52,8 +52,22 @@ export default function SubjectList() {
             <Table.Row key={subject.id}>
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{subject.name}</Table.Cell>
-                <Table.Cell>{`${subject.teacher.forename} ${subject.teacher.surname}`}</Table.Cell>
                 <Table.Cell>{capitalize(subject.status)}</Table.Cell>
+                <Table.Cell>{`${subject.teacher.forename} ${subject.teacher.surname}`}</Table.Cell>
+                <Table.Cell>
+                    <List>
+                        { subject.classes && subject.classes.map(function(program) {
+                            return (
+                                <List.Item key={program.id}>
+                                    <Icon name="certificate"/>
+                                    {program.name}
+                                </List.Item>
+                            );
+                        })}
+
+                        { subject.classes && subject.classes.length === 0 && <>--</> }
+                    </List>
+                </Table.Cell>
                 <Table.Cell><FormattedDate value={subject.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     { subject.status === "archived" &&
@@ -101,8 +115,9 @@ export default function SubjectList() {
                         <Table.Row>
                             <Table.HeaderCell>#</Table.HeaderCell>
                             <Table.HeaderCell>Subject Name</Table.HeaderCell>
-                            <Table.HeaderCell>Teacher</Table.HeaderCell>
                             <Table.HeaderCell>Status</Table.HeaderCell>
+                            <Table.HeaderCell>Assigned Teacher</Table.HeaderCell>
+                            <Table.HeaderCell>Assigned Classes</Table.HeaderCell>
                             <Table.HeaderCell>Updated At</Table.HeaderCell>
                             <Table.HeaderCell>Actions</Table.HeaderCell>
                         </Table.Row>

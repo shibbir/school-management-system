@@ -71,11 +71,11 @@ export default function ManageTests() {
             <Grid columns={2}>
                 <Grid.Row>
                     <Grid.Column>
-                        { subject && <Header as="h3">Available tests for <Label color="blue">{subject.name}</Label> subject</Header> }
+                        { subject && <Header as="h3">Available tests for<Label color="grey">{subject.name}</Label> subject</Header> }
                     </Grid.Column>
 
                     <Grid.Column>
-                        <Button floated="right" primary size="small" onClick={() => setTestId(null)} disabled={subject && subject.status === "archived"}>
+                        <Button floated="right" primary onClick={() => setTestId(null)} disabled={subject && subject.status === "archived"}>
                             Create new test
                         </Button>
                     </Grid.Column>

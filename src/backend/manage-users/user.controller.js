@@ -300,8 +300,7 @@ async function getPupilSubjects(req, res, next) {
                     include: {
                         model: TestResult,
                         as: "test_results",
-                        attributes: ["pupil_id", "grade"],
-                        where: { pupil_id: req.params.id }
+                        attributes: ["test_id", "pupil_id", "grade"]
                     }
                 }
             ]
@@ -315,8 +314,11 @@ async function getPupilSubjects(req, res, next) {
 
             subject.tests.forEach(test => {
                 if(test.test_results && test.test_results.length) {
-                    test_results_sum += +test.test_results[0].grade;
-                    is_assigned_subject = true;
+                    let test_result = test.test_results.find(x => x.pupil_id === req.params.id && x.test_id === test.id);
+                    if(test_result) {
+                        test_results_sum += +test_result.grade;
+                        is_assigned_subject = true;
+                    }
                 }
             });
 
@@ -329,7 +331,7 @@ async function getPupilSubjects(req, res, next) {
                     subject_id: subject.id,
                     subject_name: subject.name,
                     teacher_name: `${subject.teacher.forename} ${subject.teacher.surname}`,
-                    grade: subject.tests && subject.tests.length ? test_results_sum / subject.tests.length : 0
+                    grade: Number.parseFloat(subject.tests && subject.tests.length ? test_results_sum / subject.tests.length : 0).toFixed(2)
                 });
             }
         });
@@ -351,8 +353,7 @@ async function getPupilSubject(req, res, next) {
                 include: {
                     model: TestResult,
                     as: "test_results",
-                    attributes: ["pupil_id", "grade"],
-                    where: { pupil_id: req.params.pupil_id }
+                    attributes: ["pupil_id", "grade"]
                 }
             }
         });
@@ -405,7 +406,7 @@ async function exportAssignedSubjects(req, res, next) {
     try {
         const subjects = await Subject.findAll({
             where: { teacher_id: req.params.id },
-            attributes: ["name", "status", "created_at", "updated_at"],
+            attributes: ["id", "name", "status", "created_at", "updated_at"],
             order: [
                 ["name"]
             ],
@@ -418,6 +419,7 @@ async function exportAssignedSubjects(req, res, next) {
 
         subjects.forEach(function(subject) {
             data.push({
+                "Subject ID": subject.id,
                 Name: subject.name,
                 Status: capitalize(subject.status),
                 "Created At": new Date(subject.created_at).toLocaleDateString("en-US"),
@@ -439,7 +441,7 @@ async function exportAssignedSubjects(req, res, next) {
 async function exportPupilSubjects(req, res, next) {
     try {
         const pupil = await User.findByPk(req.params.id, {
-            attributes: ["class_id"]
+            attributes: ["id", "class_id", "forename", "surname"]
         });
 
         const subjects = await Subject.findAll({
@@ -463,8 +465,7 @@ async function exportPupilSubjects(req, res, next) {
                     include: {
                         model: TestResult,
                         as: "test_results",
-                        attributes: ["pupil_id", "grade"],
-                        where: { pupil_id: req.params.id }
+                        attributes: ["test_id", "pupil_id", "grade"]
                     }
                 }
             ]
@@ -478,8 +479,11 @@ async function exportPupilSubjects(req, res, next) {
 
             subject.tests.forEach(test => {
                 if(test.test_results && test.test_results.length) {
-                    test_results_sum += +test.test_results[0].grade;
-                    is_assigned_subject = true;
+                    let test_result = test.test_results.find(x => x.pupil_id === req.params.id && x.test_id === test.id);
+                    if(test_result) {
+                        test_results_sum += +test_result.grade;
+                        is_assigned_subject = true;
+                    }
                 }
             });
 
@@ -492,10 +496,13 @@ async function exportPupilSubjects(req, res, next) {
                     subject_id: subject.id,
                     subject_name: subject.name,
                     teacher_name: `${subject.teacher.forename} ${subject.teacher.surname}`,
-                    grade: subject.tests && subject.tests.length ? test_results_sum / subject.tests.length : 0
+                    pupil_name: `${pupil.forename} ${pupil.surname}`,
+                    grade: Number.parseFloat(subject.tests && subject.tests.length ? test_results_sum / subject.tests.length : 0).toFixed(2)
                 });
             }
         });
+
+        if(!response.length) return res.status(400).send("No data found.");
 
         const data = [];
 
@@ -503,6 +510,8 @@ async function exportPupilSubjects(req, res, next) {
             data.push({
                 "Subject Name": subject.subject_name,
                 "Teacher Name": subject.teacher_name,
+                "Pupil ID": pupil.id,
+                "Pupil Name": `${pupil.forename} ${pupil.surname}`,
                 Grade: subject.grade
             });
         });

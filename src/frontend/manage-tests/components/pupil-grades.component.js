@@ -1,7 +1,10 @@
+import axios from "axios";
 import React, { useEffect } from "react";
+import fileDownload from "js-file-download";
+import iziToast from "izitoast/dist/js/iziToast";
 import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Icon, Divider, Segment, Header, Breadcrumb, Table } from "semantic-ui-react";
+import { Icon, Divider, Segment, Header, Breadcrumb, Table, Button } from "semantic-ui-react";
 
 import { getSubject, getPupilGrades } from "../../manage-subjects/subject.actions";
 
@@ -22,11 +25,26 @@ export default function PupilGrades() {
             <Table.Row key={row.pupil_id}>
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{row.pupil_id}</Table.Cell>
-                <Table.Cell>{`${row.forename} ${row.surname}`}</Table.Cell>
+                <Table.Cell>{row.pupil_name}</Table.Cell>
+                <Table.Cell>{row.subject_name}</Table.Cell>
                 <Table.Cell>{row.grade}</Table.Cell>
             </Table.Row>
         );
     });
+
+    const exportData = function() {
+        axios.get(`/api/subjects/${subject_id}/export-grades`, {
+            responseType: "blob",
+        }).then(res => {
+            fileDownload(res.data, "pupil-grades.csv");
+        }).catch(err => {
+            iziToast["error"]({
+                timeout: 3000,
+                message: "An error occurred. Please try again.",
+                position: "topRight"
+            });
+        });
+    };
 
     return (
         <>
@@ -38,6 +56,10 @@ export default function PupilGrades() {
                 <Breadcrumb.Section active>Pupil Grades { subject && `for ${subject.name}`}</Breadcrumb.Section>
             </Breadcrumb>
 
+            <Button floated="right" basic onClick={() => exportData()} disabled={pupil_grades.length === 0}>
+                <Icon name="download" color="blue"/> Export Data
+            </Button>
+
             <Divider hidden clearing/>
 
             { pupil_grades.length > 0 &&
@@ -47,6 +69,7 @@ export default function PupilGrades() {
                             <Table.HeaderCell>#</Table.HeaderCell>
                             <Table.HeaderCell>Matriculation Number</Table.HeaderCell>
                             <Table.HeaderCell>Pupil Name</Table.HeaderCell>
+                            <Table.HeaderCell>Subject</Table.HeaderCell>
                             <Table.HeaderCell>Average Grade</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>

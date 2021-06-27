@@ -93,7 +93,7 @@ export default function TestResultsImportForm({ test_id }) {
                         name: "result",
                         label: "Result Sheet",
                         required: true,
-                        info: "You can upload a CSV file of maximum 500 pupil's grade on each upload.",
+                        info: "Please upload a CSV file containing the grades. Max file size is 2 MB.",
                         onChange: event => {formikProps.setFieldValue("result", event.currentTarget.files[0])}
                     }}/>
 

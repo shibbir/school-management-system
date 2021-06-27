@@ -84,3 +84,9 @@ export function bulkSubjectsSelection(id, data) {
         })
     };
 }
+
+export function resetClass() {
+    return {
+        type: Types.RESET_CLASS
+    };
+}

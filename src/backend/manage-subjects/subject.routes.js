@@ -50,6 +50,14 @@ module.exports = function(app) {
             controller.getPupilGrades
         );
 
+    app.route("/api/subjects/:id/export-grades")
+        .get(
+            authenticate,
+            authorizeFor(["teacher"]),
+            validateParams(subjectIdSchema),
+            controller.exportPupilGrades
+        );
+
     // app.route("/api/classes/:id/subjects")
     //     .get(
     //         authenticate,

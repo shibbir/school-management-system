@@ -26,7 +26,7 @@ export default function SubjectsOverview() {
         }
     }, [logged_in_user, subjectId]);
 
-    const subject = useSelector(state => state.userReducer.pupil_subject);
+    const subject = useSelector(state => state.userReducer.subject);
     const subjects = useSelector(state => state.userReducer.subjects);
     const logged_in_user = useSelector(state => state.userReducer.loggedInUser);
 
@@ -54,7 +54,9 @@ export default function SubjectsOverview() {
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{test.name}</Table.Cell>
                 <Table.Cell><FormattedDate value={test.date} day="2-digit" month="long" year="numeric"/></Table.Cell>
-                <Table.Cell>{test.test_results[0].grade}</Table.Cell>
+                <Table.Cell>
+                    {test.test_results.find(x => x.pupil_id === logged_in_user.id) ? test.test_results.find(x => x.pupil_id === logged_in_user.id).grade : Number.parseFloat(0).toFixed(2)}
+                </Table.Cell>
             </Table.Row>
         );
     });
@@ -78,7 +80,7 @@ export default function SubjectsOverview() {
             <Breadcrumb>
                 <Breadcrumb.Section><Link to="/">Dashboard</Link></Breadcrumb.Section>
                 <Breadcrumb.Divider>/</Breadcrumb.Divider>
-                <Breadcrumb.Section active>Subjects Overview</Breadcrumb.Section>
+                <Breadcrumb.Section active>My Subjects Overview</Breadcrumb.Section>
             </Breadcrumb>
 
             <Button floated="right" basic onClick={() => exportData()} disabled={subjects.length === 0}>
@@ -115,7 +117,7 @@ export default function SubjectsOverview() {
             }
 
             <Modal dimmer size="tiny" open={subjectId !== undefined}>
-                <Modal.Header>Tests Overview of <Label color="teal" size="medium">{subject && subject.name}</Label> subject</Modal.Header>
+                <Modal.Header>Tests Overview of <Label color="grey" size="medium">{subject && subject.name}</Label> subject</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
                         { subject && subject.tests.length > 0 &&

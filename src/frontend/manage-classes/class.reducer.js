@@ -28,6 +28,9 @@ export default function reducer(state=initialState, action) {
         case Types.DELETE_CLASS_FULFILLED: {
             return { ...state, classes: _.reject(state.classes, { id: action.payload.data.id }) };
         }
+        case Types.RESET_CLASS: {
+            return { ...state, program: null };
+        }
     }
     return state;
 }

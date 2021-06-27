@@ -20,6 +20,14 @@ module.exports = function(app) {
             controller.createTestResult
         );
 
+    app.route("/api/tests/:id/export-results")
+        .get(
+            authenticate,
+            authorizeFor(["teacher"]),
+            validateParams(testIdSchema),
+            controller.exportTestResults
+        );
+
     app.route("/api/test-results/:id")
         .get(
             authenticate,

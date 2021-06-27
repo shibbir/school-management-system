@@ -5,7 +5,7 @@ import { Divider, Button } from "semantic-ui-react";
 import { useSelector, useDispatch } from "react-redux";
 
 import ClassSchema from "../class.schema";
-import { createClass, updateClass, getClass } from "../class.actions";
+import { createClass, updateClass, getClass, resetClass } from "../class.actions";
 import { TextInput } from "../../core/components/field-inputs.component";
 
 function ClassForm({id} = props) {
@@ -14,6 +14,8 @@ function ClassForm({id} = props) {
     useEffect(() => {
         if(id) {
             dispatch(getClass(id));
+        } else {
+            dispatch(resetClass());
         }
     }, [id, dispatch]);
 

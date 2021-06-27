@@ -1,4 +1,7 @@
+import axios from "axios";
 import { FormattedDate } from "react-intl";
+import fileDownload from "js-file-download";
+import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Icon, Segment, Button, Table, Modal, Header, Dropdown, Divider, Label } from "semantic-ui-react";
@@ -46,6 +49,20 @@ export default function TestResults({ test_id }) {
         );
     });
 
+    const exportData = function() {
+        axios.get(`/api/tests/${test_id}/export-results`, {
+            responseType: "blob",
+        }).then(res => {
+            fileDownload(res.data, "test-results.csv");
+        }).catch(err => {
+            iziToast["error"]({
+                timeout: 3000,
+                message: "An error occurred. Please try again.",
+                position: "topRight"
+            });
+        });
+    };
+
     return (
         <>
             <Button
@@ -55,6 +72,10 @@ export default function TestResults({ test_id }) {
                 onClick={() => setTestResultId(null)}
                 disabled={test && test.status === "archived"}
             />
+
+            <Button floated="right" basic onClick={() => exportData()} disabled={test_results.length === 0}>
+                <Icon name="download" color="blue"/> Export Data
+            </Button>
 
             <Divider hidden clearing/>
 

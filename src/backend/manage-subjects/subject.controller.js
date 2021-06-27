@@ -61,7 +61,7 @@ async function getSubjects(req, res, next) {
                 {
                     model: Program,
                     as: "classes",
-                    attributes: ["id"],
+                    attributes: ["id", "name"],
                     through: { attributes: [] }
                 }
             ]
@@ -165,6 +165,12 @@ async function updateSubject(req, res, next) {
                     model: User,
                     as: "teacher",
                     attributes: ["forename", "surname"]
+                },
+                {
+                    model: Program,
+                    as: "classes",
+                    attributes: ["id", "name"],
+                    through: { attributes: [] }
                 }
             ]
         });
@@ -178,10 +184,17 @@ async function updateSubject(req, res, next) {
 async function deleteSubject(req, res, next) {
     try {
         const subject = await Subject.findByPk(req.params.id, {
-            include: {
-                model: Test,
-                as: "tests"
-            }
+            include: [
+                {
+                    model: Test,
+                    as: "tests"
+                },
+                {
+                    model: Program,
+                    as: "classes",
+                    through: { where: { subject_id: req.params.id }, attributes: [] }
+                }
+            ]
         });
 
         if(subject.tests.length) return res.status(400).send("Only subjects without dependent tests can be removed.");
@@ -189,6 +202,8 @@ async function deleteSubject(req, res, next) {
         if(subject.status === "archived") return res.status(400).send("No further changes can be made to archived subjects.");
 
         await Subject.destroy({ where: { id: req.params.id }});
+
+        await subject.removeClasses(subject.classes);
 
         res.json({ id: req.params.id });
     } catch(err) {
@@ -200,17 +215,24 @@ async function getPupilGrades(req, res, next) {
     try {
         const tests = await Test.findAll({
             where: { subject_id: req.params.id },
-            attributes: ["id", "subject_id", "name", "date"],
-            include: {
-                model: TestResult,
-                as: "test_results",
-                attributes: ["id", "test_id", "pupil_id", "grade"],
-                include: {
-                    model: User,
-                    as: "pupil",
-                    attributes: ["id", "forename", "surname"]
+            attributes: ["id"],
+            include: [
+                {
+                    model: TestResult,
+                    as: "test_results",
+                    attributes: ["id", "pupil_id", "grade"],
+                    include: {
+                        model: User,
+                        as: "pupil",
+                        attributes: ["id", "forename", "surname"]
+                    }
+                },
+                {
+                    model: Subject,
+                    as: "subject",
+                    attributes: ["name"]
                 }
-            }
+            ]
         });
 
         let results = [];
@@ -223,16 +245,16 @@ async function getPupilGrades(req, res, next) {
                 } else {
                     results.push({
                         pupil_id: test_result.pupil_id,
-                        forename: test_result.pupil.forename,
-                        surname: test_result.pupil.surname,
-                        grade: +test_result.grade
+                        pupil_name: `${test_result.pupil.forename} ${test_result.pupil.surname}`,
+                        grade: +test_result.grade,
+                        subject_name: test.subject.name
                     });
                 }
             });
         });
 
         results = results.map(result => {
-            result.grade = result.grade / tests.length;
+            result.grade = (result.grade / tests.length).toFixed(2);
             return result;
         });
 
@@ -244,19 +266,23 @@ async function getPupilGrades(req, res, next) {
 }
 
 async function archiveOrDeleteSubjects(class_id, updated_by) {
-    const subjects = await Subject.findAll({
-        where: { class_id },
-        include: [{
-            model: Test,
-            as: "tests",
-            attributes: ["id"]
-        }],
-        attributes: ["id"]
+    const program = await Program.findByPk(class_id, {
+        include: {
+            model: Subject,
+            as: "subjects",
+            through: { where: { class_id }, attributes: [] },
+            include: {
+                model: Test,
+                as: "tests",
+                attributes: ["id"]
+            }
+        }
     });
 
-    await Promise.all(subjects.map(async subject => {
+    await program.removeSubjects(program.subjects);
+
+    await Promise.all(program.subjects.map(async subject => {
         if(subject.tests.length) {
-            subject.class_id = null;
             subject.status = "archived";
             subject.updated_by = updated_by;
 
@@ -275,6 +301,13 @@ async function exportData(req, res, next) {
             attributes: ["id", "name", "status", "created_at", "updated_at"],
             order: [
                 ["name"]
+            ],
+            include: [
+                {
+                    model: User,
+                    as: "teacher",
+                    attributes: ["forename", "surname"]
+                }
             ]
         });
 
@@ -284,8 +317,10 @@ async function exportData(req, res, next) {
 
         subjects.forEach(function(subject) {
             data.push({
+                "Subject ID": subject.id,
                 Subject: subject.name,
                 Status: capitalize(subject.status),
+                "Assigned Teacher": `${subject.teacher.forename} ${subject.teacher.surname}`,
                 "Created At": new Date(subject.created_at).toLocaleDateString("en-US"),
                 "Updated At": new Date(subject.updated_at).toLocaleDateString("en-US")
             });
@@ -302,6 +337,77 @@ async function exportData(req, res, next) {
     }
 }
 
+async function exportPupilGrades(req, res, next) {
+    try {
+        const tests = await Test.findAll({
+            where: { subject_id: req.params.id },
+            attributes: ["id"],
+            include: [
+                {
+                    model: TestResult,
+                    as: "test_results",
+                    attributes: ["id", "pupil_id", "grade"],
+                    include: {
+                        model: User,
+                        as: "pupil",
+                        attributes: ["id", "forename", "surname"]
+                    }
+                },
+                {
+                    model: Subject,
+                    as: "subject",
+                    attributes: ["name"]
+                }
+            ]
+        });
+
+        let results = [];
+
+        tests.forEach(test => {
+            test.test_results.forEach(test_result => {
+                let pupil = results.find(x => x.pupil_id === test_result.pupil_id);
+                if(pupil) {
+                    pupil.grade = pupil.grade + +test_result.grade;
+                } else {
+                    results.push({
+                        pupil_id: test_result.pupil_id,
+                        pupil_name: `${test_result.pupil.forename} ${test_result.pupil.surname}`,
+                        grade: +test_result.grade,
+                        subject_name: test.subject.name
+                    });
+                }
+            });
+        });
+
+        results = results.map(result => {
+            result.grade = (result.grade / tests.length).toFixed(2);
+            return result;
+        });
+
+        if(!results.length) return res.status(400).send("No data found.");
+
+        const data = [];
+
+        results.forEach(function(result) {
+            data.push({
+                "Matriculation Number": result.pupil_id,
+                "Pupil Name": result.pupil_name,
+                Subject: result.subject_name,
+                Grade: result.grade
+            });
+        });
+
+        const json2csvParser = new Parser({ quote: "" });
+        const csv = json2csvParser.parse(data);
+
+        res.header("Content-Type", "text/csv");
+        res.attachment("pupil-grades.csv");
+        res.send(csv);
+    } catch(err) {
+        next(err);
+    }
+}
+
 exports.getSubjectsByClass = getSubjectsByClass;
 exports.addSubject = addSubject;
 exports.getSubjects = getSubjects;
@@ -311,3 +417,4 @@ exports.deleteSubject = deleteSubject;
 exports.getPupilGrades = getPupilGrades;
 exports.archiveOrDeleteSubjects = archiveOrDeleteSubjects;
 exports.exportData = exportData;
+exports.exportPupilGrades = exportPupilGrades;
