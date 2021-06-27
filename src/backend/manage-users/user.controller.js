@@ -52,7 +52,9 @@ async function login(req, res, next) {
 
 async function logout(req, res) {
     res.clearCookie("access_token");
-    res.clearCookie("refresh_token").redirect("/");
+    res.clearCookie("refresh_token");
+
+    res.sendStatus(204);
 }
 
 async function getUserProfile(req, res) {

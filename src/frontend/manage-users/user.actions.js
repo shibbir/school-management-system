@@ -120,3 +120,13 @@ export function getPupilSubject(user_id, subject_id) {
         })
     };
 }
+
+export function logout() {
+    return {
+        type: Types.LOGOUT,
+        payload: axios({
+            method: "get",
+            url: "/api/logout"
+        })
+    };
+}

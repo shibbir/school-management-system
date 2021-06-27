@@ -1,9 +1,12 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { Menu, Container, Icon, Label } from "semantic-ui-react";
+import { useSelector, useDispatch } from "react-redux";
+import { Menu, Container, Icon, Label, Button } from "semantic-ui-react";
+
+import { logout } from "../../manage-users/user.actions";
 
 export default function Navbar() {
+    const dispatch = useDispatch();
     const loggedInUser = useSelector(state => state.userReducer.loggedInUser);
 
     return (
@@ -20,7 +23,7 @@ export default function Navbar() {
                 </Menu.Item>
                 <div className="right item" style={{paddingRight: 0}}>
                     <NavLink to="/profile" className="ui button teal"><Icon name="user"/> {`${loggedInUser.forename} ${loggedInUser.surname}`}</NavLink>
-                    <a href="/api/logout" className="ui button black" style={{marginLeft: '5px'}}><Icon name="sign out"/> Sign Out</a>
+                    <Button onClick={() => dispatch(logout())} color="black" style={{marginLeft: '5px'}}><Icon name="sign out"/> Sign Out</Button>
                 </div>
             </Container>
         </Menu>

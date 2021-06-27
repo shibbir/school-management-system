@@ -13,10 +13,7 @@ export default function reducer(state=initialState, action) {
     switch (action.type) {
         case Types.LOGIN_FULFILLED:
         case Types.GET_PROFILE_FULFILLED: {
-            return {
-                ...state,
-                loggedInUser: action.payload.data
-            };
+            return { ...state, loggedInUser: action.payload.data };
         }
         case Types.GET_USER_FULFILLED: {
             return { ...state, user: action.payload.data };
@@ -47,6 +44,9 @@ export default function reducer(state=initialState, action) {
         }
         case Types.GET_USER_SUBJECTS_FULFILLED: {
             return { ...state, subjects: action.payload.data };
+        }
+        case Types.LOGOUT_FULFILLED: {
+            return { ...state, loggedInUser: null };
         }
     }
 
