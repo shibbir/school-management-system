@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import iziToast from "izitoast/dist/js/iziToast";
-import { Button, Segment, Header, Icon } from "semantic-ui-react";
+import { Button, Segment, Header, Icon, Modal, Grid, Message } from "semantic-ui-react";
 
 import { login } from "../user.actions";
 import { loginSchema } from "../user.schema";
@@ -13,16 +13,16 @@ export default function Login() {
     const [isForgotPasswordModalActive, setForgotPasswordModalActive] = useState(false);
 
     return (
-        <div style={{paddingTop: "85px"}}>
-            <div className="ui middle aligned center aligned grid">
-                <div style={{maxWidth: "450px"}}>
-                    <Header as="h2" className="center aligned">
+        <>
+            <Grid textAlign='center' style={{ height: "100vh" }} verticalAlign="middle">
+                <Grid.Column style={{ maxWidth: 450 }}>
+                    <Header as="h2">
                         <div className="content">
                             <Icon name="graduation cap" size="big"/> Log-in to your account
                         </div>
                     </Header>
 
-                    <Segment className="stacked">
+                    <Segment stacked textAlign="left">
                         <Formik
                             initialValues={{
                                 username: "",
@@ -49,7 +49,7 @@ export default function Login() {
                                 <TextInput attributes={{
                                     name: "username",
                                     type: "email",
-                                    icon: "mail",
+                                    icon: "user",
                                     placeholder: "Username",
                                     autoComplete: "username"
                                 }}/>
@@ -62,13 +62,29 @@ export default function Login() {
                                     autoComplete: "current-password"
                                 }}/>
 
-                                <Button fluid type="submit" className="large teal">Login</Button>
+                                <Button fluid type="submit" size="large" color="teal">Login</Button>
                             </Form>
                         </Formik>
-                        <button className="ui primary tertiary button" onClick={() => setForgotPasswordModalActive(true)}>Forgot password?</button>
                     </Segment>
-                </div>
-            </div>
-        </div>
+                    <Message>
+                        <button className="ui primary tertiary button" onClick={() => setForgotPasswordModalActive(true)}>Forgot password?</button>
+                    </Message>
+                </Grid.Column>
+            </Grid>
+
+            <Modal dimmer size="tiny" open={isForgotPasswordModalActive}>
+                <Modal.Header>Forgot your password?</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                        Please get in touch with <a href="mailto:help@sms.com">help@sms.com</a> to reset your password.
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color="black" onClick={() => setForgotPasswordModalActive(false)}>
+                        Close
+                    </Button>
+                </Modal.Actions>
+            </Modal>
+        </>
     );
 }

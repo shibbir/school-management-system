@@ -15,7 +15,7 @@ export default function PrivateRoute({ component: Component, roles, ...rest }) {
                 loggedInUser && (!roles || roles.includes(loggedInUser.role)) ? (
                     <>
                         <Navbar/>
-                        <Container>
+                        <Container className="site-content">
                             <Component {...props}/>
                             <Divider hidden/>
                         </Container>
