@@ -16,10 +16,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                allOf:
-                                    - $ref: "#/components/schemas/Test"
+                                type: array
+                                items:
+                                    type: object
+                                    allOf:
+                                        - $ref: "#/components/schemas/Test"
+                                    properties:
+                                        modifier:
+                                            type: object
+                                            properties:
+                                                forename:
+                                                    type: string
+                                                surname:
+                                                    type: string
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
         post:
             tags:
                 - Test
@@ -52,10 +65,18 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/Test"
-                400:
-                    description: An error message stating the problem.
+                                properties:
+                                    modifier:
+                                        type: object
+                                        properties:
+                                            forename:
+                                                type: string
+                                            surname:
+                                                type: string
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
 
     /api/tests/{id}:
         get:
@@ -78,6 +99,8 @@ paths:
                                     - $ref: "#/components/schemas/Test"
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
         patch:
             tags:
                 - Test
@@ -110,10 +133,18 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/Test"
-                400:
-                    description: An error message stating the problem.
+                                properties:
+                                    modifier:
+                                        type: object
+                                        properties:
+                                            forename:
+                                                type: string
+                                            surname:
+                                                type: string
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
         delete:
             tags:
                 - Test
@@ -134,10 +165,10 @@ paths:
                                 properties:
                                     id:
                                         type: string
-                400:
-                    description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
 
 components:
     schemas:
@@ -151,12 +182,13 @@ components:
                     type: string
                 status:
                     type: string
+                created_at:
+                    type: string
                 updated_at:
                     type: string
-                modifier:
-                    type: object
-                    properties:
-                        forename:
-                            type: string
-                        surname:
-                            type: string
+                created_by:
+                    type: string
+                updated_by:
+                    type: string
+                subject_id:
+                    type: string

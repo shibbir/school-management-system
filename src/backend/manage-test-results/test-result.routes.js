@@ -5,7 +5,7 @@ const { validateBody, validateParams } = require("../core/validator.middleware")
 const { testResultSchema, testResultUpdateSchema, testIdSchema, testResultIdSchema } = require("./test-result.schema");
 
 module.exports = function(app) {
-    app.route("/api/tests/:id/results")
+    app.route("/api/tests/:id/test-results")
         .get(
             authenticate,
             authorizeFor(["teacher"]),
@@ -49,7 +49,7 @@ module.exports = function(app) {
             controller.deleteTestResult
         );
 
-    app.route("/api/tests/:id/import-results")
+    app.route("/api/tests/:id/import-test-results")
         .post(
             authenticate,
             authorizeFor(["teacher"]),

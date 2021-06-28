@@ -9,10 +9,11 @@ paths:
                     content:
                         application/json:
                             schema:
-                                allOf:
-                                    - $ref: "#/components/schemas/ClassWithSubjectsAndPupils"
-                500:
-                    description: Internal Server Error
+                                type: array
+                                items:
+                                    type: object
+                                    allOf:
+                                        - $ref: "#/components/schemas/ClassWithSubjectsAndPupils"
         post:
             tags:
                 - Class
@@ -35,10 +36,10 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/Class"
-                400:
-                    description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
 
     /api/classes/{id}:
         get:
@@ -57,8 +58,12 @@ paths:
                     content:
                         application/json:
                             schema:
-                                allOf:
-                                    - $ref: "#/components/schemas/Class"
+                                type: object
+                                properties:
+                                    id:
+                                        type: string
+                                    name:
+                                        type: string
         patch:
             tags:
                 - Class
@@ -88,10 +93,11 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/Class"
-                400:
-                    description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
+
         delete:
             tags:
                 - Class
@@ -112,10 +118,10 @@ paths:
                                 properties:
                                     id:
                                         type: string
-                400:
-                    description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
 
     /api/classes/{id}/bulk-enrolment:
         patch:
@@ -147,11 +153,11 @@ paths:
                                 - pupils
             responses:
                 204:
-                    description: OK
+                    description: No Content.
                 403:
                     description: Access Forbidden.
-                404:
-                    description: Class not found.
+                4xx:
+                    description: An error message stating the problem.
 
 components:
     schemas:

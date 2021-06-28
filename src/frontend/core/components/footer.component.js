@@ -1,13 +1,12 @@
 import React from "react";
+import { Icon } from "semantic-ui-react";
 
 export default function Footer() {
     return (
         <footer className="ui inverted vertical footer segment">
             <div className="ui center aligned container">
-                <p>
-                    Developed by <a href="https://shibbir.io">Shibbir Ahmed</a>.
-                    Code licensed <a rel="license" href="https://choosealicense.com/licenses/mit/">MIT</a>.
-                </p>
+                <Icon name="copyright outline"/> School Management System 2021.
+                Licensed under <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>.
             </div>
         </footer>
     );

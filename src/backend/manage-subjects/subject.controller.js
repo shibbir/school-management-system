@@ -9,37 +9,6 @@ const Program = require("../manage-classes/class.model");
 const TestResult = require("../manage-test-results/test-result.model");
 const { archiveTests } = require("../manage-tests/test.controller");
 
-async function getSubjectsByClass(req, res, next) {
-    try {
-        const program = await Program.findByPk(req.params.id, {
-            include: {
-                model: Subject,
-                as: "subjects",
-                attributes: ["id", "name", "status", "updated_at"],
-                order: [
-                    ["name"]
-                ],
-                include: [
-                    {
-                        model: User,
-                        as: "teacher",
-                        attributes: ["forename", "surname"]
-                    },
-                    {
-                        model: Test,
-                        as: "tests",
-                        attributes: ["id"]
-                    }
-                ]
-            }
-        });
-
-        res.json(program.subjects);
-    } catch(err) {
-        next(err);
-    }
-}
-
 async function getSubjects(req, res, next) {
     try {
         const subjects = await Subject.findAll({
@@ -83,6 +52,12 @@ async function addSubject(req, res, next) {
 
         if(matched_name) {
             return res.status(400).send("Subject name already exists. Please try with a different name.");
+        }
+
+        const teacher_count = await User.count({ where: { id: teacher_id, role: "teacher" }});
+
+        if(!teacher_count) {
+            return res.status(400).send("Invalid teacher.");
         }
 
         const entity = await Subject.create({
@@ -149,6 +124,12 @@ async function updateSubject(req, res, next) {
 
             if(matched_name) {
                 return res.status(400).send("Subject name already exists. Please try with a different name.");
+            }
+
+            const teacher_count = await User.count({ where: { id: teacher_id, role: "teacher" }});
+
+            if(!teacher_count) {
+                return res.status(400).send("Invalid teacher.");
             }
 
             subject.name = name;
@@ -246,8 +227,8 @@ async function getPupilGrades(req, res, next) {
                     results.push({
                         pupil_id: test_result.pupil_id,
                         pupil_name: `${test_result.pupil.forename} ${test_result.pupil.surname}`,
-                        grade: +test_result.grade,
-                        subject_name: test.subject.name
+                        subject_name: test.subject.name,
+                        grade: +test_result.grade
                     });
                 }
             });
@@ -408,7 +389,6 @@ async function exportPupilGrades(req, res, next) {
     }
 }
 
-exports.getSubjectsByClass = getSubjectsByClass;
 exports.addSubject = addSubject;
 exports.getSubjects = getSubjects;
 exports.getSubject = getSubject;

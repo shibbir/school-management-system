@@ -1,12 +1,13 @@
-const { string, object } = require("yup");
+const { string, object, date } = require("yup");
 
 const testSchema = object().shape({
     name: string()
         .min(2, "Test name must be at least 2 characters long.")
         .max(50, "Test name must be at most 50 characters long.")
         .required("Test name must not be empty."),
-    date: string()
-        .required("Date is required.")
+    date: date()
+        .required("Test date is required.")
+        .typeError("Test date must be a valid date.")
 });
 
 const testIdSchema = object().shape({

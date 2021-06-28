@@ -108,7 +108,7 @@ async function createTestResult(req, res, next) {
 async function getTestResult(req, res, next) {
     try {
         const test_result = await TestResult.findByPk(req.params.id, {
-            attributes: ["id", "pupil_id", "grade", "updated_at"]
+            attributes: ["id", "pupil_id", "grade"]
         });
 
         res.json(test_result);

@@ -10,12 +10,6 @@ const subjectSchema = object().shape({
         .uuid("Teacher Id must be a valid UUID")
 });
 
-const classIdSchema = object().shape({
-    id: string()
-        .uuid("Class Id must be a valid UUID")
-        .required("Class Id is a required parameter.")
-});
-
 const subjectIdSchema = object().shape({
     id: string()
         .uuid("Subject Id must be a valid UUID")
@@ -23,5 +17,4 @@ const subjectIdSchema = object().shape({
 });
 
 exports.subjectSchema = subjectSchema;
-exports.classIdSchema = classIdSchema;
 exports.subjectIdSchema = subjectIdSchema;

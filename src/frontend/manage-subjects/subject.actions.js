@@ -74,7 +74,7 @@ export function getPupilGrades(id) {
         type: Types.GET_PUPIL_GRADES_BY_SUBJECT,
         payload: axios({
             method: "get",
-            url: `/api/subjects/${id}/pupil-grades`
+            url: `/api/subjects/${id}/grades`
         })
     };
 }

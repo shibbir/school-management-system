@@ -59,7 +59,9 @@ async function createClass(req, res, next) {
 
 async function getClass(req, res, next) {
     try {
-        const program = await Program.findByPk(req.params.id);
+        const program = await Program.findByPk(req.params.id, {
+            attributes: ["id", "name"]
+        });
 
         res.json(program);
     } catch(err) {

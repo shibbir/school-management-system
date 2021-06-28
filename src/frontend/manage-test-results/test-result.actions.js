@@ -6,7 +6,7 @@ export function getTestResultsByTest(test_id) {
         type: Types.GET_TEST_RESULTS,
         payload: axios({
             method: "get",
-            url: `/api/tests/${test_id}/results`
+            url: `/api/tests/${test_id}/test-results`
         })
     };
 }
@@ -16,7 +16,7 @@ export function createTestResult(test_id, test_result) {
         type: Types.POST_TEST_RESULT,
         payload: axios({
             method: "post",
-            url: `/api/tests/${test_id}/results`,
+            url: `/api/tests/${test_id}/test-results`,
             data: test_result
         })
     };
@@ -48,7 +48,7 @@ export function importTestResults(test_id, form_data) {
         type: Types.IMPORT_TEST_RESULTS,
         payload: axios({
             method: "post",
-            url: `/api/tests/${test_id}/import-results`,
+            url: `/api/tests/${test_id}/import-test-results`,
             data: form_data
         })
     };

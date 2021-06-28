@@ -1,42 +1,49 @@
 paths:
-    /api/classes/{id}/subjects:
+    /api/subjects:
         get:
             tags:
                 - Subject
-            summary: Get all the subjects by class
-            parameters:
-              - name: id
-                in: path
-                description: Class Unique ID
-                required: true
-                schema:
-                    type: string
+            summary: Get all the subjects
             responses:
                 200:
                     content:
                         application/json:
                             schema:
-                                allOf:
-                                    - $ref: "#/components/schemas/Subject"
-                                properties:
-                                    tests:
-                                        type: array
-                                        items:
+                                type: array
+                                items:
+                                    type: object
+                                    allOf:
+                                        - $ref: "#/components/schemas/Subject"
+                                    properties:
+                                        updated_at:
+                                            type: string
+                                        teacher:
                                             type: object
                                             properties:
-                                                id:
+                                                forename:
                                                     type: string
+                                                surname:
+                                                    type: string
+                                        tests:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: string
+                                        classes:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: string
+                                                    name:
+                                                        type: string
         post:
             tags:
                 - Subject
-            summary: Create and assign a subject in a class
-            parameters:
-              - name: id
-                in: path
-                description: Class Unique ID
-                required: true
-                schema:
-                    type: string
+            summary: Create a new subject
             requestBody:
                 required: true
                 content:
@@ -58,10 +65,18 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/Subject"
-                400:
-                    description: An error message stating the problem.
+                                properties:
+                                    teacher:
+                                        type: object
+                                        properties:
+                                            forename:
+                                                type: string
+                                            surname:
+                                                type: string
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
 
     /api/subjects/{id}:
         get:
@@ -82,6 +97,9 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/Subject"
+                                properties:
+                                    teacher_id:
+                                        type: string
         patch:
             tags:
                 - Subject
@@ -114,10 +132,30 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/Subject"
-                400:
-                    description: An error message stating the problem.
+                                properties:
+                                    updated_at:
+                                        type: string
+                                    teacher:
+                                        type: object
+                                        properties:
+                                            forename:
+                                                type: string
+                                            surname:
+                                                type: string
+                                    classes:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: string
+                                                name:
+                                                    type: string
+
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
         delete:
             tags:
                 - Subject
@@ -138,12 +176,12 @@ paths:
                                 properties:
                                     id:
                                         type: string
-                400:
-                    description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
 
-    /api/subjects/{id}/pupil-grades:
+    /api/subjects/{id}/grades:
         get:
             tags:
                 - Subject
@@ -164,16 +202,16 @@ paths:
                                 properties:
                                     pupil_id:
                                         type: string
-                                    forename:
+                                    pupil_name:
                                         type: string
-                                    surname:
+                                    subject_name:
                                         type: string
                                     grade:
                                         type: number
                 403:
                     description: Access Forbidden.
-                404:
-                    description: Subject not found.
+                4xx:
+                    description: An error message stating the problem.
 
 components:
     schemas:
@@ -185,13 +223,3 @@ components:
                     type: string
                 status:
                     type: string
-                updated_at:
-                    type: string
-                teacher:
-                    type: object
-                    properties:
-                        forename:
-                            type: string
-                        surname:
-                            type: string
-

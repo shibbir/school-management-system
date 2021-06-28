@@ -1,5 +1,5 @@
 paths:
-    /api/tests/{id}/results:
+    /api/tests/{id}/test-results:
         get:
             tags:
                 - Test Result
@@ -16,8 +16,11 @@ paths:
                     content:
                         application/json:
                             schema:
-                                allOf:
-                                    - $ref: "#/components/schemas/TestResult"
+                                type: array
+                                items:
+                                    type: object
+                                    allOf:
+                                        - $ref: "#/components/schemas/TestResult"
                 403:
                     description: Access Forbidden.
         post:
@@ -52,12 +55,12 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/TestResult"
-                400:
-                    description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
 
-    /api/tests/{id}/import-results:
+    /api/tests/{id}/import-test-results:
         post:
             tags:
                 - Test Result
@@ -84,11 +87,11 @@ paths:
                                 - result
             responses:
                 204:
-                    description: Grades import successful.
-                400:
-                    description: An error message stating the problem.
+                    description: No Content.
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
 
     /api/test-results/{id}:
         get:
@@ -107,8 +110,15 @@ paths:
                     content:
                         application/json:
                             schema:
-                                allOf:
-                                    - $ref: "#/components/schemas/TestResult"
+                                type: object
+                                properties:
+                                    id:
+                                        type: string
+                                    grade:
+                                        type: string
+                                    pupil_id:
+                                        type: string
+
                 403:
                     description: Access Forbidden.
         patch:
@@ -140,10 +150,10 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/TestResult"
-                400:
-                    description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
         delete:
             tags:
                 - Test Result
@@ -164,12 +174,10 @@ paths:
                                 properties:
                                     id:
                                         type: string
-                400:
-                    description: An error message stating the problem.
                 403:
                     description: Access Forbidden.
-                404:
-                    description: No data found.
+                4xx:
+                    description: An error message stating the problem.
 
 components:
     schemas:

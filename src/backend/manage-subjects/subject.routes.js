@@ -1,7 +1,7 @@
 const controller = require("./subject.controller");
 const { authenticate, authorizeFor } = require("../core/security.middleware");
 const { validateBody, validateParams } = require("../core/validator.middleware");
-const { subjectSchema, classIdSchema, subjectIdSchema } = require("./subject.schema");
+const { subjectSchema, subjectIdSchema } = require("./subject.schema");
 
 module.exports = function(app) {
     app.route("/api/subjects")
@@ -33,6 +33,7 @@ module.exports = function(app) {
             authenticate,
             authorizeFor(["admin"]),
             validateParams(subjectIdSchema),
+            validateBody(subjectSchema),
             controller.updateSubject
         )
         .delete(
@@ -42,7 +43,7 @@ module.exports = function(app) {
             controller.deleteSubject
         );
 
-    app.route("/api/subjects/:id/pupil-grades")
+    app.route("/api/subjects/:id/grades")
         .get(
             authenticate,
             authorizeFor(["teacher"]),
@@ -57,20 +58,4 @@ module.exports = function(app) {
             validateParams(subjectIdSchema),
             controller.exportPupilGrades
         );
-
-    // app.route("/api/classes/:id/subjects")
-    //     .get(
-    //         authenticate,
-    //         authorizeFor(["admin"]),
-    //         validateParams(classIdSchema),
-    //         controller.getSubjectsByClass
-    //     )
-    //     .post(
-    //         authenticate,
-    //         authorizeFor(["admin"]),
-    //         validateParams(classIdSchema),
-    //         validateBody(subjectSchema),
-    //         controller.addSubject
-    //     );
-
 };

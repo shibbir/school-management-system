@@ -30,6 +30,7 @@ module.exports = function(app) {
             authenticate,
             authorizeFor(["teacher"]),
             validateParams(testIdSchema),
+            validateBody(testSchema),
             controller.updateTest
         )
         .delete(

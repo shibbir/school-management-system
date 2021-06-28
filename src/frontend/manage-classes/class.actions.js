@@ -53,16 +53,6 @@ export function deleteClass(id) {
     };
 }
 
-export function getSubjectsByClass(class_id) {
-    return {
-        type: Types.GET_CLASS_SUBJECTS,
-        payload: axios({
-            method: "get",
-            url: `/api/classes/${class_id}/subjects`
-        })
-    };
-}
-
 export function bulkEnrolment(id, data) {
     return {
         type: Types.PATCH_PUPILS_ENROLMENT,
