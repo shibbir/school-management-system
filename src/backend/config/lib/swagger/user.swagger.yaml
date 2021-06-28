@@ -78,8 +78,8 @@ paths:
                                 - new_password
                                 - confirm_new_password
             responses:
-                200:
-                    description: Password updated successfully.
+                204:
+                    description: No Content.
                 400:
                     description: An error message stating the problem.
                 401:
@@ -95,15 +95,28 @@ paths:
                     content:
                         application/json:
                             schema:
-                                allOf:
-                                    - $ref: "#/components/schemas/UserProfile"
-                                properties:
-                                    class:
-                                        type: object
-                                    class_id:
-                                        type: string
-                                    modifier:
-                                        type: object
+                                type: array
+                                items:
+                                    type: object
+                                    allOf:
+                                        - $ref: "#/components/schemas/UserProfile"
+                                    properties:
+                                        updated_at:
+                                            type: string
+                                        class:
+                                            type: object
+                                            properties:
+                                                name:
+                                                    type: string
+                                        class_id:
+                                            type: string
+                                        modifier:
+                                            type: object
+                                            properties:
+                                                forename:
+                                                    type: string
+                                                surname:
+                                                    type: string
                 403:
                     description: Access Forbidden.
         post:
@@ -263,18 +276,27 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    id:
-                                        type: string
-                                    name:
-                                        type: string
-                                    status:
-                                        type: string
-                                    class:
-                                        type: object
-                                    updated_at:
-                                        type: string
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: string
+                                        name:
+                                            type: string
+                                        status:
+                                            type: string
+                                        classes:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: string
+                                                    name:
+                                                        type: string
+                                        updated_at:
+                                            type: string
                 403:
                     description: Access Forbidden.
 
@@ -295,16 +317,18 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    subject_id:
-                                        type: string
-                                    subject_name:
-                                        type: string
-                                    grade:
-                                        type: number
-                                    teacher_name:
-                                        type: string
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        subject_id:
+                                            type: string
+                                        subject_name:
+                                            type: string
+                                        grade:
+                                            type: string
+                                        teacher_name:
+                                            type: string
                 403:
                     description: Access Forbidden.
 

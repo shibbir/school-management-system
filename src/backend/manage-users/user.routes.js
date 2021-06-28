@@ -25,16 +25,36 @@ module.exports = function(app) {
         .delete(authenticate, authorizeFor(["admin"], validateParams(idSchema)), controller.deleteUser);
 
     app.route("/api/teachers/:id/subjects")
-        .get(authenticate, authorizeFor(["teacher"]), controller.getAssignedSubjects);
+        .get(
+            authenticate,
+            authorizeFor(["teacher"]),
+            validateParams(idSchema),
+            controller.getAssignedSubjects
+        );
 
     app.route("/api/teachers/:id/export-subjects")
-        .get(authenticate, authorizeFor(["teacher"]), controller.exportAssignedSubjects);
+        .get(
+            authenticate,
+            authorizeFor(["teacher"]),
+            validateParams(idSchema),
+            controller.exportAssignedSubjects
+        );
 
     app.route("/api/pupils/:id/export-subjects")
-        .get(authenticate, authorizeFor(["pupil"]), controller.exportPupilSubjects);
+        .get(
+            authenticate,
+            authorizeFor(["pupil"]),
+            validateParams(idSchema),
+            controller.exportPupilSubjects
+        );
 
     app.route("/api/pupils/:id/subjects")
-        .get(authenticate, authorizeFor(["pupil"]), controller.getPupilSubjects);
+        .get(
+            authenticate,
+            authorizeFor(["pupil"]),
+            validateParams(idSchema),
+            controller.getPupilSubjects
+        );
 
     app.route("/api/pupils/:pupil_id/subjects/:subject_id")
         .get(authenticate, authorizeFor(["pupil"]), controller.getPupilSubject)
