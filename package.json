@@ -17,9 +17,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
-    "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
-    "csv": "^5.5.0",
     "csv-parse": "^4.16.0",
     "date-fns": "^2.22.1",
     "dotenv": "^10.0.0",
@@ -42,7 +40,6 @@
     "react-dom": "^17.0.2",
     "react-intl": "^5.20.1",
     "react-redux": "^7.2.4",
-    "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.2.0",
     "redux": "^4.1.0",
     "redux-logger": "^3.0.6",

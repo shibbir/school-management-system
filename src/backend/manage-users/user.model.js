@@ -3,7 +3,6 @@ const { DataTypes } = require("sequelize");
 
 const sequelize = require("../config/lib/sequelize");
 const Program = require("../manage-classes/class.model");
-
 const User = sequelize.dbConnector.define("users", {
     id: {
         allowNull: false,

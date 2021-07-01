@@ -7,7 +7,7 @@
 - [A terminal/command prompt of your choice](https://en.wikipedia.org/wiki/Command-line_interface)
 
 ## Configuring Environment Variables
-> By default this project comes with a pre-configured .env file. Feel free to adjust the values if needed. Details of each environment variables are below:
+> By default, this project comes with a pre-configured .env file. Feel free to adjust the values if needed. Details of each environment variables are below:
 
 Name | Is Mandatory | Default Value | Description
 ------------ | ------------- | ------------- | -------------

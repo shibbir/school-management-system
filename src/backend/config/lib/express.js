@@ -3,7 +3,6 @@ const path = require("path");
 const glob = require("glob");
 const express = require("express");
 const hbs = require("express-hbs");
-const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const swaggerUi = require("swagger-ui-express");
 const swaggerConfig = require("./swagger/swagger");
@@ -15,7 +14,6 @@ const assets = _.merge(defaultAssets, environmentAssets);
 module.exports = function() {
     const app = express();
 
-    app.use(compression());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     app.use(cookieParser(process.env.COOKIE_SECRET));
