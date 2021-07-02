@@ -87,7 +87,13 @@ paths:
         get:
             tags:
                 - User
-            summary: Get all users in the system
+            summary: Get all the users in the system
+            parameters:
+              - name: role
+                in: query
+                description: User role
+                schema:
+                    type: string
             responses:
                 200:
                     content:

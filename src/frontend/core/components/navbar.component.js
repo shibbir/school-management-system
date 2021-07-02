@@ -18,7 +18,7 @@ export default function Navbar() {
                 <Menu.Item header style={{paddingLeft: 0}}>
                     School Management System
                     <div style={{paddingLeft: "5px"}}>
-                        <Label color="teal" tag>Version 0.1.0</Label>
+                        <Label color="teal" tag>Version 1.0.0</Label>
                     </div>
                 </Menu.Item>
                 <div className="right item" style={{paddingRight: 0}}>

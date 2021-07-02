@@ -78,6 +78,12 @@ async function createTestResult(req, res, next) {
     try {
         const { pupil_id, grade } = req.body;
 
+        const test = await Test.findByPk(req.params.id, {
+            attributes: ["status"]
+        });
+
+        if(test.status === "archived") return res.status(400).send("No further changes can be made to archived tests.");
+
         const pupil = await TestResult.findOne({ where: { pupil_id, test_id: req.params.id }});
 
         if(pupil) return res.status(400).send("This pupil already has a grade. Please consider updating or removing the previous grade.");
