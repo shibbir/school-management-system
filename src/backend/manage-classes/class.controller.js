@@ -22,7 +22,6 @@ async function getClasess(req, res, next) {
                     through: { attributes: [] }
                 }
             ],
-            attributes: {exclude: ["created_by", "updated_by"]},
             order: [
                 ["created_at", "DESC"]
             ]
@@ -44,11 +43,7 @@ async function createClass(req, res, next) {
 
         if(matched_name) return res.status(400).send("Name already exists. Please try with a different one.");
 
-        const program = await Program.create({
-            name,
-            created_by: req.user.id,
-            updated_by: req.user.id
-        });
+        const program = await Program.create({ name });
 
         res.json(program);
 
@@ -74,8 +69,7 @@ async function updateClass(req, res, next) {
         let program = await Program.findByPk(req.params.id);
 
         program = await program.update({
-            name: req.body.name,
-            updated_by: req.user.id
+            name: req.body.name
         }, { returning: true });
 
         res.json(program);
@@ -87,13 +81,12 @@ async function updateClass(req, res, next) {
 async function deleteClass(req, res, next) {
     try {
         await User.update({
-            class_id: null,
-            updated_by: req.user.id
+            class_id: null
         }, { where: {
             class_id: req.params.id
         }});
 
-        await archiveOrDeleteSubjects(req.params.id, req.user.id);
+        await archiveOrDeleteSubjects(req.params.id);
 
         await Program.destroy({ where: { id: req.params.id }});
 
@@ -131,12 +124,10 @@ async function bulkEnrolment(req, res, next) {
                 pupil.class_id = null;
             }
 
-            pupil.updated_by = req.user.id;
-
             return pupil;
         });
 
-        await User.bulkCreate(pupils, { updateOnDuplicate: ["class_id", "updated_by", "updated_at"] });
+        await User.bulkCreate(pupils, { updateOnDuplicate: ["class_id", "updated_at"] });
 
         res.sendStatus(204);
     } catch(err) {

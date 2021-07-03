@@ -26,15 +26,7 @@ const TestResult = sequelize.dbConnector.define("test_results", {
         type: DataTypes.ENUM,
         defaultValue: "active",
         values: ["active", "archived"]
-    },
-    created_by: {
-        allowNull: false,
-        type: DataTypes.UUID
-    },
-    updated_by: {
-        allowNull: false,
-        type: DataTypes.UUID
-    },
+    }
 }, {
     schema: process.env.POSTGRES_DATABASE_SCHEMA,
     tableName: "test_results",
@@ -54,6 +46,5 @@ Test.hasMany(TestResult, { as: "test_results", foreignKey: { name: "test_id", al
 TestResult.belongsTo(Test, { as: "test", foreignKey: "test_id" });
 
 TestResult.belongsTo(User, { as: "pupil", foreignKey: { name: "pupil_id", allowNull: false }});
-TestResult.belongsTo(User, { as: "modifier", foreignKey: { name: "updated_by", allowNull: false }});
 
 module.exports = TestResult;

@@ -40,7 +40,6 @@ export default function ManageTests() {
                 <Table.Cell>{test.name}</Table.Cell>
                 <Table.Cell><FormattedDate value={test.date} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>{capitalize(test.status)}</Table.Cell>
-                <Table.Cell>{`${test.modifier.forename} ${test.modifier.surname}`}</Table.Cell>
                 <Table.Cell><FormattedDate value={test.updated_at} day="2-digit" month="long" year="numeric"/></Table.Cell>
                 <Table.Cell>
                     <Dropdown>
@@ -90,7 +89,6 @@ export default function ManageTests() {
                             <Table.HeaderCell>Test Name</Table.HeaderCell>
                             <Table.HeaderCell>Test Date</Table.HeaderCell>
                             <Table.HeaderCell>Test Status</Table.HeaderCell>
-                            <Table.HeaderCell>Updated By</Table.HeaderCell>
                             <Table.HeaderCell>Updated At</Table.HeaderCell>
                             <Table.HeaderCell>Actions</Table.HeaderCell>
                         </Table.Row>

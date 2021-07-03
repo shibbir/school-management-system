@@ -20,14 +20,6 @@ const Subject = sequelize.dbConnector.define("subjects", {
         type: DataTypes.ENUM,
         defaultValue: "active",
         values: ["active", "archived"]
-    },
-    created_by: {
-        allowNull: false,
-        type: DataTypes.UUID
-    },
-    updated_by: {
-        allowNull: false,
-        type: DataTypes.UUID
     }
 }, {
     schema: process.env.POSTGRES_DATABASE_SCHEMA,
@@ -48,7 +40,5 @@ Subject.belongsToMany(Program, { as: "classes", through: ClassSubject, foreignKe
 
 User.hasMany(Subject, { as: "subjects", foreignKey: { name: "teacher_id", allowNull: false }});
 Subject.belongsTo(User, { as: "teacher", foreignKey: { name: "teacher_id", allowNull: false }});
-
-Subject.belongsTo(User, { as: "modifier", foreignKey: "updated_by" });
 
 module.exports = Subject;

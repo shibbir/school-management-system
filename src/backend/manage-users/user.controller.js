@@ -64,7 +64,7 @@ async function getUserProfile(req, res) {
 async function getUser(req, res, next) {
     try {
         const user = await User.findByPk(req.params.id, {
-            attributes: { exclude: ["password", "refresh_token", "created_by", "updated_by", "created_at"] },
+            attributes: { exclude: ["password", "refresh_token", "created_at"] },
         });
 
         res.json(formatUserProfile(user));
@@ -137,7 +137,7 @@ async function getUsers(req, res, next) {
 
         const users = await User.findAll({
             where: query,
-            attributes: { exclude: ["password", "refresh_token", "created_by", "updated_by", "created_at"] },
+            attributes: { exclude: ["password", "refresh_token", "created_at"] },
             order: [
                 ["role"],
                 ["forename"]
@@ -147,11 +147,6 @@ async function getUsers(req, res, next) {
                     model: Program,
                     as: "class",
                     attributes: ["name"]
-                },
-                {
-                    model: User,
-                    as: "modifier",
-                    attributes: ["forename", "surname"]
                 }
             ]
         });
@@ -177,21 +172,14 @@ async function createUser(req, res, next) {
             forename,
             surname,
             username,
-            password,
-            created_by: req.user.id,
-            updated_by: req.user.id
+            password
         });
 
         const user = await User.findByPk(entity.id, {
-            attributes: { exclude: ["password", "refresh_token"] },
-            include: [{
-                model: User,
-                as: "modifier",
-                attributes: ["forename", "surname"]
-            }]
+            attributes: { exclude: ["password", "refresh_token"] }
         });
 
-        res.json({ ...formatUserProfile(user), modifier: user.modifier });
+        res.json(formatUserProfile(user));
     } catch(err) {
         next(err);
     }
@@ -225,17 +213,11 @@ async function updateUser(req, res, next) {
         await User.update({
             forename,
             surename,
-            username,
-            updated_by: req.user.id
+            username
         }, { where: { id: req.params.id }});
 
         const user = await User.findByPk(req.params.id, {
-            attributes: ["id", "forename", "surname", "username", "role"],
-            include: [{
-                model: User,
-                as: "modifier",
-                attributes: ["forename", "surname"]
-            }]
+            attributes: ["id", "forename", "surname", "username", "role"]
         });
 
         res.json(user);
@@ -275,7 +257,6 @@ async function changePassword(req, res, next) {
         if (!user || !user.validPassword(current_password)) return res.status(400).send("Current password is incorrect.");
 
         user.password = new_password;
-        user.updated_by = req.user.id;
 
         await user.save();
 

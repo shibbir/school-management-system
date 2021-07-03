@@ -114,13 +114,6 @@ paths:
                                                     type: string
                                         class_id:
                                             type: string
-                                        modifier:
-                                            type: object
-                                            properties:
-                                                forename:
-                                                    type: string
-                                                surname:
-                                                    type: string
                 403:
                     description: Access Forbidden.
         post:
@@ -134,22 +127,25 @@ paths:
                         schema:
                             type: object
                             properties:
-                                username:
-                                    type: string
-                                password:
-                                    type: string
                                 forename:
                                     type: string
                                 surname:
                                     type: string
+                                username:
+                                    type: string
                                 role:
                                     type: string
+                                password:
+                                    type: string
+                                confirm_password:
+                                    type: string
                             required:
-                                - username
-                                - password
                                 - forename
                                 - surname
+                                - username
                                 - role
+                                - password
+                                - confirm_password
             responses:
                 200:
                     content:
@@ -157,14 +153,6 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/UserProfile"
-                                properties:
-                                    modifier:
-                                        type: object
-                                        properties:
-                                            forename:
-                                                type: string
-                                            surname:
-                                                type: string
                 403:
                     description: Access Forbidden.
                 4xx:
@@ -226,14 +214,6 @@ paths:
                             schema:
                                 allOf:
                                     - $ref: "#/components/schemas/UserProfile"
-                                properties:
-                                    modifier:
-                                        type: object
-                                        properties:
-                                            forename:
-                                                type: string
-                                            surname:
-                                                type: string
                 403:
                     description: Access Forbidden.
                 4xx:

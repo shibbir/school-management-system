@@ -91,9 +91,7 @@ async function createTestResult(req, res, next) {
         const entity = await TestResult.create({
             test_id: req.params.id,
             pupil_id,
-            grade: Number.parseFloat(grade).toFixed(2),
-            created_by: req.user.id,
-            updated_by: req.user.id
+            grade: Number.parseFloat(grade).toFixed(2)
         });
 
         const test_result = await TestResult.findByPk(entity.id, {
@@ -150,7 +148,6 @@ async function updateTestResult(req, res, next) {
 
         if(!test_result.test.subject.classes.find(x => x.id === pupil.class_id)) return res.status(400).send("You cannot change the grade because this pupil had been de-assigned from this subject.");
 
-        test_result.updated_by = req.user.id;
         test_result.grade = Number.parseFloat(grade).toFixed(2);
         await test_result.save();
 
@@ -268,16 +265,13 @@ async function importTestResults(req, res, next) {
 
             if(current_test_results.find(x => x.pupil_id === pupil_id)) {
                 await TestResult.update({
-                    grade: Number.parseFloat(grade).toFixed(2),
-                    updated_by: req.user.id
+                    grade: Number.parseFloat(grade).toFixed(2)
                 }, { where: { test_id: req.params.id, pupil_id }});
             } else {
                 new_test_results.push({
                     test_id: req.params.id,
                     pupil_id,
-                    grade: Number.parseFloat(grade).toFixed(2),
-                    created_by: req.user.id,
-                    updated_by: req.user.id
+                    grade: Number.parseFloat(grade).toFixed(2)
                 });
             }
         }).on("end", async function() {
@@ -294,10 +288,9 @@ async function importTestResults(req, res, next) {
     }
 }
 
-async function archiveTestResults(test_id, updated_by) {
+async function archiveTestResults(test_id) {
     await TestResult.update({
-        status: "archived",
-        updated_by: updated_by
+        status: "archived"
     }, { where: {
         test_id: test_id
     }});

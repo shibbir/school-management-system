@@ -62,9 +62,7 @@ async function addSubject(req, res, next) {
 
         const entity = await Subject.create({
             name,
-            teacher_id,
-            created_by: req.user.id,
-            updated_by: req.user.id
+            teacher_id
         });
 
         const subject = await Subject.findByPk(entity.id, {
@@ -112,7 +110,6 @@ async function updateSubject(req, res, next) {
             if(!subject.tests.length) return res.status(400).send("Only subjects with dependent tests can be archived.");
 
             subject.status = "archived";
-            subject.updated_by = req.user.id;
 
             await subject.save();
             await archiveTests(req.params.id, req.user.id);
@@ -134,7 +131,6 @@ async function updateSubject(req, res, next) {
 
             subject.name = name;
             subject.teacher_id = teacher_id;
-            subject.updated_by = req.user.id;
 
             await subject.save();
         }
@@ -246,7 +242,7 @@ async function getPupilGrades(req, res, next) {
     }
 }
 
-async function archiveOrDeleteSubjects(class_id, updated_by) {
+async function archiveOrDeleteSubjects(class_id) {
     const program = await Program.findByPk(class_id, {
         include: {
             model: Subject,
@@ -265,11 +261,10 @@ async function archiveOrDeleteSubjects(class_id, updated_by) {
     await Promise.all(program.subjects.map(async subject => {
         if(subject.tests.length) {
             subject.status = "archived";
-            subject.updated_by = updated_by;
 
             await subject.save();
 
-            await archiveTests(subject.id, updated_by);
+            await archiveTests(subject.id);
         } else {
             await Subject.destroy({ where: { id: subject.id }});
         }

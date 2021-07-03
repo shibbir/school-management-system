@@ -1,5 +1,4 @@
 const Test = require("./test.model");
-const User = require("../manage-users/user.model");
 const Subject = require("../manage-subjects/subject.model");
 const { archiveTestResults } = require("../manage-test-results/test-result.controller");
 
@@ -7,13 +6,6 @@ async function getTests(req, res, next) {
     try {
         const tests = await Test.findAll({
             where: { subject_id: req.params.id },
-            include: [
-                {
-                    model: User,
-                    as: "modifier",
-                    attributes: ["forename", "surname"]
-                }
-            ],
             order: [
                 ["created_at", "DESC"]
             ]
@@ -32,20 +24,10 @@ async function createTest(req, res, next) {
         const entity = await Test.create({
             name,
             date,
-            subject_id: req.params.id,
-            created_by: req.user.id,
-            updated_by: req.user.id
+            subject_id: req.params.id
         });
 
-        const test = await Test.findByPk(entity.id, {
-            include: [
-                {
-                    model: User,
-                    as: "modifier",
-                    attributes: ["forename", "surname"]
-                }
-            ]
-        });
+        const test = await Test.findByPk(entity.id);
 
         res.json(test);
     } catch(err) {
@@ -79,17 +61,10 @@ async function updateTest(req, res, next) {
 
         entity.name = name;
         entity.date = date;
-        entity.updated_by = req.user.id;
 
         await entity.save();
 
-        const test = await Test.findByPk(req.params.id, {
-            include: {
-                model: User,
-                as: "modifier",
-                attributes: ["forename", "surname"]
-            }
-        });
+        const test = await Test.findByPk(req.params.id);
 
         res.json(test);
     } catch(err) {
@@ -107,7 +82,7 @@ async function deleteTest(req, res, next) {
     }
 }
 
-async function archiveTests(subject_id, updated_by) {
+async function archiveTests(subject_id) {
     const tests = await Test.findAll({
         where: { subject_id: subject_id },
         attributes: ["id"]
@@ -115,11 +90,10 @@ async function archiveTests(subject_id, updated_by) {
 
     await Promise.all(tests.map(async test => {
         test.status = "archived";
-        test.updated_by = updated_by;
 
         await test.save();
 
-        await archiveTestResults(test.id, updated_by);
+        await archiveTestResults(test.id);
     }));
 }
 

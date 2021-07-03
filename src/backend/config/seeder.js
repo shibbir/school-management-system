@@ -54,8 +54,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: "admin@sms.com",
-                password,
-                updated_by: admin_id
+                password
             },
             {
                 id: teacher1_id,
@@ -63,9 +62,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("one").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: teacher2_id,
@@ -73,9 +70,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("two").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: teacher3_id,
@@ -83,9 +78,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("three").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: pupil1_id,
@@ -94,9 +87,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("four").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: pupil2_id,
@@ -105,9 +96,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("five").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: pupil3_id,
@@ -116,9 +105,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("six").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: pupil4_id,
@@ -127,9 +114,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("seven").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: pupil5_id,
@@ -138,9 +123,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("eight").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: pupil6_id,
@@ -149,9 +132,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("ten").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: pupil7_id,
@@ -160,9 +141,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("eleven").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: pupil8_id,
@@ -171,9 +150,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("twelve").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             },
             {
                 id: pupil9_id,
@@ -181,9 +158,7 @@ async function init() {
                 forename: faker.name.firstName(),
                 surname: faker.name.lastName(),
                 username: faker.internet.email("thirteen").toLowerCase(),
-                password,
-                created_by: admin_id,
-                updated_by: admin_id
+                password
             }
         ];
 
@@ -199,15 +174,11 @@ async function init() {
         const classes = [
             {
                 id: class1_id,
-                name: "Automotive Software Engineering",
-                created_by: admin_id,
-                updated_by: admin_id
+                name: "Automotive Software Engineering"
             },
             {
                 id: class2_id,
-                name: "Web Engineering",
-                created_by: admin_id,
-                updated_by: admin_id
+                name: "Web Engineering"
             }
         ];
 
@@ -224,44 +195,32 @@ async function init() {
             {
                 id: subject1_id,
                 name: "Automotive Sensor Systems",
-                teacher_id: teacher1_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                teacher_id: teacher1_id
             },
             {
                 id: subject2_id,
                 name: "Software Platforms for Automotive Systems",
-                teacher_id: teacher1_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                teacher_id: teacher1_id
             },
             {
                 id: subject3_id,
                 name: "Formal Specification and Verification",
-                teacher_id: teacher2_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                teacher_id: teacher2_id
             },
             {
                 id: subject4_id,
                 name: "Compiler Construction",
-                teacher_id: teacher1_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                teacher_id: teacher1_id
             },
             {
                 id: subject5_id,
                 name: "Databases and Web Techniques",
-                teacher_id: teacher2_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                teacher_id: teacher2_id
             },
             {
                 id: subject6_id,
                 name: "Data Security and Cryptography",
-                teacher_id: teacher2_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                teacher_id: teacher2_id
             }
         ];
 
@@ -298,40 +257,28 @@ async function init() {
         const tests = [
             {
                 name: "Automotive Sensor Systems: First Test",
-                subject_id: subject1_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                subject_id: subject1_id
             },
             {
                 name: "Automotive Sensor Systems: Second Test",
-                subject_id: subject1_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                subject_id: subject1_id
             },
             {
                 name: "Automotive Sensor Systems: Third Test",
-                subject_id: subject1_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                subject_id: subject1_id
             },
 
             {
                 name: "Compiler Construction: First Test",
-                subject_id: subject4_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                subject_id: subject4_id
             },
             {
                 name: "Compiler Construction: Second Test",
-                subject_id: subject4_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                subject_id: subject4_id
             },
             {
                 name: "Compiler Construction: Third Test",
-                subject_id: subject4_id,
-                created_by: admin_id,
-                updated_by: admin_id
+                subject_id: subject4_id
             }
         ];
 

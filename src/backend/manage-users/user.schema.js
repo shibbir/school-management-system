@@ -17,6 +17,10 @@ const registrationSchema = object().shape({
     password: string()
         .required("Password is a required field.")
         .min(8, "Password must be at least 8 characters long."),
+    confirm_password: string()
+        .required("Confirm Password is a required field.")
+        .min(8, "Password must be at least 8 characters long.")
+        .oneOf([ref("password"), null], "Password and confirm password doesn't match."),
     forename: string()
         .required("Forename is a required field.")
         .max(50, "Forename must be at most 50 characters long."),
