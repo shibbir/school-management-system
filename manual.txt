@@ -16,4 +16,8 @@ Step 8: To start the application
     - for development mode please execute: npm start
     - for production mode please execute: npm run production
 
-Step 9: In production mode the application will be running in background. If you need to stop it, please execute: npm run stop
+Step 9: Visit http://localhost:6060/. The port will be based on what is specified in .env file
+
+Step 10: Visit http://localhost:6060/api-docs/ for the API documentation. The port will be based on what is specified in .env file
+
+Step 11: In production mode the application will be running in background. If you need to stop it, please execute: npm run stop
