@@ -1,0 +1,19 @@
+Step 1: Install Node.js >= 14.0
+
+Step 2: Install PostgreSQL >= 12.0
+
+Step 3: After installing PostgreSQL, create a database named "school-management-system"
+
+Step 4: This project comes with a pre-configured .env file. Feel free to adjust the values if needed. Otherwise, skip this step.
+
+Step 5: Open your favorite terminal or command prompt and navigate to the project root directory.
+
+Step 6: To install the required packages please execute: npm install
+
+Step 7: To create dummy data please execute: npm run seed
+
+Step 8: To start the application
+    - for development mode please execute: npm start
+    - for production mode please execute: npm run production
+
+Step 9: In production mode the application will be running in background. If you need to stop it, please execute: npm run stop
