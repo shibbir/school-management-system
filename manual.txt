@@ -2,7 +2,7 @@ Step 1: Install Node.js >= 14.0
 
 Step 2: Install PostgreSQL >= 12.0
 
-Step 3: After installing PostgreSQL, create a database named "school-management-system"
+Step 3: After installing PostgreSQL, create a database named "school_management_system"
 
 Step 4: This project comes with a pre-configured .env file. Feel free to adjust the values if needed. Otherwise, skip this step.
 
