@@ -7,6 +7,7 @@ async function init() {
     require("dotenv").config();
     const sequelize = require(path.join(process.cwd(), "src/backend/config/lib/sequelize"));
 
+    await sequelize.dbConnector.query(`CREATE SCHEMA IF NOT EXISTS ${process.env.POSTGRES_DATABASE_SCHEMA}`);
     await sequelize.dbConnector.query(`DROP SCHEMA ${process.env.POSTGRES_DATABASE_SCHEMA} CASCADE`);
     await sequelize.dbConnector.query(`CREATE SCHEMA IF NOT EXISTS ${process.env.POSTGRES_DATABASE_SCHEMA}`);
 

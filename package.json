@@ -10,6 +10,7 @@
     "pm2:production": "cross-env NODE_ENV=production pm2 start src/backend/config/server.js --name school-management-system",
     "production": "run-s webpack:production pm2:production",
     "seed": "node src/backend/config/seeder.js",
+    "stop": "pm2 delete school-management-system",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Shibbir Ahmed",
