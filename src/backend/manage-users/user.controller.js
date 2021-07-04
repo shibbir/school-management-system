@@ -187,7 +187,7 @@ async function createUser(req, res) {
 
 async function updateUser(req, res) {
     try {
-        const { username, forename, surename } = req.body;
+        const { username, forename, surname } = req.body;
 
         if(req.user.role !== "admin" && req.user.id !== req.params.id) {
             return res.status(403).send("Access Forbidden.");
@@ -212,7 +212,7 @@ async function updateUser(req, res) {
 
         await User.update({
             forename,
-            surename,
+            surname,
             username
         }, { where: { id: req.params.id }});
 
