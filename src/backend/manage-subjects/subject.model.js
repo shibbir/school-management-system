@@ -38,7 +38,7 @@ const ClassSubject = sequelize.dbConnector.define("class_subjects", {}, {
 Program.belongsToMany(Subject, { as: "subjects", through: ClassSubject, foreignKey: "class_id" });
 Subject.belongsToMany(Program, { as: "classes", through: ClassSubject, foreignKey: "subject_id" });
 
-User.hasMany(Subject, { as: "subjects", foreignKey: { name: "teacher_id", allowNull: false }});
-Subject.belongsTo(User, { as: "teacher", foreignKey: { name: "teacher_id", allowNull: false }});
+User.hasMany(Subject, { as: "subjects", foreignKey: { name: "teacher_id" }});
+Subject.belongsTo(User, { as: "teacher", foreignKey: { name: "teacher_id" }});
 
 module.exports = Subject;

@@ -237,11 +237,18 @@ async function deleteUser(req, res) {
             }]
         });
 
-        if(user.role === "teacher" && user.subjects.find(x => x.status === "active")) {
-            res.status(400).send("Teachers cannot be removed while they are assigned to at least one non-archived subject.");
+        if(user.role === "teacher") {
+            if(user.subjects.find(x => x.status === "active")) {
+                return res.status(400).send("Teachers cannot be removed while they are assigned to at least one non-archived subject.");
+            }
+
+            await Subject.update({
+                teacher_id: null
+            }, { where: { teacher_id: req.params.id }});
         }
 
         await User.destroy({ where: { id: req.params.id }});
+
         res.json({ id: req.params.id });
     } catch(err) {
         res.status(500).send("An error occurred. Please try again.");
@@ -345,7 +352,7 @@ async function getPupilSubjects(req, res) {
                 response.push({
                     subject_id: subject.id,
                     subject_name: subject.name,
-                    teacher_name: `${subject.teacher.forename} ${subject.teacher.surname}`,
+                    teacher_name: subject.teacher ? `${subject.teacher.forename} ${subject.teacher.surname}` : "--",
                     grade: Number.parseFloat(subject.tests && subject.tests.length ? test_results_sum / subject.tests.length : 0).toFixed(2)
                 });
             }
@@ -510,7 +517,7 @@ async function exportPupilSubjects(req, res) {
                 response.push({
                     subject_id: subject.id,
                     subject_name: subject.name,
-                    teacher_name: `${subject.teacher.forename} ${subject.teacher.surname}`,
+                    teacher_name: subject.teacher ? `${subject.teacher.forename} ${subject.teacher.surname}` : "--",
                     pupil_name: `${pupil.forename} ${pupil.surname}`,
                     grade: Number.parseFloat(subject.tests && subject.tests.length ? test_results_sum / subject.tests.length : 0).toFixed(2)
                 });

@@ -94,6 +94,11 @@ paths:
                 description: User role
                 schema:
                     type: string
+              - name: subject_id
+                in: query
+                description: Subject Id
+                schema:
+                    type: string
             responses:
                 200:
                     content:
@@ -316,7 +321,7 @@ paths:
         get:
             tags:
                 - User
-            summary: Get all the test with grades for logged in pupil under a selected subject
+            summary: Get all the test with grades for a pupil under a selected subject
             parameters:
               - name: pupil_id
                 in: path

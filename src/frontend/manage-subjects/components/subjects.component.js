@@ -23,13 +23,25 @@ export default function SubjectList() {
 
     const onArchiveSubject = function(id) {
         if(confirm("Are you sure you want to archive this subject?")) {
-            dispatch(updateSubject(id, { status: "archived" }));
+            dispatch(updateSubject(id, { status: "archived" })).then(function() {
+                iziToast["success"]({
+                    timeout: 3000,
+                    message: "Subject is archived.",
+                    position: "topRight"
+                });
+            });
         }
     };
 
     const onDeleteSubject = function(id) {
         if(confirm("Are you sure you want to remove the subject?")) {
-            dispatch(deleteSubject(id));
+            dispatch(deleteSubject(id)).then(function() {
+                iziToast["success"]({
+                    timeout: 3000,
+                    message: "Subject is removed.",
+                    position: "topRight"
+                });
+            });
         }
     };
 
@@ -53,7 +65,7 @@ export default function SubjectList() {
                 <Table.Cell>{index+1}</Table.Cell>
                 <Table.Cell>{subject.name}</Table.Cell>
                 <Table.Cell>{capitalize(subject.status)}</Table.Cell>
-                <Table.Cell>{`${subject.teacher.forename} ${subject.teacher.surname}`}</Table.Cell>
+                <Table.Cell>{subject.teacher ? `${subject.teacher.forename} ${subject.teacher.surname}` : "--"}</Table.Cell>
                 <Table.Cell>
                     <List>
                         { subject.classes && subject.classes.map(function(program) {

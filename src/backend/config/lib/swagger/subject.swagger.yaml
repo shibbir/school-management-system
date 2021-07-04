@@ -142,6 +142,13 @@ paths:
                                                 type: string
                                             surname:
                                                 type: string
+                                    tests:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: string
                                     classes:
                                         type: array
                                         items:

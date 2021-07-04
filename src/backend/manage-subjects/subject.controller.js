@@ -14,7 +14,7 @@ async function getSubjects(req, res) {
         const subjects = await Subject.findAll({
             attributes: ["id", "name", "status", "updated_at"],
             order: [
-                ["updated_at", "DESC"]
+                ["created_at", "DESC"]
             ],
             include: [
                 {
@@ -148,6 +148,11 @@ async function updateSubject(req, res) {
                     as: "classes",
                     attributes: ["id", "name"],
                     through: { attributes: [] }
+                },
+                {
+                    model: Test,
+                    as: "tests",
+                    attributes: ["id"]
                 }
             ]
         });
@@ -296,7 +301,7 @@ async function exportData(req, res) {
                 "Subject ID": subject.id,
                 Subject: subject.name,
                 Status: capitalize(subject.status),
-                "Assigned Teacher": `${subject.teacher.forename} ${subject.teacher.surname}`,
+                "Assigned Teacher": subject.teacher ? `${subject.teacher.forename} ${subject.teacher.surname}` : "--",
                 "Created At": new Date(subject.created_at).toLocaleDateString("en-US"),
                 "Updated At": new Date(subject.updated_at).toLocaleDateString("en-US")
             });

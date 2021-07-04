@@ -48,7 +48,7 @@ export default function Users() {
             dispatch(deleteUser(id)).then(function() {
                 iziToast["success"]({
                     timeout: 3000,
-                    message: "Your changes are saved.",
+                    message: "User is removed.",
                     position: "topRight"
                 });
             }).catch(function(err) {

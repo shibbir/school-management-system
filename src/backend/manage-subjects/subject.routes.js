@@ -1,7 +1,7 @@
 const controller = require("./subject.controller");
 const { authenticate, authorizeFor } = require("../core/security.middleware");
 const { validateBody, validateParams } = require("../core/validator.middleware");
-const { subjectSchema, subjectIdSchema } = require("./subject.schema");
+const { subjectSchema, subjectIdSchema, subjectUpdateSchema } = require("./subject.schema");
 
 module.exports = function(app) {
     app.route("/api/subjects")
@@ -33,7 +33,7 @@ module.exports = function(app) {
             authenticate,
             authorizeFor(["admin"]),
             validateParams(subjectIdSchema),
-            validateBody(subjectSchema),
+            validateBody(subjectUpdateSchema),
             controller.updateSubject
         )
         .delete(
