@@ -16,12 +16,20 @@ const registrationSchema = object().shape({
         .email("Username must be an valid email address.")
         .max(50, "Username must be at most 50 characters long."),
     password: string()
-        .required("Password is a required field.")
-        .min(8, "Password must be at least 8 characters long."),
+        .when("id", {
+            is: (id) => !id,
+            then: string()
+                .required("Password is a required field.")
+                .min(8, "Password must be at least 8 characters long.")
+        }),
     confirm_password: string()
-        .required("Confirm Password is a required field.")
-        .min(8, "Password must be at least 8 characters long.")
-        .oneOf([ref("password"), null], "Password and confirm password doesn't match."),
+        .when("id", {
+            is: (id) => !id,
+            then: string()
+                .required("Confirm Password is a required field.")
+                .min(8, "Password must be at least 8 characters long.")
+                .oneOf([ref("password"), null], "Password and confirm password doesn't match.")
+        }),
     forename: string()
         .required("Forename is a required field.")
         .max(50, "Forename must be at most 50 characters long."),
@@ -29,8 +37,12 @@ const registrationSchema = object().shape({
         .required("Surname is a required field.")
         .max(50, "Surname must be at most 50 characters long."),
     role: string()
-        .required("Role is a required field.")
-        .test("is-valid-role", "The requested role is not supported.", role => ["admin", "teacher", "pupil"].includes(role) || !role)
+        .when("id", {
+            is: (id) => !id,
+            then: string()
+                .required("Role is a required field.")
+                .test("is-valid-role", "The requested role is not supported.", role => ["admin", "teacher", "pupil"].includes(role) || !role)
+        })
 });
 
 const idSchema = object().shape({
@@ -51,7 +63,6 @@ const changePasswordSchema = object().shape({
         .min(8, "Password must be at least 8 characters long.")
         .oneOf([ref("new_password"), null], "New password and confirm password does not match.")
 });
-
 
 exports.loginSchema = loginSchema;
 exports.registrationSchema = registrationSchema;

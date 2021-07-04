@@ -21,7 +21,7 @@ module.exports = function(app) {
 
     app.route("/api/users/:id")
         .get(authenticate, validateParams(idSchema), controller.getUser)
-        .patch(authenticate, validateParams(idSchema), controller.updateUser)
+        .patch(authenticate, validateParams(idSchema), validateBody(registrationSchema), controller.updateUser)
         .delete(authenticate, authorizeFor(["admin"], validateParams(idSchema)), controller.deleteUser);
 
     app.route("/api/teachers/:id/subjects")
