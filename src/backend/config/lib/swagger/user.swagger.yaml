@@ -203,10 +203,6 @@ paths:
                                     type: string
                                 surname:
                                     type: string
-                            required:
-                                - username
-                                - forename
-                                - surname
             responses:
                 200:
                     content:

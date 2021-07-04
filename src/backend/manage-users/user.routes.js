@@ -1,7 +1,7 @@
 const controller = require("./user.controller");
 const { authenticate, authorizeFor } = require("../core/security.middleware");
 const { validateBody, validateParams } = require("../core/validator.middleware");
-const { loginSchema, registrationSchema, idSchema, changePasswordSchema } = require("./user.schema");
+const { loginSchema, registrationSchema, idSchema, changePasswordSchema, updateSchema } = require("./user.schema");
 
 module.exports = function(app) {
     app.post("/api/login", validateBody(loginSchema), controller.login);
@@ -21,7 +21,7 @@ module.exports = function(app) {
 
     app.route("/api/users/:id")
         .get(authenticate, validateParams(idSchema), controller.getUser)
-        .patch(authenticate, validateParams(idSchema), validateBody(registrationSchema), controller.updateUser)
+        .patch(authenticate, validateParams(idSchema), validateBody(updateSchema), controller.updateUser)
         .delete(authenticate, authorizeFor(["admin"], validateParams(idSchema)), controller.deleteUser);
 
     app.route("/api/teachers/:id/subjects")
