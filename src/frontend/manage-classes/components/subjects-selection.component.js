@@ -1,4 +1,3 @@
-import { capitalize } from "lodash";
 import iziToast from "izitoast/dist/js/iziToast";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -68,7 +67,7 @@ export default function SubjectsSelection({ id } = props) {
         }
     };
 
-    const rows = subjects.filter(x => x.status === "active").map(function(subject) {
+    const rows = subjects.map(function(subject) {
         return (
             <Table.Row key={subject.id}>
                 <Table.Cell>
@@ -77,7 +76,6 @@ export default function SubjectsSelection({ id } = props) {
                     </SemanticUIForm.Field>
                 </Table.Cell>
                 <Table.Cell>{subject.name}</Table.Cell>
-                <Table.Cell>{capitalize(subject.status)}</Table.Cell>
                 <Table.Cell>{subject.teacher ? `${subject.teacher.forename} ${subject.teacher.surname}` : "--"}</Table.Cell>
             </Table.Row>
         );
@@ -97,7 +95,6 @@ export default function SubjectsSelection({ id } = props) {
                         <Table.Row>
                             <Table.HeaderCell><Checkbox onClick={() => toggleSubjectsSelection()} checked={allSubjectsSelected}/></Table.HeaderCell>
                             <Table.HeaderCell>Subject Name</Table.HeaderCell>
-                            <Table.HeaderCell>Subject Status</Table.HeaderCell>
                             <Table.HeaderCell>Assigned Teacher</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>

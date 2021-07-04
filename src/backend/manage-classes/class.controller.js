@@ -152,12 +152,9 @@ async function bulkSubjectsSelection(req, res) {
 
         const all_subjects = await Subject.findAll();
 
-        const subjects = await Subject.findAll({ where: {
-            id: {
-                [Op.in]: req.body.subjects
-            },
-            status: "active"
-        }});
+        const subjects = await Subject.findAll({ where: { id: {
+            [Op.in]: req.body.subjects
+        }}});
 
         await program.removeSubjects(all_subjects);
         await program.addSubjects(subjects);
