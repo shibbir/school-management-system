@@ -21,7 +21,7 @@ function formatUserProfile(user) {
     return profile;
 }
 
-async function login(req, res, next) {
+async function login(req, res) {
     try {
         let user;
         const { username, password, grant_type } = req.body;
@@ -46,7 +46,7 @@ async function login(req, res, next) {
 
         res.json(formatUserProfile(user));
     } catch (err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
@@ -61,7 +61,7 @@ async function getUserProfile(req, res) {
     res.json(formatUserProfile(req.user));
 }
 
-async function getUser(req, res, next) {
+async function getUser(req, res) {
     try {
         const user = await User.findByPk(req.params.id, {
             attributes: { exclude: ["password", "refresh_token", "created_at"] },
@@ -69,11 +69,11 @@ async function getUser(req, res, next) {
 
         res.json(formatUserProfile(user));
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function getUsers(req, res, next) {
+async function getUsers(req, res) {
     try {
         const query = {};
 
@@ -153,11 +153,11 @@ async function getUsers(req, res, next) {
 
         res.json(users);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function createUser(req, res, next) {
+async function createUser(req, res) {
     try {
         const { forename, surname, username, password, role } = req.body;
 
@@ -181,11 +181,11 @@ async function createUser(req, res, next) {
 
         res.json(formatUserProfile(user));
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function updateUser(req, res, next) {
+async function updateUser(req, res) {
     try {
         const { username, forename, surename } = req.body;
 
@@ -222,11 +222,11 @@ async function updateUser(req, res, next) {
 
         res.json(user);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function deleteUser(req, res, next) {
+async function deleteUser(req, res) {
     try {
         if(req.params.id === req.user.id) return res.status(400).send("You cannot remove yourself.");
 
@@ -244,11 +244,11 @@ async function deleteUser(req, res, next) {
         await User.destroy({ where: { id: req.params.id }});
         res.json({ id: req.params.id });
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function changePassword(req, res, next) {
+async function changePassword(req, res) {
     try {
         const { current_password, new_password } = req.body;
 
@@ -262,11 +262,11 @@ async function changePassword(req, res, next) {
 
         res.status(204).send("Password updated successfully.");
     } catch (err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function getAssignedSubjects(req, res, next) {
+async function getAssignedSubjects(req, res) {
     try {
         const subjects = await Subject.findAll({
             where: { teacher_id: req.params.id },
@@ -284,11 +284,11 @@ async function getAssignedSubjects(req, res, next) {
 
         res.json(subjects);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function getPupilSubjects(req, res, next) {
+async function getPupilSubjects(req, res) {
     try {
         const pupil = await User.findByPk(req.params.id, {
             attributes: ["class_id"]
@@ -353,11 +353,11 @@ async function getPupilSubjects(req, res, next) {
 
         res.json(response);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function getPupilSubject(req, res, next) {
+async function getPupilSubject(req, res) {
     try {
         const subject = await Subject.findByPk(req.params.subject_id, {
             attributes: ["id", "name"],
@@ -375,11 +375,11 @@ async function getPupilSubject(req, res, next) {
 
         res.json(subject);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function exportData(req, res, next) {
+async function exportData(req, res) {
     try {
         const users = await User.findAll({
             attributes: ["id", "forename", "surname", "username", "role", "created_at", "updated_at"],
@@ -413,11 +413,11 @@ async function exportData(req, res, next) {
         res.attachment("users.csv");
         res.send(csv);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function exportAssignedSubjects(req, res, next) {
+async function exportAssignedSubjects(req, res) {
     try {
         const subjects = await Subject.findAll({
             where: { teacher_id: req.params.id },
@@ -449,11 +449,11 @@ async function exportAssignedSubjects(req, res, next) {
         res.attachment("assigned-subjects.csv");
         res.send(csv);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function exportPupilSubjects(req, res, next) {
+async function exportPupilSubjects(req, res) {
     try {
         const pupil = await User.findByPk(req.params.id, {
             attributes: ["id", "class_id", "forename", "surname"]
@@ -538,7 +538,7 @@ async function exportPupilSubjects(req, res, next) {
         res.attachment("subjects-overview.csv");
         res.send(csv);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 

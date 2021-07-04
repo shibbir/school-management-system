@@ -9,7 +9,7 @@ const Test = require("../manage-tests/test.model");
 const Subject = require("../manage-subjects/subject.model");
 const Program = require("../manage-classes/class.model");
 
-async function getTestResults(req, res, next) {
+async function getTestResults(req, res) {
     try {
         const test_results = await TestResult.findAll({
             where: { test_id: req.params.id },
@@ -25,11 +25,11 @@ async function getTestResults(req, res, next) {
 
         res.json(test_results);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function exportTestResults(req, res, next) {
+async function exportTestResults(req, res) {
     try {
         const test_results = await TestResult.findAll({
             where: { test_id: req.params.id },
@@ -70,11 +70,11 @@ async function exportTestResults(req, res, next) {
         res.attachment("test-results.csv");
         res.send(csv);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function createTestResult(req, res, next) {
+async function createTestResult(req, res) {
     try {
         const { pupil_id, grade } = req.body;
 
@@ -105,11 +105,11 @@ async function createTestResult(req, res, next) {
 
         res.json(test_result);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function getTestResult(req, res, next) {
+async function getTestResult(req, res) {
     try {
         const test_result = await TestResult.findByPk(req.params.id, {
             attributes: ["id", "pupil_id", "grade"]
@@ -117,11 +117,11 @@ async function getTestResult(req, res, next) {
 
         res.json(test_result);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function updateTestResult(req, res, next) {
+async function updateTestResult(req, res) {
     try {
         const { grade } = req.body;
 
@@ -162,11 +162,11 @@ async function updateTestResult(req, res, next) {
 
         res.json(test_result);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function deleteTestResult(req, res, next) {
+async function deleteTestResult(req, res) {
     try {
         const number_of_destroyed_rows = await TestResult.destroy({ where: { id: req.params.id }});
 
@@ -174,11 +174,11 @@ async function deleteTestResult(req, res, next) {
 
         res.json({ id: req.params.id });
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function downloadSampleBatchGradeFile(req, res, next) {
+async function downloadSampleBatchGradeFile(req, res) {
     try {
         const test = await Test.findByPk(req.params.id, {
             include: {
@@ -233,11 +233,11 @@ async function downloadSampleBatchGradeFile(req, res, next) {
         res.attachment("sample-batch-grade-file.csv");
         res.send(csv);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function importTestResults(req, res, next) {
+async function importTestResults(req, res) {
     try {
         const test = await Test.findByPk(req.params.id, {
             include: {
@@ -284,7 +284,7 @@ async function importTestResults(req, res, next) {
             res.sendStatus(204);
         });
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 

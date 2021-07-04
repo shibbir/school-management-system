@@ -2,7 +2,7 @@ const Test = require("./test.model");
 const Subject = require("../manage-subjects/subject.model");
 const { archiveTestResults } = require("../manage-test-results/test-result.controller");
 
-async function getTests(req, res, next) {
+async function getTests(req, res) {
     try {
         const tests = await Test.findAll({
             where: { subject_id: req.params.id },
@@ -13,11 +13,11 @@ async function getTests(req, res, next) {
 
         res.json(tests);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function createTest(req, res, next) {
+async function createTest(req, res) {
     try {
         const { name, date } = req.body;
 
@@ -31,21 +31,21 @@ async function createTest(req, res, next) {
 
         res.json(test);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function getTest(req, res, next) {
+async function getTest(req, res) {
     try {
         const test = await Test.findByPk(req.params.id);
 
         res.json(test);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function updateTest(req, res, next) {
+async function updateTest(req, res) {
     try {
         const { name, date } = req.body;
 
@@ -68,17 +68,17 @@ async function updateTest(req, res, next) {
 
         res.json(test);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function deleteTest(req, res, next) {
+async function deleteTest(req, res) {
     try {
         await Test.destroy({ where: { id: req.params.id }});
 
         res.json({ id: req.params.id });
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 

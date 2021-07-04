@@ -15,7 +15,7 @@ async function init() {
     const Program = require(path.join(process.cwd(), "src/backend/manage-classes/class.model"));
     const Subject = require(path.join(process.cwd(), "src/backend/manage-subjects/subject.model"));
     const Test = require(path.join(process.cwd(), "src/backend/manage-tests/test.model"));
-    require(path.join(process.cwd(), "src/backend/manage-test-results/test-result.model"));
+    const TestResult = require(path.join(process.cwd(), "src/backend/manage-test-results/test-result.model"));
 
     await sequelize.dbConnector.sync();
 
@@ -44,6 +44,11 @@ async function init() {
     const subject4_id = uuidv4();
     const subject5_id = uuidv4();
     const subject6_id = uuidv4();
+
+    const test1_id = uuidv4();
+    const test2_id = uuidv4();
+    const test3_id = uuidv4();
+    const test4_id = uuidv4();
 
     const password = "P@ssw0rd";
 
@@ -257,19 +262,23 @@ async function init() {
     function testSeeder(callback) {
         const tests = [
             {
+                id: test1_id,
                 name: "Automotive Sensor Systems: First Test",
                 subject_id: subject1_id
             },
             {
+                id: test2_id,
                 name: "Automotive Sensor Systems: Second Test",
                 subject_id: subject1_id
             },
             {
+                id: test3_id,
                 name: "Automotive Sensor Systems: Third Test",
                 subject_id: subject1_id
             },
 
             {
+                id: test4_id,
                 name: "Compiler Construction: First Test",
                 subject_id: subject4_id
             },
@@ -291,12 +300,45 @@ async function init() {
         });
     }
 
+    function testResultSeeder(callback) {
+        const test_results = [
+            {
+                test_id: test1_id,
+                pupil_id: pupil1_id,
+                grade: 70
+            },
+            {
+                test_id: test2_id,
+                pupil_id: pupil1_id,
+                grade: 80
+            },
+            {
+                test_id: test3_id,
+                pupil_id: pupil1_id,
+                grade: 60
+            },
+            {
+                test_id: test4_id,
+                pupil_id: pupil5_id,
+                grade: 90
+            }
+        ];
+
+        TestResult.destroy({ truncate: { cascade: true } }).then(() => {
+            TestResult.bulkCreate(test_results, {
+                returning: true,
+                ignoreDuplicates: false
+            }).then(() => callback());
+        });
+    }
+
     async.waterfall([
         classSeeder,
         userSeeder,
         subjectSeeder,
         classSubjectSeeder,
-        testSeeder
+        testSeeder,
+        testResultSeeder
     ], function (err) {
         if (err) console.error(err);
         else console.info("DB seed completed!");

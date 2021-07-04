@@ -9,7 +9,7 @@ const Program = require("../manage-classes/class.model");
 const TestResult = require("../manage-test-results/test-result.model");
 const { archiveTests } = require("../manage-tests/test.controller");
 
-async function getSubjects(req, res, next) {
+async function getSubjects(req, res) {
     try {
         const subjects = await Subject.findAll({
             attributes: ["id", "name", "status", "updated_at"],
@@ -38,11 +38,11 @@ async function getSubjects(req, res, next) {
 
         res.json(subjects);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function addSubject(req, res, next) {
+async function addSubject(req, res) {
     try {
         const { name, teacher_id } = req.body;
 
@@ -76,11 +76,11 @@ async function addSubject(req, res, next) {
 
         res.json(subject);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function getSubject(req, res, next) {
+async function getSubject(req, res) {
     try {
         const subject = await Subject.findByPk(req.params.id, {
             attributes: ["id", "name", "status", "teacher_id"]
@@ -88,11 +88,11 @@ async function getSubject(req, res, next) {
 
         res.json(subject);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function updateSubject(req, res, next) {
+async function updateSubject(req, res) {
     try {
         const { name, teacher_id, status } = req.body;
 
@@ -154,11 +154,11 @@ async function updateSubject(req, res, next) {
 
         res.json(subject);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function deleteSubject(req, res, next) {
+async function deleteSubject(req, res) {
     try {
         const subject = await Subject.findByPk(req.params.id, {
             include: [
@@ -184,11 +184,11 @@ async function deleteSubject(req, res, next) {
 
         res.json({ id: req.params.id });
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function getPupilGrades(req, res, next) {
+async function getPupilGrades(req, res) {
     try {
         const tests = await Test.findAll({
             where: { subject_id: req.params.id },
@@ -238,7 +238,7 @@ async function getPupilGrades(req, res, next) {
         res.json(results);
 
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
@@ -271,7 +271,7 @@ async function archiveOrDeleteSubjects(class_id) {
     }));
 }
 
-async function exportData(req, res, next) {
+async function exportData(req, res) {
     try {
         const subjects = await Subject.findAll({
             attributes: ["id", "name", "status", "created_at", "updated_at"],
@@ -309,11 +309,11 @@ async function exportData(req, res, next) {
         res.attachment("subjects.csv");
         res.send(csv);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function exportPupilGrades(req, res, next) {
+async function exportPupilGrades(req, res) {
     try {
         const tests = await Test.findAll({
             where: { subject_id: req.params.id },
@@ -380,7 +380,7 @@ async function exportPupilGrades(req, res, next) {
         res.attachment("pupil-grades.csv");
         res.send(csv);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 

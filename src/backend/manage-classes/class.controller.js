@@ -6,7 +6,7 @@ const User = require("../manage-users/user.model");
 const Subject = require("../manage-subjects/subject.model");
 const { archiveOrDeleteSubjects } = require("../manage-subjects/subject.controller");
 
-async function getClasess(req, res, next) {
+async function getClasess(req, res) {
     try {
         const classes = await Program.findAll({
             include: [
@@ -29,11 +29,11 @@ async function getClasess(req, res, next) {
 
         res.json(classes);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function createClass(req, res, next) {
+async function createClass(req, res) {
     try {
         const { name } = req.body;
 
@@ -48,11 +48,11 @@ async function createClass(req, res, next) {
         res.json(program);
 
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function getClass(req, res, next) {
+async function getClass(req, res) {
     try {
         const program = await Program.findByPk(req.params.id, {
             attributes: ["id", "name"]
@@ -60,11 +60,11 @@ async function getClass(req, res, next) {
 
         res.json(program);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function updateClass(req, res, next) {
+async function updateClass(req, res) {
     try {
         let program = await Program.findByPk(req.params.id);
 
@@ -74,11 +74,11 @@ async function updateClass(req, res, next) {
 
         res.json(program);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function deleteClass(req, res, next) {
+async function deleteClass(req, res) {
     try {
         await User.update({
             class_id: null
@@ -93,11 +93,11 @@ async function deleteClass(req, res, next) {
         res.json({ id: req.params.id });
 
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function bulkEnrolment(req, res, next) {
+async function bulkEnrolment(req, res) {
     try {
         const class_id = req.params.id;
 
@@ -131,11 +131,11 @@ async function bulkEnrolment(req, res, next) {
 
         res.sendStatus(204);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function bulkSubjectsSelection(req, res, next) {
+async function bulkSubjectsSelection(req, res) {
     try {
         const program = await Program.findByPk(req.params.id);
 
@@ -152,11 +152,11 @@ async function bulkSubjectsSelection(req, res, next) {
 
         res.sendStatus(204);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
-async function exportData(req, res, next) {
+async function exportData(req, res) {
     try {
         const classes = await Program.findAll({
             attributes: ["name", "created_at", "updated_at"],
@@ -185,7 +185,7 @@ async function exportData(req, res, next) {
         res.attachment("classes.csv");
         res.send(csv);
     } catch(err) {
-        next(err);
+        res.status(500).send("An error occurred. Please try again.");
     }
 }
 
