@@ -14,7 +14,7 @@ export default function Dashboard() {
             <Message
                 info
                 icon="info"
-                header="Welcome to the School Management System v0.1.0"
+                header="Welcome to the School Management System v1.0.0"
                 content="Select any of the below services to get started. These services are curated based on your role."
             />
 
