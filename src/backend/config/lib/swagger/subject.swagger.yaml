@@ -73,6 +73,22 @@ paths:
                                                 type: string
                                             surname:
                                                 type: string
+                                    tests:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: string
+                                    classes:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: string
+                                                name:
+                                                    type: string
                 403:
                     description: Access Forbidden.
                 4xx:

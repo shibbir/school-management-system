@@ -67,11 +67,24 @@ async function addSubject(req, res) {
 
         const subject = await Subject.findByPk(entity.id, {
             attributes: ["id", "name", "status", "updated_at"],
-            include: {
-                model: User,
-                as: "teacher",
-                attributes: ["forename", "surname"]
-            }
+            include: [
+                {
+                    model: User,
+                    as: "teacher",
+                    attributes: ["forename", "surname"]
+                },
+                {
+                    model: Program,
+                    as: "classes",
+                    attributes: ["id", "name"],
+                    through: { attributes: [] }
+                },
+                {
+                    model: Test,
+                    as: "tests",
+                    attributes: ["id"]
+                }
+            ]
         });
 
         res.json(subject);
