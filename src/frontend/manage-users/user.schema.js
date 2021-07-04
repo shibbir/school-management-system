@@ -11,15 +11,16 @@ export const loginSchema = object().shape({
 export const createUserSchema = object().shape({
     forename: string()
         .required("This field must not be empty.")
-        .max(25, "This field must be at most 25 characters long."),
+        .max(50, "This field must be at most 50 characters long."),
     surname: string()
         .required("This field must not be empty.")
-        .max(25, "This field must be at most 25 characters long."),
+        .max(50, "This field must be at most 50 characters long."),
     role: string()
         .required("This field must not be empty."),
     username: string()
+        .required("This field must not be empty.")
         .email("This field should be an valid email address.")
-        .required("This field must not be empty."),
+        .max(50, "This field must be at most 50 characters long."),
     password: string()
         .when("id", {
             is: (id) => !id,

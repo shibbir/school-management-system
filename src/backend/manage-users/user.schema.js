@@ -13,6 +13,7 @@ const loginSchema = object().shape({
 const registrationSchema = object().shape({
     username: string()
         .required("Username is a required field.")
+        .email("Username must be an valid email address.")
         .max(50, "Username must be at most 50 characters long."),
     password: string()
         .required("Password is a required field.")
