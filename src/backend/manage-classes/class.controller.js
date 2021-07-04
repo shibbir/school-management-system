@@ -66,11 +66,20 @@ async function getClass(req, res) {
 
 async function updateClass(req, res) {
     try {
+        const { name } = req.body;
+
         let program = await Program.findByPk(req.params.id);
 
-        program = await program.update({
-            name: req.body.name
-        }, { returning: true });
+        const matched_name = await Program.count({ where: {
+            name: { [Op.iLike]: name },
+            id: { [Op.ne]: req.params.id }
+        }});
+
+        if(matched_name) {
+            return res.status(400).send("Class name already exists. Please try with a different name.");
+        }
+
+        program = await program.update({ name }, { returning: true });
 
         res.json(program);
     } catch(err) {

@@ -203,7 +203,7 @@ async function updateUser(req, res) {
 
         const matched_username = await User.count({ where: {
             username: { [Op.iLike]: username },
-            id: { [Op.ne]: req.user.id }
+            id: { [Op.ne]: req.params.id }
         }});
 
         if(matched_username) {
