@@ -259,7 +259,7 @@ async function changePassword(req, res) {
     try {
         const { current_password, new_password } = req.body;
 
-        const user = await User.findByPk(req.user.id);
+        const user = await User.findByPk(req.params.id);
 
         if (!user || !user.validPassword(current_password)) return res.status(400).send("Current password is incorrect.");
 
@@ -267,7 +267,7 @@ async function changePassword(req, res) {
 
         await user.save();
 
-        res.status(204).send("Password updated successfully.");
+        res.sendStatus(204);
     } catch (err) {
         res.status(500).send("An error occurred. Please try again.");
     }

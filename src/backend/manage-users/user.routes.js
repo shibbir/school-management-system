@@ -10,8 +10,6 @@ module.exports = function(app) {
 
     app.get("/api/profile", authenticate, controller.getUserProfile);
 
-    app.patch("/api/profile/change-password", authenticate, validateBody(changePasswordSchema), controller.changePassword);
-
     app.route("/api/users")
         .get(authenticate, authorizeFor(["admin", "teacher"]), controller.getUsers)
         .post(authenticate, authorizeFor(["admin"]), validateBody(registrationSchema), controller.createUser);
@@ -23,6 +21,8 @@ module.exports = function(app) {
         .get(authenticate, validateParams(idSchema), controller.getUser)
         .patch(authenticate, validateParams(idSchema), validateBody(updateSchema), controller.updateUser)
         .delete(authenticate, authorizeFor(["admin"], validateParams(idSchema)), controller.deleteUser);
+
+    app.patch("/api/users/:id/change-password", authenticate, validateParams(idSchema), validateBody(changePasswordSchema), controller.changePassword);
 
     app.route("/api/teachers/:id/subjects")
         .get(

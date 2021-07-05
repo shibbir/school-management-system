@@ -84,13 +84,13 @@ export function getAssignedSubjects(user_id) {
     };
 }
 
-export function changePassword(data) {
+export function changePassword(id, data) {
     return {
         type: Types.CHANGE_PASSWORD,
         payload: axios({
             method: "patch",
             data,
-            url: "/api/profile/change-password"
+            url: `/api/users/${id}/change-password`
         })
     };
 }

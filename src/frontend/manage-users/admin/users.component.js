@@ -9,11 +9,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { Icon, Divider, Segment, Button, Table, Modal, Header, TransitionablePortal, Dropdown, Breadcrumb } from "semantic-ui-react";
 
 import UserForm from "../components/user-form.component";
+import ChangePassword from "../components/change-password.component";
 import { getUsers, deleteUser } from "../user.actions";
 
 export default function Users() {
     const dispatch = useDispatch();
     const [userId, setUserId] = useState(undefined);
+    const [userIdForUpdatePassword, setUserIdForUpdatePassword] = useState(undefined);
 
     useEffect(() => {
         dispatch(getUsers());
@@ -35,6 +37,7 @@ export default function Users() {
                     <Dropdown>
                         <Dropdown.Menu>
                             <Dropdown.Item icon="edit" text="Update Attributes" onClick={() => setUserId(row.id)}/>
+                            <Dropdown.Item icon="key" text="Update Password" onClick={() => setUserIdForUpdatePassword(row.id)}/>
                             { loggedInUser.id !== row.id && <Dropdown.Item icon="trash" text="Remove User" onClick={() => onDeleteUser(row.id)}/> }
                         </Dropdown.Menu>
                     </Dropdown>
@@ -101,6 +104,22 @@ export default function Users() {
                     </Modal.Content>
                     <Modal.Actions>
                         <Button color="black" onClick={() => setUserId(undefined)}>
+                            Close
+                        </Button>
+                    </Modal.Actions>
+                </Modal>
+            </TransitionablePortal>
+
+            <TransitionablePortal open={userIdForUpdatePassword !== undefined} transition={{ animation: "scale", duration: 400 }}>
+                <Modal dimmer size="tiny" open={true}>
+                    <Modal.Header>Password Update Form</Modal.Header>
+                    <Modal.Content>
+                        <Modal.Description>
+                            <ChangePassword id={userIdForUpdatePassword}/>
+                        </Modal.Description>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button color="black" onClick={() => setUserIdForUpdatePassword(undefined)}>
                             Close
                         </Button>
                     </Modal.Actions>

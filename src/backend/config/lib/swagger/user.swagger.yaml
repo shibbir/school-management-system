@@ -55,34 +55,6 @@ paths:
                 4xx:
                     description: An error message stating the problem.
 
-    /api/profile/change-password:
-        patch:
-            tags:
-                - User
-            summary: Update logged in user password
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                current_password:
-                                    type: string
-                                new_password:
-                                    type: string
-                                confirm_new_password:
-                                    type: string
-                            required:
-                                - current_password
-                                - new_password
-                                - confirm_new_password
-            responses:
-                204:
-                    description: No Content.
-                4xx:
-                    description: An error message stating the problem.
-
     /api/users:
         get:
             tags:
@@ -241,6 +213,41 @@ paths:
                                         type: string
                 403:
                     description: Access Forbidden.
+                4xx:
+                    description: An error message stating the problem.
+
+    /api/users/{id}/change-password:
+        patch:
+            tags:
+                - User
+            summary: Update user password
+            parameters:
+              - name: id
+                in: path
+                description: User Unique ID
+                required: true
+                schema:
+                    type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                current_password:
+                                    type: string
+                                new_password:
+                                    type: string
+                                confirm_new_password:
+                                    type: string
+                            required:
+                                - current_password
+                                - new_password
+                                - confirm_new_password
+            responses:
+                204:
+                    description: No Content.
                 4xx:
                     description: An error message stating the problem.
 

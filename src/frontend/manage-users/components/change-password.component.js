@@ -1,15 +1,17 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { useDispatch } from "react-redux";
 import iziToast from "izitoast/dist/js/iziToast";
 import { Divider, Button } from "semantic-ui-react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { changePassword } from "../user.actions";
 import { changePasswordSchema } from "../user.schema";
 import { TextInput } from "../../core/components/field-inputs.component";
 
-export default function ChangePassword() {
+export default function ChangePassword({ id } = props) {
     const dispatch = useDispatch();
+
+    const loggedInUser = useSelector(state => state.userReducer.loggedInUser);
 
     return (
         <Formik
@@ -21,7 +23,7 @@ export default function ChangePassword() {
             displayName="ChangePassword"
             validationSchema={changePasswordSchema}
             onSubmit={(values, actions) => {
-                dispatch(changePassword(values)).then(function() {
+                dispatch(changePassword(id || loggedInUser.id, values)).then(function() {
                     iziToast["success"]({
                         timeout: 3000,
                         message: "Password changed successfully.",
